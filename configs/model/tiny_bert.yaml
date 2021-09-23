@@ -1,0 +1,20 @@
+_target_: src.models.huggingface.HFModel
+# hydra by default would instantiate optimizer and scheduler when passed to HFModel
+# recursive: false -- pass config (possibly instantiated later) rather than instantiated class
+_recursive_: false 
+
+defaults:
+# interleaved with setup so instantiated later (recursive false)
+- /optimizer: adamw
+- /scheduler: linear_warm_up
+
+# See: https://torchmetrics.readthedocs.io/en/latest/references/modules.html
+metrics:
+  # torchmetrics.class: outputs.attr
+  # Available outputs.attr: {loss, logits, preds, ...}
+  Accuracy: "preds" 
+
+model:
+  _target_: transformers.AutoModelForSequenceClassification.from_pretrained
+  pretrained_model_name_or_path: "prajjwal1/bert-tiny"
+  num_labels: 3

@@ -1,0 +1,10 @@
+_target_: src.datamodules.mnli.MNLIDataModule
+_recursive_: false
+
+defaults:
+  - /collator: sentence_pair
+
+batch_size: 8
+num_workers: 0
+pin_memory: true
+seed: ${seed}
