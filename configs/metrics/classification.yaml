@@ -1,0 +1,22 @@
+# see: https://github.com/facebookresearch/hydra/issues/1283
+# pass a function to batch by
+# batch:
+#  _target_: "functools.partial",
+#  _args_: ["${get_method:path.to.your.module.function}"],
+apply:
+  batch: null
+  outputs: null
+
+# either metrics or val_metrics and test_metrics
+# where the latter
+metrics:
+  accuracy:
+    metric:
+      _target_: torchmetrics.Accuracy
+    batch: "labels"
+    outputs: "preds"
+  f1:
+    metric:
+      _target_: torchmetrics.F1
+    batch: "labels"
+    outputs: "preds"

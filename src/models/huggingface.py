@@ -1,36 +1,33 @@
-import importlib
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import hydra
 import torch
 from omegaconf import DictConfig
+from omegaconf.omegaconf import OmegaConf
 from pytorch_lightning import LightningModule
-from transformers.modeling_utils import PreTrainedModel
+from torch import nn
 from transformers.tokenization_utils_base import BatchEncoding
 
 from src.models.mixin.eval import EvalMixin
 from src.models.mixin.optimizer import OptimizerMixin
 
-from .modules.utils import get_metrics
-
 
 class HFModel(EvalMixin, OptimizerMixin, LightningModule):
     def __init__(
         self,
-        model: DictConfig,
-        optimizer: DictConfig,
+        model: Union[dict, DictConfig, OmegaConf],
+        optimizer: Union[dict, DictConfig, OmegaConf],
+        scheduler: Optional[Union[dict, DictConfig, OmegaConf]],
         metrics: dict = {"Accuracy": "preds"},
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ):
         super().__init__()
         self.save_hyperparameters()
 
-        self.model = hydra.utils.instantiate(model)
-        self.val_metrics = get_metrics(metrics)
-        self.test_metrics = get_metrics(metrics)
+        self.model: nn.Module = hydra.utils.instantiate(self.hparams.model)
 
-    def forward(self, batch: BatchEncoding) -> dict:
+    def forward(self, batch: Union[dict, BatchEncoding]) -> dict:
         return self.model(**batch)
 
     def training_step(self, batch: BatchEncoding, batch_idx: int) -> torch.Tensor:

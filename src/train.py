@@ -1,3 +1,4 @@
+from src.models import compose_model
 from typing import List, Optional
 
 import hydra
@@ -37,6 +38,9 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Init lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
+    compose_model(config.mixin)
+    # import pudb
+    # pu.db
     model: LightningModule = hydra.utils.instantiate(config.model)
 
     # Init lightning callbacks
