@@ -1,10 +1,11 @@
-_target_: src.datamodules.mnli.MNLIDataModule
+_target_: src.datamodules.tatoeba.TatoebaDataModule
 _recursive_: false
 
 defaults:
-  - /collate_fn: sentence_pair
+  - /collate_fn: sentence
 
 batch_size: 8
 num_workers: 0
 pin_memory: true
+lang: deu
 seed: ${seed}

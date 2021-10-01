@@ -1,4 +1,3 @@
-from src.models import compose_model
 from typing import List, Optional
 
 import hydra
@@ -38,9 +37,6 @@ def train(config: DictConfig) -> Optional[float]:
 
     # Init lightning model
     log.info(f"Instantiating model <{config.model._target_}>")
-    compose_model(config.mixin)
-    # import pudb
-    # pu.db
     model: LightningModule = hydra.utils.instantiate(config.model)
 
     # Init lightning callbacks
@@ -77,13 +73,17 @@ def train(config: DictConfig) -> Optional[float]:
     )
 
     # Train the model
-    log.info("Starting training!")
-    trainer.fit(model=model, datamodule=datamodule)
+    if config.get("train", True):
+        log.info("Starting training!")
+        trainer.fit(model=model, datamodule=datamodule)
 
     # Evaluate model on test set, using the best model achieved during training
     if config.get("test_after_training") and not config.trainer.get("fast_dev_run"):
         log.info("Starting testing!")
-        trainer.test()
+        if config.get("train", True):
+            trainer.test()
+        else:
+            trainer.test(model, datamodule=datamodule)
 
     # Make sure everything closed properly
     log.info("Finalizing!")

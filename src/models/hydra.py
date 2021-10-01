@@ -13,10 +13,10 @@ from src.models.modules.utils import get_metrics
 class HydraModel(EvalMixin, OptimizerMixin, LightningModule):
     def __init__(
         self,
-        encoder: Union[dict, DictConfig],
-        head: Union[dict, DictConfig],
-        optimizer: Union[dict, DictConfig],
-        pooler: Optional[Union[dict, DictConfig]] = None,
+        encoder: DictConfig,
+        head: DictConfig,
+        optimizer: DictConfig,
+        pooler: Optional[DictConfig] = None,
         metrics: dict = {"Accuracy": "preds"},
         *args,
         **kwargs,

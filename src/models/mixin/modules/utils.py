@@ -12,3 +12,8 @@ class ApplyMap:
         for v in self.cfg.values():
             inputs = v(inputs)
         return inputs
+
+
+def get_preds(outputs, *args, **kwargs):
+    outputs.preds = outputs.logits.argmax(dim=-1)
+    return outputs

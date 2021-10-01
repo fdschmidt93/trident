@@ -1,0 +1,3 @@
+forward:
+  _target_: src.utils.hydra.partial
+  _partial_: src.utils.hydra.forward

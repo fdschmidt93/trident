@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Callable, Optional
 
 import hydra
@@ -6,15 +7,11 @@ from omegaconf.dictconfig import DictConfig
 from pytorch_lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
 
-from src.utils import utils
 
-log = utils.get_logger(__name__)
-
-
-class BaseDataModule(LightningDataModule):
+class BaseDataModule(LightningDataModule, ABC):
     def __init__(
         self,
-        collator: DictConfig,
+        collate_fn: DictConfig,
         batch_size: int = 8,
         num_workers: int = 8,
         pin_memory: bool = True,
@@ -27,40 +24,45 @@ class BaseDataModule(LightningDataModule):
         self.pin_memory = pin_memory
         self.seed = seed
 
+        self.dataset: Optional[Dataset] = None
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
-        self.collator: Callable = hydra.utils.instantiate(collator)
+        self.collate_fn: Callable = hydra.utils.instantiate(collate_fn)
 
     def __len__(self):
         return len(self.data_train) if self.data_train is not None else 0
 
-    def train_dataloader(self):
+    @abstractmethod
+    def setup(self):
+        raise NotImplementedError(f"Please implement setup for {type(self)}")
+
+    def train_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_train,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            collate_fn=self.collator,
+            collate_fn=self.collate_fn,
             shuffle=True,
         )
 
-    def val_dataloader(self):
+    def val_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_test,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            collate_fn=self.collator,
+            collate_fn=self.collate_fn,
             shuffle=False,
         )
 
-    def test_dataloader(self):
+    def test_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_test,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            collate_fn=self.collator,
+            collate_fn=self.collate_fn,
             shuffle=False,
         )

@@ -4,6 +4,8 @@ import torch
 from transformers.models.auto.tokenization_auto import AutoTokenizer
 from transformers.tokenization_utils_base import BatchEncoding, PreTrainedTokenizerBase
 
+from src.utils import flatten_dict
+
 
 class SentenceCollator:
     def __init__(
@@ -15,13 +17,11 @@ class SentenceCollator:
         )
         self.kwargs: dict = kwargs
 
-    def __call__(self, inputs: dict) -> BatchEncoding:
-        merged_inputs = defaultdict(list)
-        for input_ in inputs:
-            for k, v in input_.items():
-                merged_inputs[k].append(v)
+    def __call__(self, inputs: list[dict]) -> BatchEncoding:
+        merged_inputs = flatten_dict(inputs)
         batch: BatchEncoding = self.tokenizer(text=merged_inputs["text"], **self.kwargs)
-        batch["label"] = torch.tensor(merged_inputs["label"], dtype=torch.long)
+        if "labels" in merged_inputs:
+            batch["labels"] = torch.tensor(merged_inputs["labels"], dtype=torch.long)
         return batch
 
 
@@ -45,7 +45,8 @@ class SentencePairCollator:
             text_pair=merged_inputs["text_pair"],
             **self.kwargs,
         )
-        batch["labels"] = torch.tensor(merged_inputs["label"], dtype=torch.long)
+        if "labels" in merged_inputs:
+            batch["labels"] = torch.tensor(merged_inputs["labels"], dtype=torch.long)
         return batch
 
 

@@ -3,13 +3,19 @@ from typing import Optional
 import hydra
 from omegaconf.dictconfig import DictConfig
 from pytorch_lightning import LightningModule
+from pytorch_lightning.utilities.parsing import AttributeDict
 
 from src.utils import utils
 
 log = utils.get_logger(__name__)
 
 
-class OptimizerMixin(LightningModule):
+class OptimizerMixin:
+    hparams: AttributeDict
+
+    def __init__(self) -> None:
+        super().__init__()
+
     @property
     def num_training_steps(self):
         accumulate_grad_batches = getattr(self.trainer, "accumulate_grad_batches", 1)
@@ -29,14 +35,11 @@ class OptimizerMixin(LightningModule):
             self.hparams.scheduler.num_warmup_steps, float
         ):
             self.hparams.scheduler.num_warmup_steps *= self.num_training_steps
-        self.hparams.scheduler.num_total_steps = self.num_total_steps
+        self.hparams.scheduler.num_training_steps = self.num_training_steps
         log.info(
-            f"Warm up for {self.hparams.scheduler.num_warmup_steps} of {self.num_total_steps}"
+            f"Warm up for {self.hparams.scheduler.num_warmup_steps} of {self.num_training_steps}"
         )
-        self.scheduler.num_training_steps = self.num_training_steps
-        scheduler = hydra.utils.instantiate(
-            self.hparams.optimizer.scheduler, optimizer,
-        )
+        scheduler = hydra.utils.instantiate(self.hparams.scheduler, optimizer,)
         scheduler = {"scheduler": scheduler, "interval": "step", "frequency": 1}
         return scheduler
 

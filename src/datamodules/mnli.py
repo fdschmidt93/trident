@@ -24,8 +24,8 @@ class MNLIDataModule(BaseDataModule):
         dataset = load_dataset_builder("glue", "mnli")
         dataset.download_and_prepare()
 
-    # @staticmethod
-    def preprocess(self, example):
+    @staticmethod
+    def preprocess(example):
         """
         Preprocess HF dataset to generically match HF tokenizers and other required preprocessing functions.
 
@@ -40,16 +40,13 @@ class MNLIDataModule(BaseDataModule):
         return example
 
     def setup(self, stage: Optional[str] = None):
-        if stage == "fit":
+        if stage in (None, "fit"):
             dataset = load_dataset("glue", "mnli")
-            # TODO possibly switch to pandas as it's faster and produces no wall of output 
-            # preprocess dataset multithreaded
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
+            dataset = dataset.rename_column("label", "labels")
             self.data_train = dataset["train"]
             self.data_val = concatenate_datasets(
                 [dataset["validation_mismatched"], dataset["validation_matched"]]
             )
+        # if stage in (None, "test"):
             self.data_test = self.data_val
-            # self.data_test = concatenate_datasets(
-            #     [dataset["test_mismatched"], dataset["test_matched"]]
-            # )
