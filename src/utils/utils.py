@@ -71,7 +71,7 @@ def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
         "trainer",
-        "model",
+        "module",
         "datamodule",
         "callbacks",
         "logger",
@@ -114,7 +114,7 @@ def empty(*args, **kwargs):
 @rank_zero_only
 def log_hyperparameters(
     config: DictConfig,
-    model: pl.LightningModule,
+    module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],
@@ -123,41 +123,41 @@ def log_hyperparameters(
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
     Additionaly saves:
-        - number of trainable model parameters
+        - number of trainable module parameters
     """
 
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
     hparams["trainer"] = config["trainer"]
-    hparams["model"] = config["model"]
+    hparams["module"] = config["module"]
     hparams["datamodule"] = config["datamodule"]
     if "seed" in config:
         hparams["seed"] = config["seed"]
     if "callbacks" in config:
         hparams["callbacks"] = config["callbacks"]
 
-    # save number of model parameters
-    hparams["model/params_total"] = sum(p.numel() for p in model.parameters())
-    hparams["model/params_trainable"] = sum(
-        p.numel() for p in model.parameters() if p.requires_grad
+    # save number of module parameters
+    hparams["module/params_total"] = sum(p.numel() for p in module.parameters())
+    hparams["module/params_trainable"] = sum(
+        p.numel() for p in module.parameters() if p.requires_grad
     )
-    hparams["model/params_not_trainable"] = sum(
-        p.numel() for p in model.parameters() if not p.requires_grad
+    hparams["module/params_not_trainable"] = sum(
+        p.numel() for p in module.parameters() if not p.requires_grad
     )
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
 
     # disable logging any more hyperparameters for all loggers
-    # this is just a trick to prevent trainer from logging hparams of model,
+    # this is just a trick to prevent trainer from logging hparams of module,
     # since we already did that above
     trainer.logger.log_hyperparams = empty
 
 
 def finish(
     config: DictConfig,
-    model: pl.LightningModule,
+    module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],

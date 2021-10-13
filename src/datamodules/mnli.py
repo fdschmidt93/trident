@@ -48,5 +48,5 @@ class MNLIDataModule(BaseDataModule):
             self.data_val = concatenate_datasets(
                 [dataset["validation_mismatched"], dataset["validation_matched"]]
             )
-        # if stage in (None, "test"):
+            # if stage in (None, "test"):
             self.data_test = self.data_val

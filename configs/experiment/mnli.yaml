@@ -1,0 +1,17 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=mnli
+
+defaults:
+  - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
+  - override /module: sequence_classification.yaml
+  - override /datamodule: mnli.yaml
+  - override /callbacks: default.yaml
+
+seed: 42
+
+module:
+  model:
+    num_labels: 3
+    pretrained_model_name_or_path: ???

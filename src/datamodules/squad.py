@@ -1,21 +1,74 @@
+from functools import partial
 from multiprocessing import cpu_count
 from typing import Optional
 
 from datasets.load import load_dataset, load_dataset_builder
+from transformers.models.auto.tokenization_auto import AutoTokenizer
 
 from src.datamodules.base import BaseDataModule
+from src.utils import flatten_dict
+from src.utils.qa import prepare_train_features
 
 # collator = OmegaConf.load("./configs/collator/sentence_pair.yaml")
 # collator['model_name_or_path'] = 'xlm-roberta-base'
 
+# TypeError: squad_convert_examples_to_features() missing 5 required positional arguments: 'tokenizer', 'max_seq_length', 'doc_stride', 'max_query_length', and 'is_training'
+
+# tokenizer = AutoTokenizer.from_pretrained("prajjwal1/bert-tiny")
+
+# tokenizer = AutoTokenizer.from_pretrained("roberta-base")
+# fn = partial(prepare_train_features, tokenizer=tokenizer)
+
+# def batch(iterable, n=1000):
+#     l = len(iterable)
+#     for ndx in range(0, l, n):
+#         yield iterable[ndx:min(ndx + n, l)]
+
+# for i, b in enumerate(batch(dataset['train'])):
+#     x = fn(b)
+#     if len(x['attention_mask']) != 1000:
+#         break
+
+# tokenized_examples = tokenizer(
+#     b['question'],
+#     b['context'],
+#     truncation="only_second",
+#     max_length=512,
+#     stride=128,
+#     return_overflowing_tokens=False,
+#     return_offsets_mapping=True,
+#     padding="max_length",
+# )
+
+# kwargs = {
+#     "examples": examples,
+#     "tokenizer": AutoTokenizer.from_pretrained("prajjwal1/bert-tiny"),
+#     "is_training": True,
+#     "max_seq_length": 128,
+#     "doc_stride": 1,
+#     "max_query_length": 100,
+# }
+
+# examples = [SquadExample(
+#             qas_id = example.get("id"),
+#             title = example.get("title"),
+#             question_text = example.get("question"),
+#             context_text = example.get("context"),
+#             answer_text = example.get("answer_text"),
+#             is_impossible = example.get("is_impossible"),
+#             start_position_character = example.get("start_position_character")
+#     ) for example in b_['train']]
+
+# squad_convert_examples_to_features(**kwargs)
+
+
 class SQuADDataModule(BaseDataModule):
     def __init__(
-        self, lang: str, *args, **kwargs,
+        self, *args, **kwargs,
     ):
         # see BaseDataModule
         super().__init__(*args, **kwargs)
 
-        self.lang: str = lang
 
     def prepare_data(self):
         """
@@ -43,74 +96,12 @@ class SQuADDataModule(BaseDataModule):
         example["label"] = int(example["label"])
         return example
 
-    def process(self, example):
-    """
-    A single training/test example for the Squad dataset, as loaded from disk.
-
-    Args:
-        qas_id: The example's unique identifier
-        question_text: The question string
-        context_text: The context string
-        answer_text: The answer string
-        start_position_character: The character position of the start of the answer
-        title: The title of the example
-        answers: None by default, this is used during evaluation. Holds answers as well as their start positions.
-        is_impossible: False by default, set to True if the example has no possible answer.
-    """
-
-    def __init__(
-        self,
-        qas_id,
-        question_text,
-        context_text,
-        answer_text,
-        start_position_character,
-        title,
-        answers=[],
-        is_impossible=False,
-    ):
-        self.qas_id = qas_id
-        self.question_text = question_text
-        self.context_text = context_text
-        self.answer_text = answer_text
-        self.title = title
-        self.is_impossible = is_impossible
-        self.answers = answers
-
-        self.start_position, self.end_position = 0, 0
-
-        doc_tokens = []
-        char_to_word_offset = []
-        prev_is_whitespace = True
-
-        # Split on whitespace so that different tokens may be attributed to their original position.
-        for c in self.context_text:
-            if _is_whitespace(c):
-                prev_is_whitespace = True
-            else:
-                if prev_is_whitespace:
-                    doc_tokens.append(c)
-                else:
-                    doc_tokens[-1] += c
-                prev_is_whitespace = False
-            char_to_word_offset.append(len(doc_tokens) - 1)
-
-        self.doc_tokens = doc_tokens
-        self.char_to_word_offset = char_to_word_offset
-
-        # Start and end positions only has a value during evaluation.
-        if start_position_character is not None and not is_impossible:
-            self.start_position = char_to_word_offset[start_position_character]
-            self.end_position = char_to_word_offset[
-                min(start_position_character + len(answer_text) - 1, len(char_to_word_offset) - 1)
-            ]
-
+    # @staticmethod
+    # def process(self, example):
+    #     return prepare_train_features(example, self.tokenizer, self.column_names)
 
     def setup(self, stage: Optional[str] = None):
         if stage == "fit":
             dataset = load_dataset("squad")
-            # TODO possibly switch to pandas as it's faster and produces no wall of output 
-            # preprocess dataset multithreaded
-            dataset = dataset.map(self.preprocess, num_proc=cpu_count())
             self.data_train = dataset["train"]
             self.data_val = dataset["validation"]

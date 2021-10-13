@@ -1,4 +1,0 @@
-_target_: src.models.huggingface.HFModel
-
-defaults:
-  - optimizer: adamw

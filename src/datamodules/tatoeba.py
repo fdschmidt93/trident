@@ -1,4 +1,3 @@
-from multiprocessing import cpu_count
 from typing import Optional
 
 from datasets.arrow_dataset import concatenate_datasets
@@ -37,11 +36,20 @@ class TatoebaDataModule(BaseDataModule):
         dataset = dataset["validation"].add_column(
             "label", range(len(dataset["validation"]))
         )
-        src = dataset.remove_columns(["target_sentence", "target_lang"]).map(
-            lambda x: {"lang": self.lang, "text": x["source_sentence"].strip(),}
-        ).remove_columns(["source_sentence", "source_lang"])
-        trg = dataset.remove_columns(["source_sentence", "source_lang"]).map(
-            lambda x: {"lang": x["target_lang"], "text": x["target_sentence"].strip(),}
-        ).remove_columns(["target_sentence", "target_lang"])
+        src = (
+            dataset.remove_columns(["target_sentence", "target_lang"])
+            .map(lambda x: {"lang": self.lang, "text": x["source_sentence"].strip(),})
+            .remove_columns(["source_sentence", "source_lang"])
+        )
+        trg = (
+            dataset.remove_columns(["source_sentence", "source_lang"])
+            .map(
+                lambda x: {
+                    "lang": x["target_lang"],
+                    "text": x["target_sentence"].strip(),
+                }
+            )
+            .remove_columns(["target_sentence", "target_lang"])
+        )
         if stage in (None, "test"):
             self.data_test = concatenate_datasets([src, trg])

@@ -1,0 +1,13 @@
+_target_: src.datamodules.squad.SQuADDataModule
+_recursive_: false
+
+defaults:
+  - /collate_fn: qa
+  - /collate_fn@val_collate_fn: qa
+
+batch_size: 8
+num_workers: 0
+pin_memory: true
+seed: ${seed}
+val_collate_fn:
+  mode: "val"

@@ -12,7 +12,16 @@ def flatten_dict(inputs: list[dict]) -> dict:
             ret[k].append(v)
     for k, v in ret.items():
         if isinstance(v[0], torch.Tensor):
-            ret[k] = torch.cat(v, dim=0)
+            dim = v[0].dim()
+            # stack matrices along first axis
+            if dim >= 2:
+                ret[k] = torch.vstack(v)
+            # concatenate vectors
+            elif dim == 1:
+                ret[k] = torch.cat(v, dim=0)
+            # create vectors from list of single tensors
+            else:
+                ret[k] = torch.stack(v)
         elif isinstance(v[0], np.ndarray):
             ret[k] = np.vstack(v)
         else:

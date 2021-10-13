@@ -9,6 +9,7 @@ class MetaDataModule(LightningDataModule):
     def __init__(
         self, train_dm: DictConfig, val_dm: DictConfig, test_dm: DictConfig,
     ):
+        super().__init__()
         self.train_dm: LightningDataModule = hydra.utils.instantiate(train_dm)
         self.val_dm: LightningDataModule = hydra.utils.instantiate(val_dm)
         self.test_dm: LightningDataModule = hydra.utils.instantiate(test_dm)

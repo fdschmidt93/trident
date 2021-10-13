@@ -3,7 +3,9 @@
 # specify here default training configuration
 defaults:
   - trainer: default.yaml
-  - model: mnist_model.yaml
+  - module: base.yaml
+  - optimizer: adamw.yaml
+  - scheduler: linear_warm_up.yaml
   - datamodule: mnist_datamodule.yaml
   - callbacks: default.yaml # set this to null if you don't want to use callbacks
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)

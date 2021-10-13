@@ -5,18 +5,15 @@ from datasets.load import load_dataset, load_dataset_builder
 
 from src.datamodules.base import BaseDataModule
 
-# collator = OmegaConf.load("./configs/collator/sentence_pair.yaml")
-# collator['model_name_or_path'] = 'xlm-roberta-base'
 
-
-class PAWSXDataModule(BaseDataModule):
+class PAWSDataModule(BaseDataModule):
     def __init__(
-        self, lang: str, *args, **kwargs,
+        self, subset: str = "labeled_final", *args, **kwargs,
     ):
         # see BaseDataModule
         super().__init__(*args, **kwargs)
 
-        self.lang: str = lang
+        self.subset: str = subset
 
     def prepare_data(self):
         """
@@ -24,7 +21,7 @@ class PAWSXDataModule(BaseDataModule):
         See: https://huggingface.co/datasets/glue
         """
         # download with Huggingface datasets
-        dataset = load_dataset_builder("xtreme", f"PAWS-X.{self.lang}")
+        dataset = load_dataset_builder("paws")
         dataset.download_and_prepare()
 
     @staticmethod
@@ -45,12 +42,12 @@ class PAWSXDataModule(BaseDataModule):
         return example
 
     def setup(self, stage: Optional[str] = None):
-        if stage in (None, "fit"):
-            dataset = load_dataset("xtreme", f"PAWS-X.{self.lang}")
-            dataset = dataset.map(self.preprocess, num_proc=cpu_count())
+        if stage == "fit":
+            dataset = load_dataset("paws", self.subset).map(
+                self.preprocess, num_proc=cpu_count()
+            )
             self.data_train = dataset["train"]
             self.data_val = dataset["validation"]
-        if stage in (None, "test"):
-            dataset = load_dataset("xtreme", f"PAWS-X.{self.lang}", split="test")
-            dataset = dataset.map(self.preprocess, num_proc=cpu_count())
+        if stage == "test":
+            dataset = load_dataset("paws", self.subset, split="test").map(preprocess)
             self.data_test = dataset

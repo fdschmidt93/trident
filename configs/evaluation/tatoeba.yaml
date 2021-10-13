@@ -29,17 +29,3 @@ metrics:
     on_epoch: true
     compute: 
       preds: "outputs:preds"
-
-
-# Model
-# mixin on the fly
-# paar sachen out-of-the-box
-# datamodule
-# define your own module
-#
-_target_: src.datamodule.base.BaseDataModule
-
-setup:
-  _target_: src.utils.hydra.partial
-  _partial_: src.user.my_functions.dm_setup
-  

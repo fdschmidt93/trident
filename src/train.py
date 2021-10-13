@@ -1,3 +1,4 @@
+import sys
 from typing import List, Optional
 
 import hydra
@@ -27,6 +28,13 @@ def train(config: DictConfig) -> Optional[float]:
         Optional[float]: Metric score for hyperparameter optimization.
     """
 
+    if "imports" in config:
+        if isinstance(config.imports, str):
+            config.imports = [config.imports]
+        for path in config.imports:
+            sys.path.insert(0, path)
+            log.info(f"{path} added to PYTHONPATH")
+
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in config:
         seed_everything(config.seed, workers=True)
@@ -36,8 +44,8 @@ def train(config: DictConfig) -> Optional[float]:
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
 
     # Init lightning model
-    log.info(f"Instantiating model <{config.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(config.model)
+    log.info(f"Instantiating model <{config.module._target_}>")
+    module: LightningModule = hydra.utils.instantiate(config.module)
 
     # Init lightning callbacks
     callbacks: List[Callback] = []
@@ -65,7 +73,7 @@ def train(config: DictConfig) -> Optional[float]:
     log.info("Logging hyperparameters!")
     utils.log_hyperparameters(
         config=config,
-        model=model,
+        module=module,
         datamodule=datamodule,
         trainer=trainer,
         callbacks=callbacks,
@@ -75,7 +83,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Train the model
     if config.get("train", True):
         log.info("Starting training!")
-        trainer.fit(model=model, datamodule=datamodule)
+        trainer.fit(model=module, datamodule=datamodule)
 
     # Evaluate model on test set, using the best model achieved during training
     if config.get("test_after_training") and not config.trainer.get("fast_dev_run"):
@@ -83,13 +91,13 @@ def train(config: DictConfig) -> Optional[float]:
         if config.get("train", True):
             trainer.test()
         else:
-            trainer.test(model, datamodule=datamodule)
+            trainer.test(module, datamodule=datamodule)
 
     # Make sure everything closed properly
     log.info("Finalizing!")
     utils.finish(
         config=config,
-        model=model,
+        module=module,
         datamodule=datamodule,
         trainer=trainer,
         callbacks=callbacks,

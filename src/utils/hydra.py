@@ -2,10 +2,9 @@ import functools
 from dataclasses import dataclass
 from typing import Any, Callable, List
 
-import torch
 from hydra.utils import get_method
 
-from src.models.modules.pooling import cls
+from src.modules.functional.pooling import cls
 
 
 @dataclass
