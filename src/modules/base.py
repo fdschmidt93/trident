@@ -23,34 +23,23 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             * Takes the batch unpacked
             * Returns a container with "loss" and other required attrs
 
-            **See also:**
-                
-            | :py:meth:`src.modules.base.TridentModule.forward`
-            | :py:meth:`src.modules.base.TridentModule.training_step`
-
-            | **Example:** `model` of :repo:`sequence classification <configs/module/sequence_classification.yaml>`:
+            .. seealso:: :py:meth:`src.modules.base.TridentModule.forward`, :py:meth:`src.modules.base.TridentModule.training_step`, :repo:`tiny bert example <configs/module/tiny_bert.yaml>`
 
         optimizer (:obj:`omegaconf.dictconfig.DictConfig`):
             Configuration for the optimizer of your :py:class:`src.modules.base.TridentModule`.
 
-            Args:
-                parameters: your model's parameters
-
-            | **Example:** :repo:`AdamW <configs/optimizer/adamw.yaml>`
-            | **Implementation:** :repo:`OptimizerMixin <src/modules/mixin/optimizer.py>`
+            .. seealso:: :py:class:`src.modules.mixin.optimizer.OptimizerMixin`, :repo:`AdamW config <configs/optimizer/adamw.yaml>`
 
         scheduler (:obj:`omegaconf.dictconfig.DictConfig`):
             Configuration for the scheduler of the optimizer of your :py:class:`src.modules.base.TridentModule`.
 
-            | **Example:** :repo:`Linear Warm-Up <configs/scheduler/linear_warm_up.yaml>`:
-            | **Implementation:** :repo:`OptimizerMixin <src/modules/mixin/optimizer.py>`
+            .. seealso:: :py:class:`src.modules.mixin.optimizer.OptimizerMixin`, :repo:`Linear Warm-Up config <configs/scheduler/linear_warm_up.yaml>` 
 
         evaluation (:obj:`omegaconf.dictconfig.DictConfig`):
             
             Please refer to :ref:`evaluation`
 
-            | **Example:** :repo:`(Sequence) Classification <configs/evaluation/sequence_classification.yaml>`
-            | **Implementation:** :repo:`EvalMixin <src/modules/mixin/evaluation.py>`
+            .. seealso:: :py:class:`src.modules.mixin.evaluation.EvalMixin`, :repo:`Classification Evaluation config <configs/evaluation/sequence_classification.yaml>` 
 
         overrides (:obj:`omegaconf.dictconfig.DictConfig`):
             Allows you to override existing functions of the :py:class:`src.modules.base.TridentModule`.
@@ -93,12 +82,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
 
             Should you require any attributes from :py:meth:`src.modules.base.TridentModule.__init__` you can access them via `self.hparams`.
             
-            Examples:
-                * :repo:`Evaluation <src/modules/mixin/evaluation/sequence_classification.yaml>`:
-
-            For further details, please refer to :ref:`evaluation`
-
-
+            .. seealso:: :repo:`Evaluation <src/modules/mixin/evaluation/sequence_classification.yaml>`
     """
 
     hparams: AttributeDict
@@ -174,7 +158,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
 
         **Notes:**
             If you want to extend `training_step`, add a `on_train_batch_end` method via overrides.
-            See: Pytorch-Lightning's `on_train_batch_end <https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#on-train-batch-end>`
+            See: Pytorch-Lightning's `on_train_batch_end <https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#on-train-batch-end>`_
 
         **Implementation:**
 

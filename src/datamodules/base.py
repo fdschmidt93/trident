@@ -20,20 +20,17 @@ class BaseDataModule(LightningDataModule, ABC):
         collate_fn (:obj:`omegaconf.dictconfig.DictConfig`):
             Needs to return a :obj:`Callable` that processes a batch returned by the :obj:`DataLoader`.
 
-            **See also:**
-                
-            | :py:meth:`src.modules.base.TridentModule.forward`
-            | :py:meth:`src.modules.base.TridentModule.training_step`
-
-            | **Example:** `model` of :repo:`sequence classification <configs/module/sequence_classification.yaml>`:
+            .. seealso:: :py:meth:`src.modules.base.TridentModule.forward`, :py:meth:`src.modules.base.TridentModule.training_step`, :repo:`MNLI config <configs/datamodule/mnli.yaml>`
 
         batch_size (:obj:`int`):
             The batch size returned by your :obj:`DataLoader`
-            | See also: `Pytorch DataLoader <https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader>`
+            
+            .. seealso:: `DataLoader documentation <https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader>`_
 
         num_workers (:obj:`int`):
             The number of workers for your :obj:`DataLoader`
-            | See also: `Pytorch DataLoader <https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader>`
+
+            .. seealso:: `DataLoader documentation <https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader>`_
 
         train_collate_fn (:obj:`omegaconf.dictconfig.DictConfig`, `optional`):
             If passed, replaces `collate_fn` for the train dataloader.
@@ -45,7 +42,9 @@ class BaseDataModule(LightningDataModule, ABC):
             If passed, replaces `collate_fn` for the test dataloader.
 
         seed (:obj:`int`, `optional`):
-            Linked against `config.seed` by default for convenience and maybe used for functionality that is not yet set by :obj:`pytorch_lightning.seed_everything`, which sets the seed for `pytorch`, `numpy` and `python.random`.
+            Linked against `config.seed` by default for convenience and maybe used
+            for functionality that is not yet set by :obj:`pytorch_lightning.seed_everything`,
+            which sets the seed for `pytorch`, `numpy` and `python.random`.
 
     """
 
@@ -88,11 +87,9 @@ class BaseDataModule(LightningDataModule, ABC):
 
     @abstractmethod
     def setup(self):
-        """Sets up `data_{train, val, test}` datasets that are fed to the corresponding `DataLoader` instances.
+        """Sets up `self.data_{train, val, test}` datasets that are fed to the corresponding :obj:`DataLoader` instances.
 
         Typically wraps `datasets <https://huggingface.co/docs/datasets/>`_ in `setup` method of dataset.
-
-        | Example: :repo:`MNLI <src/datamodules/mnli.py>`
 
         .. code-block:: python
 
@@ -107,11 +104,14 @@ class BaseDataModule(LightningDataModule, ABC):
                         )
                         # if stage in (None, "test"):
                         self.data_test = self.data_val
+
         Args:
             self: datamodule
 
         Raises:
             NotImplementedError: if method is not implemented in sub-classes
+
+        .. seealso:: :py:meth:`src.datamodules.mnli.MNLIDataModule.setup`
         """
         raise NotImplementedError(f"Please implement setup for {type(self)}")
 

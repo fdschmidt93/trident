@@ -1,31 +1,33 @@
 from multiprocessing import cpu_count
 from typing import Optional
 
+from datasets.arrow_dataset import concatenate_datasets
 from datasets.load import load_dataset, load_dataset_builder
 
 from src.datamodules.base import BaseDataModule
 
 
-class XNLIDataModule(BaseDataModule):
+class PANXDataModule(BaseDataModule):
     def __init__(
-        self, lang: str, *args, **kwargs,
+        self, lang: str,  *args, **kwargs,
     ):
         # see BaseDataModule
         super().__init__(*args, **kwargs)
 
         self.lang: str = lang
 
-    def prepare_data(self):
+    @staticmethod
+    def prepare_data():
         """
         Download MNLI from Huggingface datasets hub.
         See: https://huggingface.co/datasets/glue
         """
         # download with Huggingface datasets
-        dataset = load_dataset_builder("xnli", self.lang)
+        dataset = load_dataset_builder("glue", "mnli")
         dataset.download_and_prepare()
 
-    # @staticmethod
-    def preprocess(self, example):
+    @staticmethod
+    def preprocess(example):
         """
         Preprocess HF dataset to generically match HF tokenizers and other required preprocessing functions.
 
@@ -40,13 +42,15 @@ class XNLIDataModule(BaseDataModule):
         return example
 
     def setup(self, stage: Optional[str] = None):
+        """Sets up the MNLI dataset."""
         if stage in (None, "fit"):
-            dataset = load_dataset("xnli", self.lang).rename_column("label", "labels")
-            # preprocess dataset fast multithreaded
+            dataset = load_dataset("xtreme", f"PAN-X.en")
+
+            .rename_column("label", "labels")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
             self.data_train = dataset["train"]
-            self.data_val = dataset["validation"]
-        if stage in (None, "test"):
-            dataset = load_dataset("xnli", self.lang).rename_column("label", "labels")
-            dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_test = dataset["test"]
+            self.data_val = concatenate_datasets(
+                [dataset["validation_mismatched"], dataset["validation_matched"]]
+            )
+            # if stage in (None, "test"):
+            self.data_test = self.data_val

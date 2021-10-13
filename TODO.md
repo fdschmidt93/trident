@@ -4,7 +4,6 @@
     * Backbone for sequence classification, sentence translation retrieval ("aligned retrieval") and training QA is finished
 
 # Next Steps
-    * More documentation: CI (auto docgen on Github) and more explict documentation
     * Verify adding own datamodule is just as easy
     * Full coverage of XTREME: datamodules and evaluation
         - QA (evaluation), NER, Dependency Parsing, Multiple Choice are outstanding

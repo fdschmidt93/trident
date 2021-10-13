@@ -1,0 +1,28 @@
+# @package _global_
+
+# to execute this experiment run:
+# python run.py experiment=mnli
+
+defaults:
+  - /datamodule/mnli@datamodule.train_dm
+  - /datamodule/xnli@datamodule.val_dm
+  - /datamodule/xnli@datamodule.test_dm
+  - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
+  - override /module: sequence_classification.yaml
+  - override /datamodule: null
+  - override /callbacks: default.yaml
+
+seed: 42
+
+datamodule:
+  _recursive_: false
+  _target_: src.datamodules.meta.MetaDataModule
+  val_dm:
+    lang: "en"
+  test_dm:
+    lang: "de"
+
+module:
+  model:
+    num_labels: 3
+    pretrained_model_name_or_path: "prajjwal1/bert-tiny"

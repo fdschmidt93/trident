@@ -11,5 +11,11 @@ defaults:
 
 seed: 42
 
+imports:
+  - /home/fdschmidt/repos/python/my_project
+
 module:
-  model: ???
+  model: 
+    _target_: project_code.src.my_model.MyModel
+    pretrained_model_name_or_path: "prajjwal1/bert-tiny"
+    num_labels: 3

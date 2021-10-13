@@ -1,3 +1,6 @@
+.. |project| replace:: trident
+.. _project: https://www.github.com/fdschmidt93/trident/
+
 .. _customization:
 
 Customization
@@ -8,16 +11,71 @@ Customization
 Adding your project to path
 ---------------------------
 
-You can add entire projects or single python files to the environment of trident by providing your paths as a yaml file in `/config/imports`, as below:
+You can add entire projects or single python files to the environment of trident by providing your paths as `config.imports` as follows:
+
+You most typically would have the following folder structure in your project `my_project`, where the file `my_model.py` has your :obj:`MyModel` you want to train.
+
+.. code-block::
+
+    my_project/
+    └── project_code
+        ├── __init__.py
+        ├── __pycache__
+        │   └── __init__.cpython-39.pyc
+        └── src
+            ├── __init__.py
+            └──── my_model.py
+
+For all intents and purposes, `MyModel` is yet another light wrapper around `Pytorch-Lightning <https://pytorch-lightning.readthedocs.io/>`_ and `transformers <https://huggingface.co/transformers/>`_ for a sequence classification task like MNLI.
+
+.. code-block:: python
+
+    class MyModel(LightningModule):
+        def __init__( self, pretrained_model_name_or_path: str, num_labels: int):
+
+            super().__init__()
+            self.model = AutoModelForSequenceClassification.from_pretrained(
+                pretrained_model_name_or_path, num_labels=num_labels
+            )
+
+        def forward(self, *args, **kwargs):
+            return self.model(*args, **kwargs)
+
+This allows you to later on natively instantiate your models as if they were part of the project, either via a dedicated separate `imports` config 
 
 :obj:`/configs/imports/my_project.yaml`
 
 .. code-block:: yaml
 
-    # Union[str, list[str]]
-    - /path/to/your/python/module
+    # imports: Union[str, list[str]]
+    - /home/my_user/.../my_project
 
-This allows you to later on natively instantiate your models as if they were part of the project.
+or directly in your `experiment` config.
+
+.. code-block:: bash
+    
+    # you could alternatively write a new `experiment`
+    imports:
+      - /home/my_user/.../my_project
+
+    module:
+      model: 
+        # and then import your model as expected
+        _target_: project_code.src.my_model.MyModel
+        pretrained_model_name_or_path: "prajjwal1/bert-tiny"
+        num_labels: 3
+
+The paths passed to `config.imports` are prepended to your :obj:`sys.path`:
+
+.. code-block:: python
+
+    for path in config.imports:
+        sys.path.insert(0, path)
+
+You can find the full example experiment :repo:`here <configs/experiment/mnli_my_model.yaml>`\.
+
+**Reminder:** you can combine importing your code with any of the below mechanisms to extend |project|\.
+
 
 .. _link-function:
 
@@ -59,21 +117,39 @@ You can override functions of the model and datamodule explicitly as follows.
 3. Add the override to your model or datamodule like, for instance, in `/configs/datamodules/my_datamodule.yaml`:     
 
     .. code-block:: yaml
+
+        _target_: src.datamodules.base.BaseDataModule
+        _recursive_: false
          
         defaults:
+        - /collate_fn: my_collator
+        # option 1: more applicable to extending TridentModules
         - /overrides: my_datamodule
+
+        # option 2: a single fixed-case override can be concisely expressed
+        overrides:
+            setup: # name of function to override
+              _target_: src.utils.hydra.partial # leverage partial
+              _partial_: src.utils.hydra.setup_my_dataset # path to function
+        
+        batch_size: ???
+        num_workers: ???
+        pin_memory: ???
+        seed: ${seed} # linked against global option
 
 The most common use cases to override existing functions are:
 
 a. Provide your own datamodule for :obj:`src.datamodules.base.BaseDataModule`
 b. Override existing or add functions to :obj:`src.modules.base.TridentModule`
 
+Should your dataset fit the project, please consider a PR!
+
 .. _mixins:
 
 Mixins
 ------
 
-In the context of trident, mixins constitute a series of methods that define behaviour of your model oder datamodule. Your mixins must not reinstantiate `:obj:pytorch_lightning.{LightningModule, LightningDataModule}`, but instead follow the below pattern.
+In the context of trident, mixins constitute a series of methods that define behaviour of your model or datamodule. Your mixins must not reinstantiate :obj:`LightningModule` or  `LightningDataModule` (e.g. via obj:`super`), but instead should follow the below pattern.
 
 
 .. code-block:: python
@@ -82,7 +158,7 @@ In the context of trident, mixins constitute a series of methods that define beh
 
         def __init__(self) -> None:
             # self.hparams comprises the instantiated attributes
-            self.my_object = hydra.utils.instantiate(self.hparams.my_new_attribute)
+            self.my_object = hydra.utils.instantiate(self.hparams.my_new_module_attribute)
         
         # override model forward
         def forward(self, batch: BatchEncoding) -> BaseModelOuput:
@@ -100,9 +176,19 @@ You then provide paths to the objects in `/configs/mixins`:
 :obj:`/configs/mixins/my_model_mixin.yaml`
 
 .. code-block:: yaml
+    # list[str]
+    - src.my_modules.mixin.MyModelMixin
 
-   - src.my_modules.mixin.MyModelMixin
+and link  them in your module
+
+:obj:`/configs/module/my_module.yaml`
     
+.. code-block:: yaml
+    
+    defaults:
+    ...
+    - /mixins: my_model_mixin
+    ...
 
 .. _evaluation:
 
