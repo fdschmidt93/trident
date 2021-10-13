@@ -39,12 +39,12 @@ jobs:
           sphinx-build ./source/ ./build/
 
 
-      # inspired by nvim-lspconfigs
+      # inspired by nvim-lspconfigs & telescope.nvim
       - name: Update documentation
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMIT_MSG: |
-            [docgen] Update doc/telescope.txt
+            [docgen] Update docs/build
             skip-checks: true
         run: |
           git config user.email "actions@github"

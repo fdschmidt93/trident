@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.modules.mixin package &mdash; trident  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> trident
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.modules.mixin package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.modules.mixin.evaluation">src.modules.mixin.evaluation module</a></li>
+<li><a class="reference internal" href="#module-src.modules.mixin.optimizer">src.modules.mixin.optimizer module</a></li>
+<li><a class="reference internal" href="#module-src.modules.mixin.overrides">src.modules.mixin.overrides module</a></li>
+<li><a class="reference internal" href="#module-src.modules.mixin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trident</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>src.modules.mixin package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/src.modules.mixin.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src-modules-mixin-package">
+<h1>src.modules.mixin package<a class="headerlink" href="#src-modules-mixin-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-src.modules.mixin.evaluation">
+<span id="src-modules-mixin-evaluation-module"></span><h2>src.modules.mixin.evaluation module<a class="headerlink" href="#module-src.modules.mixin.evaluation" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">src.modules.mixin.evaluation.</span></span><span class="sig-name descname"><span class="pre">EvalMixin</span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin for base model to define evaluation loop largely via hydra.</p>
+<p>The evaluation mixin enables writing evaluation via yaml files, here is an
+example for sequence classification, borrowed from configs/evaluation/classification.yaml.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># apply transformation function</span>
+<span class="nt">apply</span><span class="p">:</span>
+  <span class="nt">batch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span> <span class="c1"># on each step</span>
+  <span class="nt">outputs</span><span class="p">:</span>    <span class="c1"># on each step</span>
+    <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.utils.hydra.partial</span>
+    <span class="nt">_partial_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.evaluation.classification.get_preds</span>
+    <span class="nt">.. code-block</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python</span>
+
+        <span class="l l-Scalar l-Scalar-Plain"># we link evaluation.apply.outputs against get_preds</span>
+        <span class="l l-Scalar l-Scalar-Plain">def get_preds(outputs)</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">outputs.preds = outputs.logits.argmax(dim=-1)</span>
+            <span class="l l-Scalar l-Scalar-Plain">return outputs</span>
+
+  <span class="nt">step_outputs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>  <span class="c1"># on flattened outputs of what&#39;s collected from steps</span>
+
+<span class="c1"># Which keys/attributes are supposed to be collected from `outputs` and `batch`</span>
+<span class="nt">step_outputs</span><span class="p">:</span>
+  <span class="nt">outputs</span><span class="p">:</span> <span class="s">&quot;preds&quot;</span> <span class="c1"># can be a str</span>
+  <span class="nt">batch</span><span class="p">:</span> <span class="c1"># or a list[str]</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">labels</span>
+<span class="c1"># either metrics or val_metrics and test_metrics</span>
+<span class="c1"># where the latter</span>
+<span class="nt">metrics</span><span class="p">:</span>
+  <span class="c1"># name of the metric used eg for logging</span>
+  <span class="nt">accuracy</span><span class="p">:</span>
+    <span class="c1"># instructions to instantiate metric, preferrably torchmetrics.Metric</span>
+    <span class="nt">metric</span><span class="p">:</span>
+      <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">torchmetrics.Accuracy</span>
+    <span class="c1"># either on_step: true or on_epoch: true</span>
+    <span class="nt">on_step</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">compute</span><span class="p">:</span>
+      <span class="nt">preds</span><span class="p">:</span> <span class="s">&quot;outputs:preds&quot;</span>
+      <span class="nt">target</span><span class="p">:</span> <span class="s">&quot;batch:labels&quot;</span>
+  <span class="nt">f1</span><span class="p">:</span>
+    <span class="nt">metric</span><span class="p">:</span>
+      <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">torchmetrics.F1</span>
+    <span class="nt">on_step</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">compute</span><span class="p">:</span>
+      <span class="nt">preds</span><span class="p">:</span> <span class="s">&quot;outputs:preds&quot;</span>
+      <span class="nt">target</span><span class="p">:</span> <span class="s">&quot;batch:labels&quot;</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.collect_step_output">
+<span class="sig-name descname"><span class="pre">collect_step_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">transformers.file_utils.ModelOutput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">transformers.tokenization_utils_base.BatchEncoding</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.collect_step_output" title="Permalink to this definition"></a></dt>
+<dd><p>Collects user-defined attributes of outputs &amp; batch at end of eval_step in dict.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.eval_epoch_end">
+<span class="sig-name descname"><span class="pre">eval_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.eval_epoch_end" title="Permalink to this definition"></a></dt>
+<dd><p>Computes evaluation metric at epoch end for respective <cite>stage</cite>.</p>
+<p>Flattening step outputs attempts to stack numpy arrays and tensors along 0 axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage</strong> – typically either ‘val’ or ‘test’, affects logging</p></li>
+<li><p><strong>step_outputs</strong> – outputs of eval steps &amp; flattened at start of <cite>eval_epoch_end</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>flattened outputs from evaluation steps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.eval_step">
+<span class="sig-name descname"><span class="pre">eval_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">transformers.tokenization_utils_base.BatchEncoding</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.eval_step" title="Permalink to this definition"></a></dt>
+<dd><p>Performs model forward &amp; user batch transformation in an eval step.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.hparams">
+<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="pre">:</span> <span class="pre">pytorch_lightning.utilities.parsing.AttributeDict</span></em><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.hparams" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.log">
+<span class="sig-name descname"><span class="pre">log</span></span><em class="property"><span class="pre">:</span> <span class="pre">Callable</span></em><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.log" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.prepare_metric_input">
+<span class="sig-name descname"><span class="pre">prepare_metric_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">transformers.file_utils.ModelOutput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">transformers.tokenization_utils_base.BatchEncoding</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">omegaconf.dictconfig.DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.prepare_metric_input" title="Permalink to this definition"></a></dt>
+<dd><p>Collects user-defined attributes of outputs &amp; batch to compute metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outputs</strong> – </p></li>
+<li><p><strong>batch</strong> – [TODO:description]</p></li>
+<li><p><strong>cfg</strong> – [TODO:description]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[TODO:description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – [TODO:description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.test_epoch_end">
+<span class="sig-name descname"><span class="pre">test_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_step_outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.test_epoch_end" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.test_step">
+<span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.test_step" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.validation_epoch_end">
+<span class="sig-name descname"><span class="pre">validation_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation_step_outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.validation_epoch_end" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.evaluation.EvalMixin.validation_step">
+<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.modules.mixin.evaluation.EvalMixin.validation_step" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.modules.mixin.optimizer">
+<span id="src-modules-mixin-optimizer-module"></span><h2>src.modules.mixin.optimizer module<a class="headerlink" href="#module-src.modules.mixin.optimizer" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modules.mixin.optimizer.OptimizerMixin">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">src.modules.mixin.optimizer.</span></span><span class="sig-name descname"><span class="pre">OptimizerMixin</span></span><a class="headerlink" href="#src.modules.mixin.optimizer.OptimizerMixin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mixin for base model to define configuration of optimizer and scheduler.</p>
+<dl class="simple">
+<dt>The OptimizerMixin provides functionality to:</dt><dd><ul class="simple">
+<li><p>compute the number of training steps (<a class="reference internal" href="#src.modules.mixin.optimizer.OptimizerMixin.num_training_steps" title="src.modules.mixin.optimizer.OptimizerMixin.num_training_steps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptimizerMixin.num_training_steps</span></code></a>)</p></li>
+<li><p>configure the optimizer(s) (<a class="reference internal" href="#src.modules.mixin.optimizer.OptimizerMixin.configure_optimizers" title="src.modules.mixin.optimizer.OptimizerMixin.configure_optimizers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptimizerMixin.configure_optimizers</span></code></a>)</p></li>
+<li><p>configure the scheduler (<a class="reference internal" href="#src.modules.mixin.optimizer.OptimizerMixin.configure_scheduler" title="src.modules.mixin.optimizer.OptimizerMixin.configure_scheduler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OptimizerMixin.configure_scheduler</span></code></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>Optimizer: /configs/optimizer/adamw.yaml</p></li>
+<li><p>Scheduler: /configs/scheduler/linear_warm_up.yaml</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.optimizer.OptimizerMixin.configure_optimizers">
+<span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.modules.mixin.optimizer.OptimizerMixin.configure_optimizers" title="Permalink to this definition"></a></dt>
+<dd><p>Prepares optimizer and scheduler.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.mixin.optimizer.OptimizerMixin.configure_scheduler">
+<span class="sig-name descname"><span class="pre">configure_scheduler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.optim.Optimizer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">typing.Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">torch.optim.lr_scheduler.LambdaLR</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.modules.mixin.optimizer.OptimizerMixin.configure_scheduler" title="Permalink to this definition"></a></dt>
+<dd><p>Configures the LR scheduler for the optimizer.</p>
+<p>The instantiation of the scheduler takes the optimizer as the first positional argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scheduler</span><span class="p">:</span> <span class="n">LambdaLR</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hparams</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Note that the below values are hard-coded for the time being:</dt><dd><ul class="simple">
+<li><p>interval: step</p></li>
+<li><p>frequency: 1</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>optimizer</strong> – pytorch optimizer</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scheduler in pytorch-lightning format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict[str, Union[str, int, LambdaLR]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.modules.mixin.optimizer.OptimizerMixin.hparams">
+<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="pre">:</span> <span class="pre">pytorch_lightning.utilities.parsing.AttributeDict</span></em><a class="headerlink" href="#src.modules.mixin.optimizer.OptimizerMixin.hparams" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="src.modules.mixin.optimizer.OptimizerMixin.num_training_steps">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">num_training_steps</span></span><a class="headerlink" href="#src.modules.mixin.optimizer.OptimizerMixin.num_training_steps" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the number of training steps per device, accounting for gradient accumulation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.modules.mixin.overrides">
+<span id="src-modules-mixin-overrides-module"></span><h2>src.modules.mixin.overrides module<a class="headerlink" href="#module-src.modules.mixin.overrides" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-src.modules.mixin">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.modules.mixin" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Fabian David Schmidt.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
