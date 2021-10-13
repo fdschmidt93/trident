@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using trident &mdash; trident  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> trident
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Using trident</a><ul>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#paradigms">Paradigms</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#project-structure">Project Structure</a></li>
+<li><a class="reference internal" href="#trident-module">(Trident)Module</a></li>
+<li><a class="reference internal" href="#datamodule">DataModule</a></li>
+<li><a class="reference internal" href="#extensibility">Extensibility</a></li>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+<li><a class="reference internal" href="#author">Author</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trident</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Using trident</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <span class="target" id="readme"></span><section id="using-project">
+<h1>Using trident<a class="headerlink" href="#using-project" title="Permalink to this headline"></a></h1>
+<p>trident is generic framework to train and evaluate models and represents a thin layer of convenience on top of</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://https://pytorch.org/">Pytorch</a></p></li>
+<li><p><a class="reference external" href="https://pytorch-lightning.readthedocs.io/">Pytorch-Lightning</a></p></li>
+<li><p><a class="reference external" href="https://hydra.cc">Hydra</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/docs/datasets/">datasets</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/transformers/">transformers</a></p></li>
+<li><p><a class="reference external" href="https://torchmetrics.readthedocs.io/">torchmetrics</a></p></li>
+</ul>
+<p>It is quintessential that you familiarize yourself with Hydra as it constitutes the backbone for composing experiments in trident.</p>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h2>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h3>
+<p>All necessary packages for a base installation of trident can be installed with the <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">conda package manager</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f environment.yml
+conda activate trident
+</pre></div>
+</div>
+</section>
+<section id="paradigms">
+<h3>Paradigms<a class="headerlink" href="#paradigms" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><strong>Simplicity:</strong> follow existing patterns of our stack for easy understanding and extending</p></li>
+<li><p><strong>Low code:</strong> trident is a wrapper first – prefer implementations from well-maintained frameworks</p></li>
+<li><p><strong>Out-of-the-box:</strong> provide readily available pipelines for popular benchmark datasets</p></li>
+</ul>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h3>
+<p>Typical usage of trident follows the below schema:</p>
+<ol class="arabic simple">
+<li><p>Clone the repo</p></li>
+<li><p>Write a configuration for your model (see also <a class="reference internal" href="customization.html#customization"><span class="std std-ref">Customization</span></a>)</p></li>
+<li><p>Train on an existing experiment with <cite>python run.py experiment=mnli module=my_model</cite></p></li>
+</ol>
+<p>You can find existing pipelines at <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiments/">experiments configs</a>. A full experiment (incl. <cite>module</cite>) is defined in the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/mnli_tinybert.yaml">MNLI-TinyBert config</a>.</p>
+</section>
+<section id="project-structure">
+<h3>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this headline"></a></h3>
+<p><strong>Important Concepts</strong>:</p>
+<ul class="simple">
+<li><p><cite>module</cite> encapsulates a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/sequence_classification.yaml">sequence classification</a>)</p></li>
+<li><p><cite>datamodule</cite> represents a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningDataModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/datamodule/mnli.yaml">MNLI</a>)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── configs                 &lt;- Hydra configuration files
+│   ├── callbacks               &lt;- Callbacks for model training
+│   ├── datamodule              &lt;- Datamodule configs
+│   ├── experiment              &lt;- Experiment configs encapsulate **at least** everything except model (but may include models)
+│   ├── hparams_search          &lt;- Hyperparameter search configs
+│   ├── hydra                   &lt;- Hydra related configs
+│   ├── logger                  &lt;- Logger configs
+│   ├── module                  &lt;- Module configs: model (mixins &amp; overrides), optimizer, scheduler
+│   ├── trainer                 &lt;- Trainer configs
+│   │
+│   └── config.yaml             &lt;- Main project configuration file
+│
+├── logs                    &lt;- Logs generated by Hydra and PyTorch Lightning loggers
+│
+├── tests                   &lt;- Tests of any kind
+│   ├── helpers                 &lt;- A couple of testing utilities
+│   ├── shell                   &lt;- Shell/command based tests
+│   └── unit                    &lt;- Unit tests
+│
+├── src
+│   ├── callbacks
+│   ├── datamodules
+│   ├── modules
+│   │  ├──── base               &lt;- Definition of TridentModule
+│   │  ├──── mixins             &lt;- Extend base module with methods
+│   │  ├──── functional         &lt;- Extend base module functionally
+│   ├── utils
+│   │
+│   └── train.py                &lt;- Training pipeline
+</pre></div>
+</div>
+</section>
+<section id="trident-module">
+<h3>(Trident)Module<a class="headerlink" href="#trident-module" title="Permalink to this headline"></a></h3>
+<p>Most importantly, trident allows you to:</p>
+<ul class="simple">
+<li><p>Use your own LightningModules</p></li>
+<li><p>Embed your own model into the TridentModule</p></li>
+<li><p>Easily leverage existing frameworks like <a class="reference external" href="https://huggingface.co/transformers/">transformers</a> (see below)</p></li>
+</ul>
+<p>A <cite>TridentModule</cite> is analogous to what a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningDataModule</span></code> comprises (model, optimizer, scheduler, …) and commonly defined with <strong>shared and individual flags</strong>. Here’s an example for sequence classification.</p>
+<p>First, the included model configurations inherit <strong>shared options</strong> from the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/base.yaml">base module config</a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_recursive_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.modules.base.TridentModule</span>
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">/optimizer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${optimizer}</span>  <span class="c1"># global default (adamw: /configs/optimizer/adamw.yaml</span>
+<span class="p p-Indicator">-</span> <span class="nt">/scheduler</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${scheduler}</span>  <span class="c1"># global default (linear warmup: /configs/scheduler/linear_warm_up.yaml)</span>
+</pre></div>
+</div>
+<p><cite>/configs/module/sequence_classification.yaml</cite></p>
+<p>For instance, you can then</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># change the learning rate</span>
+python run.py <span class="nv">experiment</span><span class="o">=</span>mnli optimizer.lr<span class="o">=</span><span class="m">0</span>.0001
+<span class="c1"># set a different optimizer</span>
+python run.py <span class="nv">experiment</span><span class="o">=</span>mnli <span class="nv">optimizer</span><span class="o">=</span>adam  <span class="c1"># see /configs/optimizer/</span>
+<span class="c1"># no lr scheduler</span>
+python run.py <span class="nv">experiment</span><span class="o">=</span>mnli <span class="nv">scheduler</span><span class="o">=</span>null
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">base</span> <span class="c1"># inherit config from /configs/module/base.yaml</span>
+<span class="p p-Indicator">-</span> <span class="nt">/evaluation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">classification</span> <span class="c1">#</span>
+<span class="c1"># optionally</span>
+<span class="p p-Indicator">-</span> <span class="nt">/overrides</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="p p-Indicator">-</span> <span class="nt">/mixins</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+
+<span class="c1"># you can set instructions here on how to embed your own model</span>
+<span class="nt">model</span><span class="p">:</span>
+  <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">transformers.AutoModelForSequenceClassification.from_pretrained</span>
+  <span class="nt">num_labels</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">???</span>
+  <span class="nt">pretrained_model_name_or_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">???</span>
+</pre></div>
+</div>
+<p>Should you embed your own model, a TridentModule requires the model to <cite>forward</cite> be analogous to Huggingface transformers models, see the <a class="reference internal" href="src.modules.html#src.modules.base.TridentModule.training_step" title="src.modules.base.TridentModule.training_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.training_step()</span></code></a>. Your model output should contain all required attributes for evaluation.</p>
+<p>The <cite>TridentModule</cite> by default incorporates mixins for optimizer configuration and custom evaluation loops for the respective tasks (see <a class="reference internal" href="customization.html#evaluation"><span class="std std-ref">Evaluation</span></a>).</p>
+</section>
+<section id="datamodule">
+<h3>DataModule<a class="headerlink" href="#datamodule" title="Permalink to this headline"></a></h3>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">src.datamodule.base.BaseDataModule</span></code> is initalized as follows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># the python code is referenced explicitly here as opposed to yaml</span>
+<span class="c1"># to highlight optional flags</span>
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="c1"># collate_fn for dataloader</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">pin_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">overrides</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># linked by default against collate_fn</span>
+    <span class="n">train_collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># for train_dataloader</span>
+    <span class="n">val_collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>    <span class="c1"># for val_dataloader</span>
+    <span class="n">test_collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DictConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>   <span class="c1"># for test_dataloader</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+<span class="p">):</span>
+</pre></div>
+</div>
+<p>All datamodules inherit from the base datamodule and are required to at least define a <code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code> method. See the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/datamodule/mnli.yaml">config</a> and corresponding <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/src/datamodules/mnli.py">implementation</a> on how to define your own datamodules easily.</p>
+<p>In addition, overrides allows you to functionally override and extend the datamodule instance. See more at <a class="reference internal" href="customization.html#function-override"><span class="std std-ref">Function Overrides</span></a>.</p>
+<p>At last, you can arbitrarily combine datamodules with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">src.datamodules.meta.MetaDatamodule</span></code> (example experiment: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/pawsx.yaml">config</a>, TODO).</p>
+</section>
+<section id="extensibility">
+<h3>Extensibility<a class="headerlink" href="#extensibility" title="Permalink to this headline"></a></h3>
+<p>trident allows you to integrate your existing projects via:</p>
+<ul class="simple">
+<li><p>Extend Python path: add an existing project to scope of trident easily</p></li>
+<li><dl class="simple">
+<dt>Hook required functionality into training via</dt><dd><ol class="arabic simple">
+<li><p>Linking your own functions</p></li>
+<li><p>Pytorch-Lightning</p></li>
+<li><p>Explicit method overrides</p></li>
+<li><p>Incorporating custom mixins</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+<p>For details on how to incorporate custom models or datamodules into the framework, see <a class="reference internal" href="customization.html#customization"><span class="std std-ref">Customization</span></a>.</p>
+</section>
+<section id="todo">
+<h3>TODO<a class="headerlink" href="#todo" title="Permalink to this headline"></a></h3>
+<p>The below list for now only reflects the most urgent TODOs in immediate scope of the project. Contributions are very welcome!</p>
+<ul class="simple">
+<li><p>Full out-of-the-box for <a class="reference external" href="https://github.com/google-research/xtreme">XTREME benchmark</a></p></li>
+<li><p>Automated docgen via Github actions to readthedocs</p></li>
+<li><p>Basic tests</p></li>
+</ul>
+</section>
+<section id="credits">
+<h3>Credits<a class="headerlink" href="#credits" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>This project is was largely inspired by and is based on <a class="reference external" href="https://github.com/ashleve/lightning-hydra-template">https://github.com/ashleve/lightning-hydra-template</a></p></li>
+<li><p>A related project is: <a class="reference external" href="https://github.com/PyTorchLightning/lightning-transformers">https://github.com/PyTorchLightning/lightning-transformers</a></p></li>
+</ul>
+</section>
+<section id="author">
+<h3>Author<a class="headerlink" href="#author" title="Permalink to this headline"></a></h3>
+<div class="line-block">
+<div class="line">Name: Fabian David Schmidt</div>
+<div class="line">Mail: <a class="reference external" href="mailto:fabian&#37;&#52;&#48;informatik&#46;uni-mannheim&#46;de">fabian<span>&#64;</span>informatik<span>&#46;</span>uni-mannheim<span>&#46;</span>de</a></div>
+<div class="line">Affiliation: University of Mannheim</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Fabian David Schmidt.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

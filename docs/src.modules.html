@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.modules package &mdash; trident  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> trident
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.modules package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.modules.base">src.modules.base module</a></li>
+<li><a class="reference internal" href="#module-src.modules">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">trident</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>src.modules package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/src.modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src-modules-package">
+<h1>src.modules package<a class="headerlink" href="#src-modules-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src.modules.mixin.html">src.modules.mixin package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.modules.mixin.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.modules.mixin.html#module-src.modules.mixin.evaluation">src.modules.mixin.evaluation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.modules.mixin.html#module-src.modules.mixin.optimizer">src.modules.mixin.optimizer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.modules.mixin.html#module-src.modules.mixin.overrides">src.modules.mixin.overrides module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.modules.mixin.html#module-src.modules.mixin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-src.modules.base">
+<span id="src-modules-base-module"></span><h2>src.modules.base module<a class="headerlink" href="#module-src.modules.base" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.modules.base.TridentModule">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">src.modules.base.</span></span><span class="sig-name descname"><span class="pre">TridentModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.modules.base.TridentModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="src.modules.mixin.html#src.modules.mixin.optimizer.OptimizerMixin" title="src.modules.mixin.optimizer.OptimizerMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code></a>, <a class="reference internal" href="src.modules.mixin.html#src.modules.mixin.evaluation.EvalMixin" title="src.modules.mixin.evaluation.EvalMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.evaluation.EvalMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.</span></code></p>
+<p>Base module of Trident that wraps model, optimizer, scheduler, evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
+<ul>
+<li><p>Takes the batch unpacked</p></li>
+<li><p>Returns a container with “loss” and other required attrs</p></li>
+</ul>
+<p><strong>See also:</strong></p>
+<div class="line-block">
+<div class="line"><a class="reference internal" href="#src.modules.base.TridentModule.forward" title="src.modules.base.TridentModule.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.forward()</span></code></a></div>
+<div class="line"><a class="reference internal" href="#src.modules.base.TridentModule.training_step" title="src.modules.base.TridentModule.training_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.training_step()</span></code></a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Example:</strong> <cite>model</cite> of <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/sequence_classification.yaml">sequence classification</a>:</div>
+</div>
+</p></li>
+<li><p><strong>optimizer</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>Configuration for the optimizer of your <a class="reference internal" href="#src.modules.base.TridentModule" title="src.modules.base.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param parameters</dt>
+<dd class="field-odd"><p>your model’s parameters</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><strong>Example:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/optimizer/adamw.yaml">AdamW</a></div>
+<div class="line"><strong>Implementation:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/src/modules/mixin/optimizer.py">OptimizerMixin</a></div>
+</div>
+</p></li>
+<li><p><strong>scheduler</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>Configuration for the scheduler of the optimizer of your <a class="reference internal" href="#src.modules.base.TridentModule" title="src.modules.base.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code></a>.</p>
+<div class="line-block">
+<div class="line"><strong>Example:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/scheduler/linear_warm_up.yaml">Linear Warm-Up</a>:</div>
+<div class="line"><strong>Implementation:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/src/modules/mixin/optimizer.py">OptimizerMixin</a></div>
+</div>
+</p></li>
+<li><p><strong>evaluation</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>Please refer to <a class="reference internal" href="customization.html#evaluation"><span class="std std-ref">Evaluation</span></a></p>
+<div class="line-block">
+<div class="line"><strong>Example:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/evaluation/sequence_classification.yaml">(Sequence) Classification</a></div>
+<div class="line"><strong>Implementation:</strong> <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/src/modules/mixin/evaluation.py">EvalMixin</a></div>
+</div>
+</p></li>
+<li><p><strong>overrides</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>Allows you to override existing functions of the <a class="reference internal" href="#src.modules.base.TridentModule" title="src.modules.base.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code></a>.</p>
+<p>Example:</p>
+<p><cite>src/my_functions/model_overrides.py</cite></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">keep_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelOutput</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><cite>configs/overrides/my_model_overrides.yaml</cite></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">forward</span><span class="p">:</span>
+  <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.utils.hydra.partial</span>
+  <span class="nt">_partial_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.my_functions.model_overrides.keep_batch</span>
+</pre></div>
+</div>
+<p>At last, you’d link to the overrides config as follows:</p>
+<p><cite>configs/module/my_module.yaml</cite></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">/overrides</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_model_overrides</span>
+</pre></div>
+</div>
+<p>For further details, please refer to <a class="reference internal" href="customization.html#evaluation"><span class="std std-ref">Evaluation</span></a></p>
+</p></li>
+<li><p><strong>mixins</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p><strong>Preemptive warning: do not call super().__init__() in your mixin!</strong></p>
+<p>Mixins for the <a class="reference internal" href="#src.modules.base.TridentModule" title="src.modules.base.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code></a> essentially groups of methods.
+You can overrwrite any functionality of the module with your mixins.</p>
+<p>Should you require any attributes from <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.__init__()</span></code> you can access them via <cite>self.hparams</cite>.</p>
+<p class="rubric">Examples</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/src/modules/mixin/evaluation/sequence_classification.yaml">Evaluation</a>:</p></li>
+</ul>
+<p>For further details, please refer to <a class="reference internal" href="customization.html#evaluation"><span class="std std-ref">Evaluation</span></a></p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.base.TridentModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">transformers.tokenization_utils_base.BatchEncoding</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">transformers.file_utils.ModelOutput</span></span></span><a class="headerlink" href="#src.modules.base.TridentModule.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Plain forward pass of your model for which the batch is unpacked.</p>
+<p><strong>Implementation:</strong></p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> – input to your model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>container with attributes required for evaluation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ModelOutput</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="src.modules.base.TridentModule.hparams">
+<span class="sig-name descname"><span class="pre">hparams</span></span><a class="headerlink" href="#src.modules.base.TridentModule.hparams" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.base.TridentModule.set_mixins">
+<span class="sig-name descname"><span class="pre">set_mixins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#src.modules.base.TridentModule.set_mixins" title="Permalink to this definition"></a></dt>
+<dd><p>Apply base class and mixins to a class instance after creation.</p>
+<dl class="simple">
+<dt>Reference:</dt><dd><p>Modified from below StackOverflow post
+Author: Ethan Furman
+URL: <a class="reference external" href="https://stackoverflow.com/a/8545287">https://stackoverflow.com/a/8545287</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mixin</strong> – list of imports, e.g. [src.modules.mixin.eval.EvalMixin]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.modules.base.TridentModule.training_step">
+<span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">transformers.tokenization_utils_base.BatchEncoding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">typing.Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">transformers.file_utils.ModelOutput</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#src.modules.base.TridentModule.training_step" title="Permalink to this definition"></a></dt>
+<dd><p>Comprises training step of your model which takes a forward pass.</p>
+<dl class="simple">
+<dt><strong>Notes:</strong></dt><dd><p>If you want to extend <cite>training_step</cite>, add a <cite>on_train_batch_end</cite> method via overrides.
+See: Pytorch-Lightning’s <cite>on_train_batch_end &lt;https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#on-train-batch-end&gt;</cite></p>
+</dd>
+</dl>
+<p><strong>Implementation:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="n">BatchEncoding</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">ModelOutput</span><span class="p">]:</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;train/loss&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">loss</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> – typically comprising input_ids, attention_mask, and position_ids</p></li>
+<li><p><strong>batch_idx</strong> – variable used internally by pytorch-lightning</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>model output that must have ‘loss’ as attr or key</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[dict[str, Any], ModelOutput]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.modules">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.modules" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Fabian David Schmidt.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
