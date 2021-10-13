@@ -34,7 +34,28 @@ extensions = [
     "sphinx.ext.extlinks",
 ]
 
-extlinks = {"repo": ("https://github.com/fdschmidt93/trident/%s", None)}
+extlinks = {
+    "repo": ("https://github.com/fdschmidt93/trident/tree/main/%s", None),
+}
+
+autodoc_mock_imports = [
+    "torch",
+    "hydra",
+    "numpy",
+    "pytest",
+    "omegaconf",
+    "tmp",
+    "rich",
+    "pytorch_lightning",
+    "transformers",
+    "datasets",
+    "matplotlib",
+    "seaborn",
+    "dotenv",
+    "sh",
+    "wandb",
+]
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

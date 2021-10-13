@@ -1,12 +1,12 @@
 .. _customization:
 
 Customization
-===========
+=============
 
 .. _add-path:
 
 Adding your project to path
-----------
+---------------------------
 
 You can add entire projects or single python files to the environment of trident by providing your paths as a yaml file in `/config/imports`, as below:
 
@@ -22,7 +22,7 @@ This allows you to later on natively instantiate your models as if they were par
 .. _link-function:
 
 Linking your own function
-----------
+-------------------------
 
 Most often, you would link your own functions to customize the evaluation loop. The below example is a common pattern in customized evaluation.
 
@@ -43,7 +43,7 @@ Most often, you would link your own functions to customize the evaluation loop. 
 .. _function-override:
 
 Function Overrides
-----------
+------------------
 
 You can override functions of the model and datamodule explicitly as follows.
 
@@ -71,7 +71,7 @@ b. Override existing or add functions to :obj:`src.modules.base.TridentModule`
 .. _mixins:
 
 Mixins
-----------
+------
 
 In the context of trident, mixins constitute a series of methods that define behaviour of your model oder datamodule. Your mixins must not reinstantiate `:obj:pytorch_lightning.{LightningModule, LightningDataModule}`, but instead follow the below pattern.
 
