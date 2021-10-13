@@ -40,16 +40,27 @@ jobs:
 
 
       # inspired by nvim-lspconfigs & telescope.nvim
-      - name: Update documentation
-        env:
+      # - name: Update documentation
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     COMMIT_MSG: |
+      #       [docgen] Update docs/build
+      #       skip-checks: true
+      #   run: |
+      #     git config user.email "actions@github"
+      #     git config user.name "Github Actions"
+      #     git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+      #     git add -f docs/*
+      #     # Only commit and push if we have changes
+      #     git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push origin HEAD:${GITHUB_REF})
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMIT_MSG: |
-            [docgen] Update docs/build
-            skip-checks: true
-        run: |
-          git config user.email "actions@github"
-          git config user.name "Github Actions"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git add -f docs/*
-          # Only commit and push if we have changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "${COMMIT_MSG}"; git push origin HEAD:${GITHUB_REF})
+          BASE_BRANCH: main
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs/build # The folder the action should deploy.
+          CLEAN: true # Automatically remove deleted files from the deploy branch
+          TARGET_FOLDER: docs # If you'd like to push the contents of the deployment folder into a specific directory
+        if: success() 
