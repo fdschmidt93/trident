@@ -16,7 +16,7 @@ step_outputs:
 # where the latter
 metrics:
   # name of the metric used eg for logging
-  accuracy:
+  acc:
     # instructions to instantiate metric, preferrably torchmetrics.Metric
     metric:
       _target_: torchmetrics.Accuracy

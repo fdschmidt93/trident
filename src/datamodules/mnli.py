@@ -8,6 +8,8 @@ from src.datamodules.base import BaseDataModule
 
 
 class MNLIDataModule(BaseDataModule):
+    """
+    """
     def __init__(
         self, *args, **kwargs,
     ):
@@ -40,10 +42,10 @@ class MNLIDataModule(BaseDataModule):
         return example
 
     def setup(self, stage: Optional[str] = None):
+        """Sets up the MNLI dataset."""
         if stage in (None, "fit"):
-            dataset = load_dataset("glue", "mnli")
+            dataset = load_dataset("glue", "mnli").rename_column("label", "labels")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            dataset = dataset.rename_column("label", "labels")
             self.data_train = dataset["train"]
             self.data_val = concatenate_datasets(
                 [dataset["validation_mismatched"], dataset["validation_matched"]]

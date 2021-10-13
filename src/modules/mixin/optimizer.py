@@ -1,8 +1,6 @@
-from typing import Optional, Union
+from typing import Union
 
 import hydra
-from omegaconf.dictconfig import DictConfig
-from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 
 from src.utils import utils
@@ -22,8 +20,8 @@ class OptimizerMixin:
         * configure the scheduler (:obj:`OptimizerMixin.configure_scheduler`)
     
     Examples:
-        * Optimizer: /configs/optimizer/adamw.yaml
-        * Scheduler: /configs/scheduler/linear_warm_up.yaml
+        * Optimizer: :repo:`AdamW <configs/optimizer/adamw.yaml>`
+        * Scheduler: :repo:`Linear Warm-Up <configs/scheduler/linear_warm_up.yaml>`
 
     """
 
@@ -53,6 +51,7 @@ class OptimizerMixin:
 
         .. code-block:: python
             
+            # hparams.scheduler: passed config
             scheduler: LambdaLR = hydra.utils.instantiate(self.hparams.scheduler, optimizer,)
 
 

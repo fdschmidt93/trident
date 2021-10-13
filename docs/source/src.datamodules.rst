@@ -36,6 +36,14 @@ src.datamodules.mnli module
    :undoc-members:
    :show-inheritance:
 
+src.datamodules.panx module
+---------------------------
+
+.. automodule:: src.datamodules.panx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.datamodules.paws module
 ---------------------------
 

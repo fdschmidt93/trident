@@ -3,13 +3,12 @@ from typing import Callable, Union
 import hydra
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
-from pytorch_lightning.core.lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 from transformers.file_utils import ModelOutput
-from transformers.modeling_outputs import BaseModelOutput
 from transformers.tokenization_utils_base import BatchEncoding
 
 from src.utils import flatten_dict
+
 
 class EvalMixin:
     r"""Mixin for base model to define evaluation loop largely via hydra.
@@ -66,7 +65,7 @@ class EvalMixin:
     log: Callable
 
     def __init__(self) -> None:
-        
+
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
@@ -77,6 +76,7 @@ class EvalMixin:
 
         self.metrics: DictConfig = getattr(self.evaluation, "metrics")
 
+    # TODO(fdschmidt93): switch from `locals` to kwargs?
     def prepare_metric_input(
         self,
         outputs: ModelOutput,
@@ -190,15 +190,3 @@ class EvalMixin:
 
     def test_epoch_end(self, test_step_outputs: list[dict]):
         return self.eval_epoch_end("test", test_step_outputs)
-
-
-# import torchmetrics
-# import torch
-# x = torch.randn(1000, 300)
-# y = torch.randn(1000, 300)
-# p = x @ y.T
-# label = torch.zeros(1000, 1000).long()
-# idx = torch.arange(1000).repeat(1000, 1)
-# idx.fill_diagonal_(1)
-# mrr = torchmetrics.RetrievalMRR()
-# mrr(p, label, idx) # weird, easier with functional interface

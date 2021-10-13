@@ -28,6 +28,14 @@ src.utils.qa module
    :undoc-members:
    :show-inheritance:
 
+src.utils.token\_classification module
+--------------------------------------
+
+.. automodule:: src.utils.token_classification
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.utils.utils module
 ----------------------
 
