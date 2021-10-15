@@ -200,17 +200,18 @@ The evaluation mixin diminishes the boilerplate when writing custom evaluation l
 The configuration separates on a high level into:
 
 * **apply**: transformation functions applied to `batch`, `outputs`, and `step_outputs`
-* **step_outputs**: what keys of (default: complete `batch` and `outputs`)
+* **step_outputs**: what keys of `step_outputs` to keep for `eval_epoch_end` (default: complete `batch` and `outputs`)
 * **metric**: configure how to instantiate and compute your metric
 
 .. code-block:: yaml
 
     # apply transformation function 
     apply:
-      batch: null
-      outputs:   
+      batch: null # a function that takes (batch)
+      outputs: # a function that takes (outputs, batch)
         _target_: src.utils.hydra.partial
         _partial_: src.evaluation.classification.get_preds
+      step_outputs: null # a function that takes (step_outputs)
 
       step_outputs: null  # on flattened outputs of what's collected from steps
 

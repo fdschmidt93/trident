@@ -4,7 +4,7 @@ apply:
     _target_: src.utils.hydra.partial
     _partial_: src.evaluation.classification.get_preds
   # takes (flattened_step_outputs: dict) where list of step_outputs are flattened
-  step_outputs: null 
+  step_outputs: null
 
 # Which keys/attributes are supposed to be collected from `outputs` and `batch`
 step_outputs:

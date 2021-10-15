@@ -69,10 +69,9 @@ class EvalMixin:
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
-        # pass identity if transform is not set
         for attr in ["batch", "outputs", "step_outputs"]:
             if not callable(getattr(self.evaluation.apply, attr, None)):
-                setattr(self.evaluation.apply, attr, lambda x: x)
+                setattr(self.evaluation.apply, attr, None)
 
         self.metrics: DictConfig = getattr(self.evaluation, "metrics")
 
@@ -147,9 +146,11 @@ class EvalMixin:
 
     def eval_step(self, batch: Union[dict, BatchEncoding]) -> dict:
         """Performs model forward & user batch transformation in an eval step."""
-        # return self.evaluation.apply.outputs(self(batch), batch)
-        batch = self.evaluation.apply.batch(batch)
-        outputs = self.evaluation.apply.outputs(self(batch), batch)
+        if self.evaluation.apply.batch is not None:
+            batch = self.evaluation.apply.batch(batch)
+        outputs = self(batch)
+        if self.evaluation.apply.outputs is not None:
+            outputs = self.evaluation.apply.outputs(outputs, batch)
         for v in self.metrics.values():
             if getattr(v, "on_step", False):
                 kwargs = self.prepare_metric_input(outputs, batch, v.compute)
@@ -169,8 +170,9 @@ class EvalMixin:
             dict: flattened outputs from evaluation steps
         """
         # if self.metrics is not None:
-        flattened_outputs = flatten_dict(step_outputs)
-        outputs = self.evaluation.apply.step_outputs(flattened_outputs)
+        outputs = flatten_dict(step_outputs)
+        if self.evaluation.apply.step_outputs is not None:
+            outputs = self.evaluation.apply.step_outputs(outputs)
         for k, v in self.metrics.items():
             if getattr(v, "on_step", False):
                 self.log(f"{stage}/{k}", v["metric"].compute(), prog_bar=True)
