@@ -3,10 +3,10 @@ from typing import Optional
 
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 
 
-class XNLIDataModule(BaseDataModule):
+class XNLIDataModule(TridentDataModule):
     def __init__(
         self, lang: str, *args, **kwargs,
     ):
@@ -44,9 +44,9 @@ class XNLIDataModule(BaseDataModule):
             dataset = load_dataset("xnli", self.lang).rename_column("label", "labels")
             # preprocess dataset fast multithreaded
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_train = dataset["train"]
-            self.data_val = dataset["validation"]
+            self.dataset_train = dataset["train"]
+            self.dataset_val = dataset["validation"]
         if stage in (None, "test"):
             dataset = load_dataset("xnli", self.lang).rename_column("label", "labels")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_test = dataset["test"]
+            self.dataset_test = dataset["test"]

@@ -3,10 +3,10 @@ from typing import Optional
 
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 
 
-class PAWSDataModule(BaseDataModule):
+class PAWSDataModule(TridentDataModule):
     def __init__(
         self, subset: str = "labeled_final", *args, **kwargs,
     ):
@@ -46,8 +46,8 @@ class PAWSDataModule(BaseDataModule):
             dataset = load_dataset("paws", self.subset).map(
                 self.preprocess, num_proc=cpu_count()
             )
-            self.data_train = dataset["train"]
-            self.data_val = dataset["validation"]
+            self.dataset_train = dataset["train"]
+            self.dataset_val = dataset["validation"]
         if stage == "test":
             dataset = load_dataset("paws", self.subset, split="test").map(preprocess)
-            self.data_test = dataset
+            self.dataset_test = dataset

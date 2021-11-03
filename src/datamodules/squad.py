@@ -5,7 +5,7 @@ from typing import Optional
 from datasets.load import load_dataset, load_dataset_builder
 from transformers.models.auto.tokenization_auto import AutoTokenizer
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 from src.utils import flatten_dict
 from src.utils.qa import prepare_train_features
 
@@ -62,7 +62,7 @@ from src.utils.qa import prepare_train_features
 # squad_convert_examples_to_features(**kwargs)
 
 
-class SQuADDataModule(BaseDataModule):
+class SQuADDataModule(TridentDataModule):
     def __init__(
         self, *args, **kwargs,
     ):
@@ -103,5 +103,5 @@ class SQuADDataModule(BaseDataModule):
     def setup(self, stage: Optional[str] = None):
         if stage == "fit":
             dataset = load_dataset("squad")
-            self.data_train = dataset["train"]
-            self.data_val = dataset["validation"]
+            self.dataset_train = dataset["train"]
+            self.dataset_val = dataset["validation"]

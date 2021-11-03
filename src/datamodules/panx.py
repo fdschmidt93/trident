@@ -4,10 +4,10 @@ from typing import Optional
 from datasets.arrow_dataset import concatenate_datasets
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 
 
-class PANXDataModule(BaseDataModule):
+class PANXDataModule(TridentDataModule):
     def __init__(
         self, lang: str,  *args, **kwargs,
     ):
@@ -48,9 +48,9 @@ class PANXDataModule(BaseDataModule):
 
             .rename_column("label", "labels")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_train = dataset["train"]
-            self.data_val = concatenate_datasets(
+            self.dataset_train = dataset["train"]
+            self.dataset_val = concatenate_datasets(
                 [dataset["validation_mismatched"], dataset["validation_matched"]]
             )
             # if stage in (None, "test"):
-            self.data_test = self.data_val
+            self.dataset_test = self.dataset_val

@@ -20,14 +20,6 @@ src.modules.mixin.optimizer module
    :undoc-members:
    :show-inheritance:
 
-src.modules.mixin.overrides module
-----------------------------------
-
-.. automodule:: src.modules.mixin.overrides
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

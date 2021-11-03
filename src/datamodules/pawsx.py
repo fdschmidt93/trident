@@ -3,13 +3,13 @@ from typing import Optional
 
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 
 # collator = OmegaConf.load("./configs/collator/sentence_pair.yaml")
 # collator['model_name_or_path'] = 'xlm-roberta-base'
 
 
-class PAWSXDataModule(BaseDataModule):
+class PAWSXDataModule(TridentDataModule):
     def __init__(
         self, lang: str, *args, **kwargs,
     ):
@@ -48,9 +48,9 @@ class PAWSXDataModule(BaseDataModule):
         if stage in (None, "fit"):
             dataset = load_dataset("xtreme", f"PAWS-X.{self.lang}")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_train = dataset["train"]
-            self.data_val = dataset["validation"]
+            self.dataset_train = dataset["train"]
+            self.dataset_val = dataset["validation"]
         if stage in (None, "test"):
             dataset = load_dataset("xtreme", f"PAWS-X.{self.lang}", split="test")
             dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_test = dataset
+            self.dataset_test = dataset

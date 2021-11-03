@@ -1,14 +1,22 @@
-from multiprocessing import cpu_count
-from typing import Optional
+from functools import partial
+from typing import Callable, Optional, Union
 
-from datasets.arrow_dataset import concatenate_datasets
+from datasets.arrow_dataset import Dataset, concatenate_datasets
+from datasets.dataset_dict import DatasetDict, IterableDatasetDict
+from datasets.iterable_dataset import IterableDataset
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+import src.datamodules.utils.preprocessing as preprocessing
+from src.datamodules.base import TridentDataModule
 
 
-class MNLIDataModule(BaseDataModule):
+class MNLIDataModule(TridentDataModule):
     """
+    :Name: Multi-Genre Natural Language Inference (MultiNLI)
+    :Task: Text Classification
+    :Homepage: https://cims.nyu.edu/~sbowman/multinli/
+    :Paper: https://cims.nyu.edu/~sbowman/multinli/paper.pdf
+    :datasets: https://huggingface.co/datasets/glue#mnli
     """
     def __init__(
         self, *args, **kwargs,
@@ -43,12 +51,15 @@ class MNLIDataModule(BaseDataModule):
 
     def setup(self, stage: Optional[str] = None):
         """Sets up the MNLI dataset."""
+        self.dataset = self.load_dataset(split = "train")
+
         if stage in (None, "fit"):
-            dataset = load_dataset("glue", "mnli").rename_column("label", "labels")
-            dataset = dataset.map(self.preprocess, num_proc=cpu_count())
-            self.data_train = dataset["train"]
-            self.data_val = concatenate_datasets(
+            self.dataset_train = self.dataset["train"]
+
+        if stage in (None, "test"):
+            dataset = load_da
+            self.dataset_val = concatenate_datasets(
                 [dataset["validation_mismatched"], dataset["validation_matched"]]
             )
             # if stage in (None, "test"):
-            self.data_test = self.data_val
+            self.dataset_test = self.dataset_val

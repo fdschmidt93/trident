@@ -1,10 +1,53 @@
-_target_: src.datamodules.mnli.MNLIDataModule
+_target_: src.datamodules.base.TridentDataModule
 _recursive_: false
 
-defaults:
-  - /collate_fn: sentence_pair
+datamodule_cfg:
+  setup:
+    _target_: src.datamodules.utils.load_dataset
+    _recursive_: false
 
-batch_size: 8
-num_workers: 0
-pin_memory: true
-seed: ${seed}
+dataset_cfg:
+  _target_: datasets.load.load_dataset
+  _method_: # get methods of _target_ object
+    map: # dataset.map -> tokenization
+      # kwargs for dataset.map
+      function:
+        _target_: src.utils.hydra.partial
+        _partial_: src.datamodules.utils.preprocessing.text_classification
+        tokenizer:
+          _target_: src.datamodules.utils.tokenization.HydraTokenizer
+          pretrained_model_name_or_path: ${module.model.pretrained_model_name_or_path}
+          padding: false
+          truncation: true
+          max_length: 512
+        columns:
+          text: premise
+          text_pair: hypothesis
+          labels: label
+
+      batched: false
+      num_proc: 12
+
+  path: glue
+  name: mnli
+
+  train:
+    split: "train"
+  val:
+    split: "validation_mismatched+validation_matched"
+  test:
+    path: xtreme
+    name: xnli
+    lang: de
+    split: "test"
+
+dataloader_cfg:
+  _target_: torch.utils.data.dataloader.DataLoader
+  batch_size: 8
+  num_workers: 8
+  pin_memory: true
+  
+  val:
+    shuffle: false
+  test:
+    shuffle: false

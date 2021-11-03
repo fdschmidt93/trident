@@ -3,10 +3,10 @@ from typing import Optional
 from datasets.arrow_dataset import concatenate_datasets
 from datasets.load import load_dataset, load_dataset_builder
 
-from src.datamodules.base import BaseDataModule
+from src.datamodules.base import TridentDataModule
 
 
-class TatoebaDataModule(BaseDataModule):
+class TatoebaDataModule(TridentDataModule):
     def __init__(
         self, lang: str, *args, **kwargs,
     ):
@@ -52,4 +52,4 @@ class TatoebaDataModule(BaseDataModule):
             .remove_columns(["target_sentence", "target_lang"])
         )
         if stage in (None, "test"):
-            self.data_test = concatenate_datasets([src, trg])
+            self.dataset_test = concatenate_datasets([src, trg])

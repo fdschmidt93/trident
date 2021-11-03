@@ -1,6 +1,14 @@
 src.datamodules package
 =======================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.datamodules.utils
+
 Submodules
 ----------
 

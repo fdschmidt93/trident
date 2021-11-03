@@ -18,7 +18,15 @@ def get_logger(name=__name__, level=logging.INFO) -> logging.Logger:
 
     # this ensures all logging levels get marked with the rank zero decorator
     # otherwise logs would get multiplied for each GPU process in multi-GPU setup
-    for level in ("debug", "info", "warning", "error", "exception", "fatal", "critical"):
+    for level in (
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "exception",
+        "fatal",
+        "critical",
+    ):
         setattr(logger, level, rank_zero_only(getattr(logger, level)))
 
     return logger
@@ -53,7 +61,9 @@ def extras(config: DictConfig) -> None:
 
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     if config.trainer.get("fast_dev_run"):
-        log.info("Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>")
+        log.info(
+            "Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>"
+        )
         # Debuggers don't like GPUs or multiprocessing
         if config.trainer.get("gpus"):
             config.trainer.gpus = 0
@@ -113,7 +123,7 @@ def empty(*args, **kwargs):
 
 @rank_zero_only
 def log_hyperparameters(
-    config: DictConfig,
+    cfg: DictConfig,
     module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
@@ -129,13 +139,13 @@ def log_hyperparameters(
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
-    hparams["trainer"] = config["trainer"]
-    hparams["module"] = config["module"]
-    hparams["datamodule"] = config["datamodule"]
-    if "seed" in config:
-        hparams["seed"] = config["seed"]
-    if "callbacks" in config:
-        hparams["callbacks"] = config["callbacks"]
+    hparams["trainer"] = cfg["trainer"]
+    hparams["module"] = cfg["module"]
+    hparams["datamodule"] = cfg["datamodule"]
+    if "seed" in cfg:
+        hparams["seed"] = cfg["seed"]
+    if "callbacks" in cfg:
+        hparams["callbacks"] = cfg["callbacks"]
 
     # save number of module parameters
     hparams["module/params_total"] = sum(p.numel() for p in module.parameters())
@@ -156,7 +166,7 @@ def log_hyperparameters(
 
 
 def finish(
-    config: DictConfig,
+    cfg: DictConfig,
     module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
