@@ -35,8 +35,40 @@ def partial(_partial_, *args, **kwargs):
             my_key:
                 _target_: src.utils.hydra.partial
                 _partial_: src.custom.functional.my_transform
+
+        :py:func:`src.utils.hydra.partial` can also be leveraged to partially define class methods. The configuration follows the below pattern:
+
+        .. code-block:: python
+            # Hydra configuration translated to function/classmethod signature
+            # <--- _partial_ ---><-self> <args, kwargs>
+            cfg: DictConfig # your configuration
+            my_cls_obj = hydra.utils.instantiate(cfg.self) # `self` in classmethod
+            MyClass.__function__(my_cls_obj, *args, **kwargs)
+
+        Your :obj:`_target_` points to the classmethod to be partially defined, while the :obj:`self` key lays out how the corresponding class instance is instantiated. The below example configuration illustrates how to declaratively partially define a Huggingface Tokenizer. 
+
+        .. code-block:: yaml
+            
+            tokenizer:
+                # classmethod to call
+                _target_: src.utils.hydra.partial
+                _partial_: transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__
+                # `hydra.utils.instantiate` for self in classmethod
+                self:
+                    _target_: transformers.AutoTokenizer.from_pretrained
+                    pretrained_model_name_or_path: roberta-base
+                # other kwargs for classmethod
+                padding: true
+                truncation: true
+                max_length: 512
+
+        You might think that the above example is rather convoluted. However, the pattern allows you to flexibly combine functions and class methods alike with a transparent syntax that avoids indirection via additional wrappers that would otherwise be required to define a class and its associated method call.
     """
-    return functools.partial(get_method(_partial_), *args, **kwargs)
+    method = get_method(_partial_)
+    if "self" in kwargs:
+        obj = kwargs.pop("self")
+        args = (obj, *args)
+    return functools.partial(method, *args, **kwargs)
 
 
 # x = """
@@ -215,7 +247,6 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
                 ret = hydra.utils.call(key_cfg, ret)
 
     return ret
-
 
 def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     """Amends configuration with user callback by configuration key.

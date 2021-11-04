@@ -83,6 +83,7 @@ def print_config(
         "trainer",
         "module",
         "datamodule",
+        "tokenizer",
         "callbacks",
         "logger",
         "seed",

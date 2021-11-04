@@ -1,10 +1,6 @@
-_target_: src.datamodules.base.TridentDataModule
-_recursive_: false
-
-datamodule_cfg:
-  setup:
-    _target_: src.datamodules.utils.load_dataset
-    _recursive_: false
+defaults:
+ # base trident datamodule configuration
+ - trident
 
 dataset_cfg:
   _target_: datasets.load.load_dataset
@@ -13,20 +9,11 @@ dataset_cfg:
       # kwargs for dataset.map
       function:
         _target_: src.utils.hydra.partial
-        _partial_: src.datamodules.utils.preprocessing.text_classification
-        tokenizer:
-          _target_: src.datamodules.utils.tokenization.HydraTokenizer
-          pretrained_model_name_or_path: ${module.model.pretrained_model_name_or_path}
-          padding: false
-          truncation: true
-          max_length: 512
-        columns:
+        _partial_: src.utils.preprocessing.base.text_classification
+        column_names:
           text: premise
           text_pair: hypothesis
           labels: label
-
-      batched: false
-      num_proc: 12
 
   path: glue
   name: mnli
@@ -34,20 +21,10 @@ dataset_cfg:
   train:
     split: "train"
   val:
+    # Huggingface datasets syntax to concatenate these splits
     split: "validation_mismatched+validation_matched"
   test:
     path: xtreme
     name: xnli
     lang: de
     split: "test"
-
-dataloader_cfg:
-  _target_: torch.utils.data.dataloader.DataLoader
-  batch_size: 8
-  num_workers: 8
-  pin_memory: true
-  
-  val:
-    shuffle: false
-  test:
-    shuffle: false

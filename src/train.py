@@ -49,6 +49,8 @@ def train(cfg: DictConfig) -> Optional[float]:
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
     datamodule.setup(stage=None)
+    import pudb
+    pu.db
 
     # Init lightning model
     log.info(f"Instantiating model <{cfg.module._target_}>")

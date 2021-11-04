@@ -7,6 +7,8 @@ defaults:
   - optimizer: adamw.yaml
   - scheduler: linear_warm_up.yaml
   - datamodule: mnist_datamodule.yaml
+  - tokenizer: hf.yaml
+
   - callbacks: default.yaml # set this to null if you don't want to use callbacks
   - logger: null # set logger here or use command line (e.g. `python run.py logger=wandb`)
 
