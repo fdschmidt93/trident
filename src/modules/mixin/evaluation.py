@@ -9,7 +9,7 @@ from transformers.tokenization_utils_base import BatchEncoding
 
 from src.utils import flatten_dict
 
-
+# TODO(fdschmidt93): function signatures fn(self, ...)
 class EvalMixin:
     r"""Mixin for base model to define evaluation loop largely via hydra.
 

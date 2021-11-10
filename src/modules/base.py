@@ -13,6 +13,7 @@ from src.modules.mixin.evaluation import EvalMixin
 from src.modules.mixin.optimizer import OptimizerMixin
 
 
+# TODO(fdschmidt93): function signatures fn(self, ...)
 class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
     """Base module of Trident that wraps model, optimizer, scheduler, evaluation.
 

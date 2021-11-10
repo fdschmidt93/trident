@@ -9,7 +9,7 @@ dataset_cfg:
       # kwargs for dataset.map
       function:
         _target_: src.utils.hydra.partial
-        _partial_: src.utils.preprocessing.base.text_classification
+        _partial_: src.utils.preprocessing.text_classification
         column_names:
           text: premise
           text_pair: hypothesis
@@ -19,12 +19,11 @@ dataset_cfg:
   name: mnli
 
   train:
-    split: "train"
+    split: train
   val:
     # Huggingface datasets syntax to concatenate these splits
     split: "validation_mismatched+validation_matched"
   test:
-    path: xtreme
-    name: xnli
-    lang: de
-    split: "test"
+    path: xnli
+    name: de
+    split: test
