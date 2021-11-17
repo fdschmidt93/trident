@@ -5,7 +5,7 @@ _recursive_: false
 defaults:
   # allows you to manually override on the cli with
   # python run.py tokenizer.padding=true
-  - /tokenizer/hf@dataset_cfg._method_.map.function.tokenizer
+  - /tokenizer/trident@dataset_cfg._method_.map.function.tokenizer
 
 dataset_cfg:
   _target_: datasets.load.load_dataset

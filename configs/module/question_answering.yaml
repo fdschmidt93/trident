@@ -5,7 +5,7 @@ defaults:
 # interleaved with setup so instantiated later (recursive false)
 - /optimizer: ${optimizer}
 - /scheduler: ${scheduler}
-- /evaluation: classification
+- /evaluation: question_answering
 
 model:
   _target_: transformers.AutoModelForQuestionAnswering.from_pretrained

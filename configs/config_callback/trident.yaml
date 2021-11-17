@@ -1,0 +1,18 @@
+# key in your config
+# i.e. config.datamodule.dataset_cfg in my experiments
+datamodule.dataset_cfg:
+  # for this config
+  # do config callback as specified below
+  _target_: src.utils.hydra.expand
+  keys: ["train", "val", "test"]
+  gen_keys: false
+
+datamodule.dataloader_cfg:
+  _target_: src.utils.hydra.expand
+  keys: ["train", "val", "test"]
+  gen_keys: true
+
+evaluation.prepare_cfg:
+  _target_: src.utils.hydra.expand
+  keys: ["val", "test"]
+  gen_keys: true

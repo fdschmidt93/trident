@@ -1,8 +1,0 @@
-_target_: src.utils.hydra.partial
-_partial_: transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__
-self:
-    _target_: transformers.AutoTokenizer.from_pretrained
-    pretrained_model_name_or_path: ${module.model.pretrained_model_name_or_path}
-padding: false
-truncation: true
-max_length: 512

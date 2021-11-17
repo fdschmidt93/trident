@@ -1,5 +1,5 @@
 # apply 
-apply:
+prepare_cfg:
   # a function that takes (batch)
   batch: null
   # a function that takes (outputs, batch)
@@ -18,7 +18,7 @@ step_outputs:
 
 # either metrics or val_metrics and test_metrics
 # where the latter
-metrics:
+metrics_cfg:
   # name of the metric used eg for logging
   mrr:
     # instructions to instantiate metric, preferrably torchmetrics.Metric

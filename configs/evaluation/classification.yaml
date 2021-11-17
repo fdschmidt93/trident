@@ -1,4 +1,4 @@
-apply:
+prepare_cfg:
   batch: null  # takes (batch)
   outputs:     # takes (outputs, batch)                             
     _target_: src.utils.hydra.partial
@@ -14,14 +14,14 @@ step_outputs:
 
 # either metrics or val_metrics and test_metrics
 # where the latter
-metrics:
+metrics_cfg:
   # name of the metric used eg for logging
   acc:
     # instructions to instantiate metric, preferrably torchmetrics.Metric
     metric:
       _target_: torchmetrics.Accuracy
-    # either on_step: true or on_epoch: true
-    on_step: true
+    # either "step" or "epoch_end"
+    on: "step"
     compute: 
       preds: "outputs:preds"
       target: "batch:labels"

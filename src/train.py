@@ -33,6 +33,8 @@ def train(cfg: DictConfig) -> Optional[float]:
     if "config_callback" in cfg:
         log.info(f"Applying configuration callbacks for <{cfg.config_callback.keys()}>")
         config_callback(cfg, cfg.config_callback)
+        import pudb
+        pu.db
 
     if "imports" in cfg:
         if isinstance(cfg.imports, str):
@@ -45,10 +47,12 @@ def train(cfg: DictConfig) -> Optional[float]:
     if "seed" in cfg:
         seed_everything(cfg.seed, workers=True)
 
+
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
     datamodule.setup(stage=None)
+
     import pudb
     pu.db
 

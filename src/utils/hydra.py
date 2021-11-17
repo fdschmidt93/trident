@@ -1,6 +1,5 @@
 import functools
-from enum import Enum
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, Union
 
 import hydra
 from hydra.utils import get_method
@@ -12,18 +11,34 @@ from src.modules.functional.pooling import cls
 _ExtraKeys = ["_method_", "_apply_"]
 
 
+# TODO(fdschmidt93): test when wrapped up in partial
+def get_local(var):
+    import inspect
+
+    frame = inspect.currentframe()
+    locals: Union[None, dict] = getattr(getattr(frame, "f_back"), "f_locals")
+    if locals is None:
+        return None
+    args = var.split(".")
+    objects = [locals.get(args[0], None)]
+    for i, arg in enumerate(args[1:]):
+        val = getattr(objects[i], arg, None)
+        objects.append(val)
+    return objects[-1]
+
+
 def partial(_partial_, *args, **kwargs):
     """Implements functools.partial for Hydra.
 
     :obj:`partial` is very handy for repeated function calls as :obj:`hydra.utils.call` incurs a high latency.
 
     Example:
-        
+
         Code:
 
         .. code-block:: python
 
-            # module: src.custom.functional 
+            # module: src.custom.functional
             my_transform(batch: BatchEncoding) -> BatchEncoding:
                 batch["sequence_length"] = batch["attention_mask"].sum(dim=-1)
                 return batch
@@ -45,10 +60,10 @@ def partial(_partial_, *args, **kwargs):
             my_cls_obj = hydra.utils.instantiate(cfg.self) # `self` in classmethod
             MyClass.__function__(my_cls_obj, *args, **kwargs)
 
-        Your :obj:`_target_` points to the classmethod to be partially defined, while the :obj:`self` key lays out how the corresponding class instance is instantiated. The below example configuration illustrates how to declaratively partially define a Huggingface Tokenizer. 
+        Your :obj:`_target_` points to the classmethod to be partially defined, while the :obj:`self` key lays out how the corresponding class instance is instantiated. The below example configuration illustrates how to declaratively partially define a Huggingface Tokenizer.
 
         .. code-block:: yaml
-            
+
             tokenizer:
                 # classmethod to call
                 _target_: src.utils.hydra.partial
@@ -110,7 +125,7 @@ def expand(
         :code:`expand(cfg, keys=["train", "val", "test"], create_keys=True)` with the following config
 
         .. code-block:: yaml
-            
+
             dataloader_cfg:
                 batch_size: 4
                 num_workers: 8
@@ -123,7 +138,7 @@ def expand(
         resolves to
 
         .. code-block:: yaml
-            
+
             dataloader_cfg:
                 train:
                     shuffle: True
@@ -167,6 +182,7 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
     Notes:
         - If :obj:`_method_` and :obj:`_apply_` are not set, :obj:`instantiate_and_apply` essentially reduces to :obj:`hydra.utils.instantiate`
         - :obj:`instantiate_and_apply` is only applied for the :obj:`dataset_cfg` of the TridentDataModule
+        - The function arguments must be dictionaries
         - Any transformation is applied sequentially -- **order matters**!
             * If you want to intertwine :code:`_method_` and :code:`_apply_` use the former via the latter as per the final example.
 
@@ -194,7 +210,7 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
                     # kwargs for dataset.set_transform
                     _target_: src.custom.my_transform
                 _apply_:
-                    my_transform: 
+                    my_transform:
                         _target_: src.hydra.utils.partial
                         _partial_: src.custom.utils.my_transform
 
@@ -203,13 +219,13 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
         \(1) :code:`map`, (2) :code:`my_transform`, and (3) :code:`set_transform` would be possible as follows.
 
         .. code-block:: yaml
-            
+
             # ...
             _apply_:
                 map:
                     _target_: dataset.arrow_dataset.Dataset.map
                     # ...
-                my_transform: 
+                my_transform:
                     _target_: src.hydra.utils.partial
                     _partial_: src.custom.utils.my_transform
                     # ...
@@ -218,8 +234,10 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
                     # ...
 
     Returns:
-        Any: your instantiated object processed with _method_ & _apply_ functions 
+        Any: your instantiated object processed with _method_ & _apply_ functions
     """
+    if "_with_" in cfg:
+        cfg._target_ = cfg.pop("_with_")
     # instantiate top-level cfg
     cfg_keys = list(cfg.keys())  # avoid changing dictionary size in loop
     extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in _ExtraKeys}
@@ -232,6 +250,7 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
     # kwd_config: their respective collections of functions
     # key: name of user method or function
     # kwd_config: their respective config
+    # TODO(fdschmidt93): handle ListConfig?
     for kwd, kwd_cfg in extra_kwds.items():
         for key, key_cfg in kwd_cfg.items():
             # _method_ is for convenience
@@ -241,12 +260,14 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
                 key_cfg[
                     "_partial_"
                 ] = f"{ret.__class__.__module__}.{ret.__class__.__name__}.{key}"
+                import pudb
+                pu.db
                 fn = hydra.utils.instantiate(key_cfg)
                 ret = fn(ret)
             else:
                 ret = hydra.utils.call(key_cfg, ret)
-
     return ret
+
 
 def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     """Amends configuration with user callback by configuration key.
@@ -267,7 +288,7 @@ def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
               _target_: datasets.load.load_dataset
               #     trident-integration into huggingface datasets
               #     to lever dataset methods within yaml configuration
-              _method_: 
+              _method_:
                 function:
                   _target_: src.utils.hydra.partial
                   _partial_: src.datamodules.utils.preprocessing.text_classification
@@ -277,7 +298,7 @@ def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
                     max_length: 53
                 batched: false
                 num_proc: 12
-                
+
               path: glue
               name: mnli
 
@@ -295,11 +316,11 @@ def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
 
 
     Args:
-        cfg: 
-        cb_cfg: 
+        cfg:
+        cb_cfg:
 
     Returns:
-        DictConfig: 
+        DictConfig:
 
     .. seealso:: :py:func:`src.utils.hydra.expand`, :py:func:`src.utils.hydra.instantiate_and_apply`, :py:func:`src.datamodule.utils.load_dataset`
     """
@@ -334,3 +355,10 @@ def prepare_retrieval_eval(outputs):
         "preds": preds,
         # "targets": targets,
     }
+
+
+def get_logits(outputs: dict, *args, **kwargs) -> dict:
+    outputs["start_logits"] = outputs["start_logits"].detach().numpy()
+    outputs["end_logits"] = outputs["end_logits"].detach().numpy()
+    return outputs
+    

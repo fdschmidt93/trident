@@ -1,6 +1,0 @@
-_target_: src.utils.collators.SentencePairCollator
-
-model_name_or_path: ${module.model.pretrained_model_name_or_path}
-max_length: 128
-padding: true
-return_tensors: "pt"
