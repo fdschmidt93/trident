@@ -10,8 +10,6 @@ setup(
     license="Apache",
     packages=["pyexample"],
     install_requires=[
-        "torch>=1.8.2",
-        "torchvision>=0.9.1",
         "pytorch-lightning>=1.5.2",
         "hydra-core==1.1.0",
         "hydra-colorlog==1.1.0",
