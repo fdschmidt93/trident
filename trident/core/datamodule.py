@@ -20,12 +20,12 @@ class TridentDataModule(LightningDataModule):
 
     The :obj:`TridentDataModule` facilitates writing a :obj:`LightningDataModule` with little to no boilerplate via Hydra configuration. It splits into
 
-    - :obj:`dataset_cfg`: 
+    - :obj:`dataset_cfg`:
     - :obj:`dataloader_cfg`:
 
     Args:
         dataset_cfg (:obj:`omegaconf.dictconfig.DictConfig`):
-            
+
             A hierarchical :obj:`DictConfig` that instantiates or returns the dataset for :obj:`self.dataset_{train, val, test}`, respectively.
 
             Typical configurations follow the below pattern:
@@ -46,7 +46,7 @@ class TridentDataModule(LightningDataModule):
         - :obj:`dataloader_cfg` automatically generates `train`, `val`, and `test` keys for convenience as the config is evaluated lazily (i.e. when a :obj:`DataLoader` is requested)
 
     Example:
-        
+
         .. code-block:: yaml
 
             _target_: src.datamodules.base.TridentDataModule
@@ -55,7 +55,7 @@ class TridentDataModule(LightningDataModule):
             dataset_cfg:
               _target_: datasets.load.load_dataset
               # access methods of the instantiated object
-              _method_: 
+              _method_:
                 map: # dataset.map for e.g. tokenization
                   # kwargs for dataset.map
                   function:
@@ -154,7 +154,7 @@ class TridentDataModule(LightningDataModule):
     def setup(self, stage: Optional[str] = None) -> None:
         """
         Sets up `self.dataset_{train, val, test}` datasets that are fed to the corresponding :obj:`DataLoader` instances.
-        
+
         :obj:`dataset_cfg` must point to a function with the following specification. The below example shows a naive use case:
 
         .. code-block:: python

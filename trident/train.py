@@ -12,10 +12,10 @@ from pytorch_lightning import (
 )
 from pytorch_lightning.loggers import LightningLoggerBase
 
-from src.utils import utils
-from src.utils.hydra import config_callback
+from .utilities import runner
+from .utilities.hydra import config_callback
 
-log = utils.get_logger(__name__)
+log = runner.get_logger(__name__)
 
 
 def train(cfg: DictConfig) -> Optional[float]:
@@ -33,8 +33,6 @@ def train(cfg: DictConfig) -> Optional[float]:
     if "config_callback" in cfg:
         log.info(f"Applying configuration callbacks for <{cfg.config_callback.keys()}>")
         config_callback(cfg, cfg.config_callback)
-        import pudb
-        pu.db
 
     if "imports" in cfg:
         if isinstance(cfg.imports, str):
@@ -47,14 +45,10 @@ def train(cfg: DictConfig) -> Optional[float]:
     if "seed" in cfg:
         seed_everything(cfg.seed, workers=True)
 
-
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
     datamodule.setup(stage=None)
-
-    import pudb
-    pu.db
 
     # Init lightning model
     log.info(f"Instantiating model <{cfg.module._target_}>")
@@ -84,7 +78,7 @@ def train(cfg: DictConfig) -> Optional[float]:
 
     # Send some parameters from config to all lightning loggers
     log.info("Logging hyperparameters!")
-    utils.log_hyperparameters(
+    runner.log_hyperparameters(
         cfg=cfg,
         module=module,
         datamodule=datamodule,
@@ -108,7 +102,7 @@ def train(cfg: DictConfig) -> Optional[float]:
 
     # Make sure everything closed properly
     log.info("Finalizing!")
-    utils.finish(
+    runner.finish(
         cfg=cfg,
         module=module,
         datamodule=datamodule,

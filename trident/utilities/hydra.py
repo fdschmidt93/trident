@@ -1,12 +1,9 @@
 import functools
-from typing import Any, Callable, Union
+from typing import Any, Union
 
 import hydra
 from hydra.utils import get_method
-from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
-from omegaconf.base import Container
-
-from src.modules.functional.pooling import cls
+from omegaconf import DictConfig, OmegaConf
 
 _ExtraKeys = ["_method_", "_apply_"]
 
@@ -84,20 +81,6 @@ def partial(_partial_, *args, **kwargs):
         obj = kwargs.pop("self")
         args = (obj, *args)
     return functools.partial(method, *args, **kwargs)
-
-
-# x = """
-# def test_print():
-#     print('test')
-# """
-
-USER_FUNCTIONS = {}
-
-
-def convert_to_fn(body: str) -> Callable:
-    exec(body, USER_FUNCTIONS, USER_FUNCTIONS)
-    # order is guaranteed in Python 3.7+
-    return USER_FUNCTIONS[list(USER_FUNCTIONS.keys())[-1]]
 
 
 def expand(
@@ -261,6 +244,7 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
                     "_partial_"
                 ] = f"{ret.__class__.__module__}.{ret.__class__.__name__}.{key}"
                 import pudb
+
                 pu.db
                 fn = hydra.utils.instantiate(key_cfg)
                 ret = fn(ret)
@@ -327,38 +311,4 @@ def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     for key in cb_cfg:
         processed_cfg = hydra.utils.call(cb_cfg.get(key), OmegaConf.select(cfg, key))
         OmegaConf.update(cfg, key, processed_cfg)
-        OmegaConf.select(cfg, "datamodule.dataloader_cfg")
     return cfg
-
-
-def forward(self, batch):
-    return self.model(**batch)
-
-
-def get_cls(outputs, batch):
-    outputs.cls = cls(outputs.last_hidden_state, batch["attention_mask"])
-    return outputs
-
-
-# list of dictionaries flattend to one dictionary
-def prepare_retrieval_eval(outputs):
-    num = outputs["cls"].shape[0]
-    outputs["cls"] /= outputs["cls"].norm(2, dim=-1, keepdim=True)
-    src_embeds = outputs["cls"][: num // 2]
-    trg_embeds = outputs["cls"][num // 2 :]
-    # (1000, 1000)
-    preds = src_embeds @ trg_embeds.T
-    # targets = (
-    #     torch.zeros((num // 2, num // 2)).fill_diagonal_(1).long().to(src_embeds.device)
-    # )
-    return {
-        "preds": preds,
-        # "targets": targets,
-    }
-
-
-def get_logits(outputs: dict, *args, **kwargs) -> dict:
-    outputs["start_logits"] = outputs["start_logits"].detach().numpy()
-    outputs["end_logits"] = outputs["end_logits"].detach().numpy()
-    return outputs
-    

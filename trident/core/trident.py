@@ -6,11 +6,9 @@ from omegaconf import DictConfig
 from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 from torch import nn
-from transformers.file_utils import ModelOutput
-from transformers.tokenization_utils_base import BatchEncoding
 
-from src.modules.mixin.evaluation import EvalMixin
-from src.modules.mixin.optimizer import OptimizerMixin
+from trident.core.mixins.evaluation import EvalMixin
+from trident.core.mixins.optimizer import OptimizerMixin
 
 
 # TODO(fdschmidt93): function signatures fn(self, ...)
@@ -34,30 +32,30 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         scheduler (:obj:`omegaconf.dictconfig.DictConfig`):
             Configuration for the scheduler of the optimizer of your :py:class:`src.modules.base.TridentModule`.
 
-            .. seealso:: :py:class:`src.modules.mixin.optimizer.OptimizerMixin`, :repo:`Linear Warm-Up config <configs/scheduler/linear_warm_up.yaml>` 
+            .. seealso:: :py:class:`src.modules.mixin.optimizer.OptimizerMixin`, :repo:`Linear Warm-Up config <configs/scheduler/linear_warm_up.yaml>`
 
         evaluation (:obj:`omegaconf.dictconfig.DictConfig`):
-            
+
             Please refer to :ref:`evaluation`
 
-            .. seealso:: :py:class:`src.modules.mixin.evaluation.EvalMixin`, :repo:`Classification Evaluation config <configs/evaluation/sequence_classification.yaml>` 
+            .. seealso:: :py:class:`src.modules.mixin.evaluation.EvalMixin`, :repo:`Classification Evaluation config <configs/evaluation/sequence_classification.yaml>`
 
         overrides (:obj:`omegaconf.dictconfig.DictConfig`):
             Allows you to override existing functions of the :py:class:`src.modules.base.TridentModule`.
 
-            Example: 
+            Example:
 
             `src/my_functions/model_overrides.py`
-            
+
             .. code-block:: python
-        
+
                 def keep_batch(self, batch: dict) -> ModelOutput:
                     return self.model(batch)
 
             `configs/overrides/my_model_overrides.yaml`
 
             .. code-block:: yaml
-                
+
                 forward:
                   _target_: src.utils.hydra.partial
                   _partial_: src.my_functions.model_overrides.keep_batch
@@ -67,7 +65,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             `configs/module/my_module.yaml`
 
             .. code-block:: yaml
-                
+
                 defaults:
                     - /overrides: my_model_overrides
 
@@ -82,7 +80,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             You can overrwrite any functionality of the module with your mixins.
 
             Should you require any attributes from :py:meth:`src.modules.base.TridentModule.__init__` you can access them via `self.hparams`.
-            
+
             .. seealso:: :repo:`Evaluation <src/modules/mixin/evaluation/sequence_classification.yaml>`
     """
 
@@ -133,7 +131,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         for cls_ in classes:
             cls_.__init__(self)
 
-    def forward(self, batch: BatchEncoding) -> ModelOutput:
+    def forward(self, batch: dict) -> dict:
         """Plain forward pass of your model for which the batch is unpacked.
 
 
@@ -142,7 +140,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             .. code-block:: python
 
                 return self.model(**batch)
-    
+
 
         Args:
             batch: input to your model
@@ -153,7 +151,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         return self.model(**batch)
 
     def training_step(
-        self, batch: BatchEncoding, batch_idx: int
+        self, batch: dict, batch_idx: int
     ) -> Union[dict[str, Any], ModelOutput]:
         """Comprises training step of your model which takes a forward pass.
 
@@ -180,5 +178,5 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             Union[dict[str, Any], ModelOutput]: model output that must have 'loss' as attr or key
         """
         outputs = self(batch)
-        self.log("train/loss", outputs.loss)
+        self.log("train/loss", outputs["loss"])
         return outputs
