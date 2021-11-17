@@ -30,7 +30,7 @@ Quick Start
 Paradigms
 ---------
 
-* **Simplicity:** follow existing patterns of our stack for easy understanding and extending
+* **Simplicity:** follow existing patterns (e.g. naming conventions) of our stack as much as possible for easy understanding and extending
 * **Low code:** trident is a wrapper first -- prefer implementations from well-maintained frameworks
 * **Out-of-the-box:** provide readily available pipelines for popular benchmark datasets
 
@@ -234,6 +234,8 @@ The below list for now only reflects the most urgent TODOs in immediate scope of
     * Individual datamodules (setup, Preprocessing, expected batch format, collator)
     * Experiment configurations (global defaults, existing experiments, etc.)
     * Autogenerate files for out-of-the-box supported "task" (datamodule, evaluation, coverage)
+
+* Dictionary of task types aligned with HF examples
         
 * Tests
 
