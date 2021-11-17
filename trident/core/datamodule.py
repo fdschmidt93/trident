@@ -2,10 +2,10 @@ from types import MethodType
 from typing import Optional
 
 import hydra
-from datasets.arrow_dataset import Dataset
 from omegaconf.dictconfig import DictConfig
 from pytorch_lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
+from torch.utils.data.dataset import Dataset
 
 # TODO(fdschmidt93): link dataloader against global cfg
 # TODO(fdschmidt93): add docs for {train, val, test} options

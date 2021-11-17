@@ -3,9 +3,9 @@ from typing import Union
 import hydra
 from pytorch_lightning.utilities.parsing import AttributeDict
 
-from src.utils import utils
+from trident.utilities.log import get_logger
 
-log = utils.get_logger(__name__)
+log = get_logger(__name__)
 
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
@@ -18,7 +18,7 @@ class OptimizerMixin:
         * compute the number of training steps (:obj:`OptimizerMixin.num_training_steps`)
         * configure the optimizer(s) (:obj:`OptimizerMixin.configure_optimizers`)
         * configure the scheduler (:obj:`OptimizerMixin.configure_scheduler`)
-    
+
     Examples:
         * Optimizer: :repo:`AdamW <configs/optimizer/adamw.yaml>`
         * Scheduler: :repo:`Linear Warm-Up <configs/scheduler/linear_warm_up.yaml>`
@@ -50,7 +50,7 @@ class OptimizerMixin:
         The instantiation of the scheduler takes the optimizer as the first positional argument.
 
         .. code-block:: python
-            
+
             # hparams.scheduler: passed config
             scheduler: LambdaLR = hydra.utils.instantiate(self.hparams.scheduler, optimizer,)
 
@@ -74,7 +74,8 @@ class OptimizerMixin:
             f"Warm up for {self.hparams.scheduler.num_warmup_steps} of {self.num_training_steps}"
         )
         scheduler: LambdaLR = hydra.utils.instantiate(
-            self.hparams.scheduler, optimizer,
+            self.hparams.scheduler,
+            optimizer,
         )
         # TODO(fdschmidt93): more flexible LR schedules?
         scheduler = {"scheduler": scheduler, "interval": "step", "frequency": 1}

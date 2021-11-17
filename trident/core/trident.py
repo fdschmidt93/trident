@@ -150,9 +150,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         """
         return self.model(**batch)
 
-    def training_step(
-        self, batch: dict, batch_idx: int
-    ) -> Union[dict[str, Any], ModelOutput]:
+    def training_step(self, batch: dict, batch_idx: int) -> dict[str, Any]:
         """Comprises training step of your model which takes a forward pass.
 
         **Notes:**

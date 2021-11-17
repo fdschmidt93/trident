@@ -10,8 +10,7 @@
    readme
    customization
    Contributing <CONTRIBUTING>
-   src.modules
-   src.datamodules
+   trident.core
     
 
 

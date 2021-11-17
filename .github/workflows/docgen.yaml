@@ -33,7 +33,7 @@ jobs:
       - name: docgen
         run: |
           cd docs
-          sphinx-apidoc -o ./source ../ -f
+          sphinx-apidoc -o ./source ../trident -f
           sphinx-build ./source/ ./build/
 
       - name: Deploy 🚀

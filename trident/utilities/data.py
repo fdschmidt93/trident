@@ -1,7 +1,7 @@
 from omegaconf.dictconfig import DictConfig
 
-from src.datamodules.base import TridentDataModule
-from src.utils.hydra import instantiate_and_apply
+from trident.core import TridentDataModule
+from trident.utilities.hydra import instantiate_and_apply
 
 
 def load_dataset(self: TridentDataModule, stage: str, config: DictConfig) -> None:
