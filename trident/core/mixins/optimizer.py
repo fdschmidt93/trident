@@ -3,7 +3,7 @@ from typing import Union
 import hydra
 from pytorch_lightning.utilities.parsing import AttributeDict
 
-from trident.utilities.log import get_logger
+from trident.utilities.logging import get_logger
 
 log = get_logger(__name__)
 
