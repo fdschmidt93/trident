@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="trident-core",
@@ -8,7 +8,7 @@ setup(
     author="Fabian David Schmidt",
     author_email="fabian@informatik.uni-mannheim.de",
     license="Apache",
-    packages=find_packages(exclude=["tests", "tests/*"]),
+    packages=find_packages(exclude=["tests", "tests/*", "src", "src/*"]),
     install_requires=[
         "pytorch-lightning",
         "hydra-core",
