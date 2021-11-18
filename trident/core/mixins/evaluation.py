@@ -7,7 +7,7 @@ from omegaconf.listconfig import ListConfig
 from pytorch_lightning.core.lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 
-from trident.utilities.transform import flatten_dict
+from trident.utils.transform import flatten_dict
 
 
 # TODO(fdschmidt93): update docs
