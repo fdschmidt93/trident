@@ -137,23 +137,28 @@ def expand(
 
         while only the original config is the one being logged.
     """
-    if isinstance(keys, str):
-        keys = [keys]
-    shared_keys = [key for key in cfg.keys() if key not in keys]
-    cfg_excl_keys = OmegaConf.masked_copy(cfg, shared_keys)
-    for key in keys:
-        if key in cfg:
-            # right-most gets priority
-            cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
-    for key in shared_keys:
-        cfg.pop(key)
-    return cfg
+    if cfg is not None:
+        if isinstance(keys, str):
+            keys = [keys]
+        shared_keys = [key for key in cfg.keys() if key not in keys]
+        cfg_excl_keys = OmegaConf.masked_copy(cfg, shared_keys)
+        for key in keys:
+            if key in cfg:
+                # right-most gets priority
+                cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
+            else:
+                if gen_keys:
+                    cfg[key] = cfg_excl_keys
+        for key in shared_keys:
+            cfg.pop(key)
+        return cfg
 
 
 # TODO(fdschmidt93): update documentation once preprocessing routines are set
-
-
-def instantiate_and_apply(cfg: DictConfig) -> Any:
+# TODO(fdschmidt93): add _keep_ to docs
+def instantiate_and_apply(
+    cfg: Union[None, DictConfig], return_unprocessed: bool = False
+) -> Any:
     r"""Adds :obj:`_method_` and :obj:`_apply_` keywords for :code:`hydra.utils.instantiate`.
 
     :obj:`_method_` and :obj:`_apply_` describe methods and custom functions to be applied on the instantiated object in order of the configuration. Most commonly, you want to make use of :obj:`dataset` `processing methods <https://huggingface.co/docs/datasets/process.html>`_\. For convenience
@@ -219,14 +224,19 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
     Returns:
         Any: your instantiated object processed with _method_ & _apply_ functions
     """
-    if "_with_" in cfg:
-        cfg._target_ = cfg.pop("_with_")
+    if cfg is None:
+        return None, None
+
     # instantiate top-level cfg
     cfg_keys = list(cfg.keys())  # avoid changing dictionary size in loop
     extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in _ExtraKeys}
     ret = hydra.utils.instantiate(cfg)
+    orig = None
+    if return_unprocessed:
+        orig = hydra.utils.instantiate(cfg)
+
     if not extra_kwds:
-        return ret
+        return ret, None
     extra_kwds = hydra.utils.instantiate(OmegaConf.create(extra_kwds))
 
     # kwd: {_method_, _apply_}
@@ -239,21 +249,23 @@ def instantiate_and_apply(cfg: DictConfig) -> Any:
             # _method_ is for convenience
             # construct partial wrapper, instantiate with cfg, and apply to ret
             if kwd == "_method_":
-                key_cfg["_target_"] = "src.utils.hydra.partial"
+                key_cfg["_target_"] = "trident.utils.hydra.partial"
                 key_cfg[
                     "_partial_"
                 ] = f"{ret.__class__.__module__}.{ret.__class__.__name__}.{key}"
-                import pudb
-
-                pu.db
                 fn = hydra.utils.instantiate(key_cfg)
-                ret = fn(ret)
+                val = fn(ret)
+                # `fn` might mutate ret in-place
+                if val is not None:
+                    ret = val
             else:
                 ret = hydra.utils.call(key_cfg, ret)
-    return ret
+    if return_unprocessed:
+        return (ret, orig)
+    return (ret, None)
 
 
-def config_callback(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
+def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     """Amends configuration with user callback by configuration key.
 
     Hydra excels at depth-first, bottom-up config resolution. However,

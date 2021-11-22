@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Union
+from typing import Callable, NamedTuple, Optional, Union
 
 import hydra
 from omegaconf import OmegaConf
@@ -9,9 +9,11 @@ from pytorch_lightning.utilities.parsing import AttributeDict
 
 from trident.utils.transform import flatten_dict
 
-
 # TODO(fdschmidt93): update docs
 # TODO(fdschmidt93): validation
+# TODO(fdschmidt93): what if no stage?
+
+
 class EvalMixin(LightningModule):
     r"""Mixin for base model to define evaluation loop largely via hydra.
 
@@ -72,36 +74,36 @@ class EvalMixin(LightningModule):
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
     # TODO(fdschmidt93): can we reduce overhead?
-    def prepare_batch(self, step: str, batch: dict) -> dict:
+    def prepare_batch(self, stage: str, batch: dict) -> dict:
         fn: Union[None, Callable] = OmegaConf.select(
-            self.evaluation.prepare_cfg.batch, step
+            self.evaluation, f"prepare_cfg.{stage}.batch"
         )
         if fn is not None:
-            return fn(self, batch)
+            return fn(self, batch, stage)
         return batch
 
-    def prepare_outputs(self, step: str, outputs: dict, batch: dict) -> dict:
+    def prepare_outputs(self, stage: str, outputs: dict, batch: dict) -> dict:
         fn: Union[None, Callable] = OmegaConf.select(
-            self.evaluation.prepare_cfg.outputs, step
+            self.evaluation, f"prepare_cfg.{stage}.outputs"
         )
         if fn is not None:
-            return fn(self, outputs, batch)
+            return fn(self, outputs, batch, stage)
         return outputs
 
-    def prepare_step_outputs(self, step: str, step_outputs: dict) -> dict:
+    def prepare_step_outputs(self, stage: str, step_outputs: dict) -> dict:
         fn: Union[None, Callable] = OmegaConf.select(
-            self.evaluation.prepare_cfg.step_outputs, step
+            self.evaluation, f"prepare_cfg.{stage}.step_outputs"
         )
         if fn is not None:
-            return fn(self, step_outputs)
+            return fn(self, step_outputs, stage)
         return step_outputs
 
     # TODO(fdschmidt93): switch from `locals` to kwargs?
     def _prepare_metric_input(
         self,
         cfg: DictConfig,
-        outputs: dict,
-        batch: Optional[dict] = None,
+        outputs: Union[dict, NamedTuple],
+        batch: Optional[Union[dict, NamedTuple]] = None,
     ) -> dict:
         """Collects user-defined attributes of outputs & batch to compute metric.
 
@@ -124,7 +126,11 @@ class EvalMixin(LightningModule):
             var, key = v.split(":")
             # TODO(fdschmidt93): rfc
             input_: dict = local_vars.get(var, {})
-            val = input_.get(key, None)
+            val = (
+                input_.get(key, None)
+                if isinstance(input_, dict)
+                else getattr(input_, key, None)
+            )
             if val is not None:
                 ret[k] = val
             else:
@@ -143,14 +149,14 @@ class EvalMixin(LightningModule):
         # TODO(fdschmidt93): define clear behaviour if no step_outputs is defined
         # TODO(fdschmidt93): restricting step_output arguments to function arguments via inspect library
         stage_dico: Union[None, DictConfig] = OmegaConf.select(
-            self.evaluation.step_outputs, stage
+            self.evaluation, f"step_outputs.{stage}"
         )
         if stage_dico is not None:
             ret = {}
             local_vars = locals()
 
             def set_val(dico, key, val):
-                ret_val = getattr(local_vars.get(key), val, None)
+                ret_val = local_vars.get(key, {}).get(val, None)
                 if ret_val is None:
                     raise AttributeError(f"{val} not in {key}")
                 dico[val] = ret_val
@@ -175,10 +181,11 @@ class EvalMixin(LightningModule):
         outputs = self.prepare_outputs(stage, self(batch), batch)
 
         metrics_cfg = OmegaConf.select(self.evaluation.metrics_cfg, stage)
-        for v in metrics_cfg.values():
-            if getattr(v, "on", False) == "eval_step":
-                kwargs = self._prepare_metric_input(v.compute, outputs, batch)
-                v["metric"](**kwargs)
+        if metrics_cfg is not None:
+            for v in metrics_cfg.values():
+                if getattr(v, "compute_on", False) == "eval_step":
+                    kwargs = self._prepare_metric_input(v.kwargs, outputs, batch)
+                    v["metric"](**kwargs)
         return self._collect_step_output(stage, outputs, batch)
 
     def eval_epoch_end(self, stage: str, step_outputs: list[dict]) -> dict:
@@ -198,15 +205,17 @@ class EvalMixin(LightningModule):
         flattened_step_outputs = self.prepare_step_outputs(
             stage, flattened_step_outputs
         )
-        for k, v in self.evaluation.metrics_cfg.items():
-            if getattr(v, "on", False) == "step":
-                # TODO(fdschmidt93): do not rely on having to call `compute` here
-                self.log(f"{stage}/{k}", v["metric"].compute(), prog_bar=True)
-            if getattr(v, "on_epoch", False) == "epoch_end":
-                kwargs: dict = self._prepare_metric_input(
-                    v.compute, flattened_step_outputs, None
-                )
-                self.log(f"{stage}/{k}", v["metric"](**kwargs), prog_bar=True)
+        metrics_cfg = OmegaConf.select(self.evaluation.metrics_cfg, stage)
+        if metrics_cfg is not None:
+            for k, v in metrics_cfg.items():
+                if getattr(v, "compute_on", False) == "eval_step":
+                    # TODO(fdschmidt93): do not rely on having to call `compute` here
+                    self.log(f"{stage}/{k}", v["metric"].compute(), prog_bar=True)
+                if getattr(v, "compute_on", False) == "epoch_end":
+                    kwargs: dict = self._prepare_metric_input(
+                        v.kwargs, flattened_step_outputs, None
+                    )
+                    self.log(f"{stage}/{k}", v["metric"](**kwargs), prog_bar=True)
         return flattened_step_outputs
 
     def validation_step(self, batch: dict, batch_idx: int) -> Union[None, dict]:

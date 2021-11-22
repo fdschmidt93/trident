@@ -2,16 +2,22 @@ from types import MethodType
 from typing import Any, List, Optional, Union
 
 import hydra
+from datasets.arrow_dataset import Dataset
 from omegaconf import DictConfig
 from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 from torch import nn
+from torch.utils.data.dataloader import DataLoader
 
 from trident.core.mixins.evaluation import EvalMixin
 from trident.core.mixins.optimizer import OptimizerMixin
+from trident.utils.logging import get_logger
+
+log = get_logger(__name__)
 
 
 # TODO(fdschmidt93): function signatures fn(self, ...)
+# TODO(fdschmidt93): clean API for instantiation to depend on datamodule (token classification: label2id, id2label
 class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
     """Base module of Trident that wraps model, optimizer, scheduler, evaluation.
 
@@ -86,6 +92,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
 
     hparams: AttributeDict
 
+    # TODO: think about `_cfg` suffix
     def __init__(
         self,
         model: DictConfig,
@@ -94,6 +101,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         evaluation: Optional[DictConfig] = None,
         overrides: Optional[DictConfig] = None,
         mixins: Optional[DictConfig] = None,
+        module_cfg: Optional[DictConfig] = DictConfig({}),
         *args: Any,
         **kwargs: Any,
     ):
@@ -103,13 +111,40 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         super().__init__()
         if hasattr(self.hparams, "mixins") and self.hparams.mixins is not None:
             self.set_mixins(self.hparams.mixins)
-        self.model: nn.Module = hydra.utils.instantiate(self.hparams.model)
 
-        # for comfort:
+        # forcefully override trident methods
         self.overrides = hydra.utils.instantiate(self.hparams.overrides)
         if self.overrides is not None:
             for key, value in self.overrides.items():
                 setattr(self, key, MethodType(value, self))
+
+    # TODO
+    def setup(self, stage: str):
+        """Sets up the TridentModule.
+
+        Setup the model if it does not exist yet. This enables inter-operability between your datamodule and model if you pass define a setup function in `module_cfg`, as the datamodule will be set up _before_ the model.
+
+        In case you pass : :obj:`setup` to :obj:`module_cfg` the function should follow the below schema:
+
+            .. code-block:: python
+
+                def setup(module: TridentModule, stage: str):
+                    # the module has to be setup
+                    module.model = hydra.utils.instantiate(module.hparams.model)
+
+        Since the :obj:`module` exposes :obj:`module.trainer.datamodule`, you can use your custom setup function to enable inter-operability between the module and datamodule.
+
+        """
+        # TODO: maybe we can simplify and integrate this even better
+        setup_cfg = getattr(self.hparams.module_cfg, "setup")
+        if setup_cfg is None:
+            if not hasattr(self, "model"):
+                self.model = hydra.utils.instantiate(self.hparams.model)
+        else:
+            hydra.utils.instantiate(setup_cfg, module=self, stage=stage)
+            assert isinstance(
+                self.model, nn.Module
+            ), "Please set up the model appriopriately"
 
     def set_mixins(self, mixin: list[str]) -> None:
         """Apply base class and mixins to a class instance after creation.
@@ -148,6 +183,8 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         Returns:
             ModelOutput: container with attributes required for evaluation
         """
+        import pudb
+        pu.db
         return self.model(**batch)
 
     def training_step(self, batch: dict, batch_idx: int) -> dict[str, Any]:
@@ -159,14 +196,14 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
 
         **Implementation:**
 
-        .. code-block:: python
+            .. code-block:: python
 
-            def training_step(
-                self, batch: BatchEncoding, batch_idx: int
-            ) -> Union[dict[str, Any], ModelOutput]:
-                outputs = self(batch)
-                self.log("train/loss", outputs.loss)
-                return outputs
+                def training_step(
+                    self, batch: BatchEncoding, batch_idx: int
+                ) -> Union[dict[str, Any], ModelOutput]:
+                    outputs = self(batch)
+                    self.log("train/loss", outputs.loss)
+                    return outputs
 
         Args:
             batch: typically comprising input_ids, attention_mask, and position_ids

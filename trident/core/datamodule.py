@@ -3,9 +3,14 @@ from typing import Optional
 
 import hydra
 from omegaconf.dictconfig import DictConfig
+from omegaconf.omegaconf import OmegaConf
 from pytorch_lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
+
+from trident.utils.logging import get_logger
+
+log = get_logger(__name__)
 
 # TODO(fdschmidt93): link dataloader against global cfg
 # TODO(fdschmidt93): add docs for {train, val, test} options
@@ -107,16 +112,22 @@ class TridentDataModule(LightningDataModule):
         self.dataset_test: Optional[Dataset] = None
         self.dataset_predict: Optional[Dataset] = None
 
-        # methods via hydra
-        self.datamodule_cfg.transfer_batch_to_device = hydra.utils.instantiate(
-            self.datamodule_cfg.get("transfer_batch_to_device", None)
-        )
-        self.datamodule_cfg.on_before_batch_transfer = hydra.utils.instantiate(
-            self.datamodule_cfg.get("on_before_batch_transfer", None)
-        )
-        self.datamodule_cfg.on_after_batch_transfer = hydra.utils.instantiate(
-            self.datamodule_cfg.get("on_after_batch_transfer", None)
-        )
+        self.dataset_train_raw: Optional[Dataset] = None
+        self.dataset_val_raw: Optional[Dataset] = None
+        self.dataset_test_raw: Optional[Dataset] = None
+        self.dataset_predict_raw: Optional[Dataset] = None
+
+        # # methods via hydra
+        # for method in [
+        #     "transfer_batch_to_device",
+        #     "on_before_batch_transfer",
+        #     "on_after_batch_transfer",
+        # ]:
+        #     if (
+        #         m := hydra.utils.instantiate(self.datamodule_cfg.get(method, None))
+        #         is not None
+        #     ):
+        #         setattr(self.datamodule_cfg, method, m)
 
         self.overrides = hydra.utils.instantiate(overrides)
         if self.overrides is not None:
@@ -133,23 +144,24 @@ class TridentDataModule(LightningDataModule):
         """
         hydra.utils.call(self.datamodule_cfg.get("prepare_data", None), self)
 
-    def transfer_batch_to_device(self, batch, dataloader_idx: int) -> None:
-        """
-        .. seealso:: `LightningDataModule.transfer_batch_to_device <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#transfer-batch-to-device>`_
-        """
-        self.datamodule_cfg.transfer_batch_to_device(self, batch, dataloader_idx)
+    # TODO(fdschmidt93): enable overrides
+    # def transfer_batch_to_device(self, batch, dataloader_idx: int) -> None:
+    #     """
+    #     .. seealso:: `LightningDataModule.transfer_batch_to_device <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#transfer-batch-to-device>`_
+    #     """
+    #     self.datamodule_cfg.transfer_batch_to_device(self, batch, dataloader_idx)
 
-    def on_before_batch_transfer(self, batch, dataloader_idx: int) -> None:
-        """
-        .. seealso:: `LightningDataModule.on_before_batch_transfer <https://pytorch_lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-before-batch-transfer>`_
-        """
-        self.datamodule_cfg.on_before_batch_transfer(self, batch, dataloader_idx)
+    # def on_before_batch_transfer(self, batch, dataloader_idx: int) -> None:
+    #     """
+    #     .. seealso:: `LightningDataModule.on_before_batch_transfer <https://pytorch_lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-before-batch-transfer>`_
+    #     """
+    #     self.datamodule_cfg.on_before_batch_transfer(self, batch, dataloader_idx)
 
-    def on_after_batch_transfer(self, batch, dataloader_idx: int) -> None:
-        """
-        .. seealso:: `LightningDataModule.on_after_batch_transfer <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-after-batch-transfer>`_
-        """
-        self.datamodule_cfg.on_after_batch_transfer(self, batch, dataloader_idx)
+    # def on_after_batch_transfer(self, batch, dataloader_idx: int) -> None:
+    #     """
+    #     .. seealso:: `LightningDataModule.on_after_batch_transfer <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-after-batch-transfer>`_
+    #     """
+    #     self.datamodule_cfg.on_after_batch_transfer(self, batch, dataloader_idx)
 
     def setup(self, stage: Optional[str] = None) -> None:
         """
@@ -188,11 +200,21 @@ class TridentDataModule(LightningDataModule):
         hydra.utils.call(
             self.datamodule_cfg.setup, self, stage, getattr(self, "dataset_cfg", None)
         )
+        self.on_after_setup()
+
+    # TODO
+    def on_before_setup(self):
+        hydra.utils.call(getattr(self.datamodule_cfg, "on_before_setup", None), self)
+
+    def on_after_setup(self):
+        hydra.utils.call(getattr(self.datamodule_cfg, "on_after_setup", None), datamodule=self)
 
     def _get_dataloader(self, split: str) -> DataLoader:
         """Checks existence of dataset for :obj:`split` and returns :obj:`DataLoader` with cfg."""
         dataset = getattr(self, f"dataset_{split}")
         assert dataset is not None, f"Dataset for {split} missing!"
+        if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
+            dataset = self._remove_unused_columns(dataset)
         return hydra.utils.call(getattr(self, "dataloader_cfg")[split], dataset=dataset)
 
     def train_dataloader(self) -> DataLoader:
@@ -206,3 +228,23 @@ class TridentDataModule(LightningDataModule):
 
     def predict_dataloader(self) -> DataLoader:
         return self._get_dataloader("predict")
+
+    # TODO(fdschmidt93): maybe move out-of trident-core and into trident-xtreme
+    def _remove_unused_columns(
+        self,
+        dataset: Dataset,
+    ):
+        import inspect
+
+        # Inspect model forward signature to keep only the arguments it accepts.
+        signature = inspect.signature(self.trainer.model.model.forward)
+        self._signature_columns = list(signature.parameters.keys())
+        # Labels may be named label or label_ids, the default data collator handles that.
+        self._signature_columns += ["label", "label_ids"]
+        ignored_columns = list(set(dataset.column_names) - set(self._signature_columns))
+        if len(ignored_columns) > 0:
+            log.info(
+                f"The following columns don't have a corresponding argument in "
+                f"`{self.trainer.model.__class__.__name__}.forward` and have been ignored: {', '.join(ignored_columns)}."
+            )
+        return dataset.remove_columns(ignored_columns)

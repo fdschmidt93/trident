@@ -96,8 +96,8 @@ def print_config(
 
 @rank_zero_only
 def log_hyperparameters(
-    config: DictConfig,
-    model: pl.LightningModule,
+    cfg: DictConfig,
+    module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],
@@ -106,28 +106,28 @@ def log_hyperparameters(
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
     Additionaly saves:
-        - number of model parameters
+        - number of module parameters
     """
 
     hparams = {}
 
     # choose which parts of hydra config will be saved to loggers
-    hparams["trainer"] = config["trainer"]
-    hparams["model"] = config["model"]
-    hparams["datamodule"] = config["datamodule"]
+    hparams["trainer"] = cfg["trainer"]
+    hparams["module"] = cfg["module"]
+    hparams["datamodule"] = cfg["datamodule"]
 
-    if "seed" in config:
-        hparams["seed"] = config["seed"]
-    if "callbacks" in config:
-        hparams["callbacks"] = config["callbacks"]
+    if "seed" in cfg:
+        hparams["seed"] = cfg["seed"]
+    if "callbacks" in cfg:
+        hparams["callbacks"] = cfg["callbacks"]
 
-    # save number of model parameters
-    hparams["model/params/total"] = sum(p.numel() for p in model.parameters())
-    hparams["model/params/trainable"] = sum(
-        p.numel() for p in model.parameters() if p.requires_grad
+    # save number of module parameters
+    hparams["module/params/total"] = sum(p.numel() for p in module.parameters())
+    hparams["module/params/trainable"] = sum(
+        p.numel() for p in module.parameters() if p.requires_grad
     )
-    hparams["model/params/non_trainable"] = sum(
-        p.numel() for p in model.parameters() if not p.requires_grad
+    hparams["module/params/non_trainable"] = sum(
+        p.numel() for p in module.parameters() if not p.requires_grad
     )
 
     # send hparams to all loggers
@@ -136,7 +136,7 @@ def log_hyperparameters(
 
 def finish(
     config: DictConfig,
-    model: pl.LightningModule,
+    module: pl.LightningModule,
     datamodule: pl.LightningDataModule,
     trainer: pl.Trainer,
     callbacks: List[pl.Callback],

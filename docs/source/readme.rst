@@ -3,6 +3,12 @@
 .. |project| replace:: trident
 .. _project: https://www.github.com/fdschmidt93/trident/
 
+
+Notices
+=======
+
+|project| currently undergoes heavy development. The README and associated documentation needs to be vastly updated to reflect the changes in the code. That said, the documentation for individual functions in many cases still works as expected.
+
 Using |project|
 ****************************
 
