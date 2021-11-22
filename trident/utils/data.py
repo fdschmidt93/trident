@@ -20,7 +20,7 @@ def load_dataset(
     # - _method_: call methods onto the instantiated object
     # - _apply_: call any function onto the instantiated object
     return_unprocessed = (
-        OmegaConf.select(self.datamodule_cfg, "keep_raw_dataset") == True
+        self.datamodule_cfg.get("keep_raw_dataset", None) == True
     )
     if stage in (None, "fit"):
         self.dataset_train, self.dataset_train_raw = instantiate_and_apply(
@@ -33,7 +33,7 @@ def load_dataset(
         )
     if stage in (None, "test"):
         self.dataset_test, self.dataset_test_raw = instantiate_and_apply(
-            config.get("test", None), self.datamodule_cfg.keep_raw_dataset
+            config.get("test", None), return_unprocessed
         )
     if stage in (None, "predict"):
         self.dataset_test, self.dataset_test_raw = instantiate_and_apply(

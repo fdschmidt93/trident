@@ -136,7 +136,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
 
         """
         # TODO: maybe we can simplify and integrate this even better
-        setup_cfg = getattr(self.hparams.module_cfg, "setup")
+        setup_cfg = getattr(self.hparams.module_cfg, "setup", None)
         if setup_cfg is None:
             if not hasattr(self, "model"):
                 self.model = hydra.utils.instantiate(self.hparams.model)
@@ -183,8 +183,6 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         Returns:
             ModelOutput: container with attributes required for evaluation
         """
-        import pudb
-        pu.db
         return self.model(**batch)
 
     def training_step(self, batch: dict, batch_idx: int) -> dict[str, Any]:
