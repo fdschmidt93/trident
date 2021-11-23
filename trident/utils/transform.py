@@ -1,7 +1,64 @@
-from typing import Union
-
 import numpy as np
 import torch
+
+# from torch.nn.utils.rnn import pad_sequence
+
+# N = 30
+# L = 8
+# tensors = [
+#     torch.randn((N, torch.randint(low=10, high=20, size=(1,)), L)) for x in range(10)
+# ]
+# for t in tensors:
+#     print(t.shape)
+# pad_sequence(tensors)
+
+
+def stack_or_pad_2d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
+    """
+    Stack along first axis of latter axis is homogenous in length else pad and stack.
+    """
+    N, D = zip(*[tuple(x.shape) for x in tensors])
+    if len(set(D)) != 1:
+        out = torch.full_like(
+            torch.Tensor(sum(N), max(D)), fill_value=-100, device=tensors[0].device
+        )
+        start = 0
+        for t in tensors:
+            num, len_ = t.shape
+            out[start : start + num, :len_] = t
+            start += num
+        return out
+    return torch.vstack(tensors)
+
+
+def concatenate_3d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
+    # (N sequences, L individual sequence length, C num classes -- typically)
+    N, L, C = zip(*[tuple(x.shape) for x in tensors])
+    out = torch.full_like(
+        torch.Tensor(sum(N), max(L), max(C)), fill_value=-100, device=tensors[0].device
+    )
+    start = 0
+    for t in tensors:
+        num, len_, _ = t.shape
+        out[start : start + num, :len_, :] = t
+        start += num
+    return out
+
+
+# def concatenate_3d(tensors: list[torch.Tensor]) -> torch.Tensor:
+#     """Concatenates list of varying length sequences."""
+#     # get individual set length
+#     a, b, c = zip(*[tuple(x.shape) for x in tensors])
+#     alen = np.array([len(set(a)), len(set(b)), len(set(c))])
+#     # axis with most variation is unpadded
+#     idx = int(alen.argmax())  # satisfy linter
+#     # swap to beginning for simpler padding
+#     cat_tensor = pad_sequence([t.swapaxes(0, idx) for t in tensors], True, -100)
+#     # swap back -- mind extra dim in beginning
+#     cat_tensor = cat_tensor.swapaxes(1, 1 + idx)
+#     # reshape to (batch, length, dim) shape
+#     cat_tensor = cat_tensor.reshape(-1, *cat_tensor.shape[2:])
+#     return cat_tensor
 
 
 def flatten_dict(inputs: list[dict]) -> dict:
@@ -16,14 +73,18 @@ def flatten_dict(inputs: list[dict]) -> dict:
         if isinstance(v[0], torch.Tensor):
             dim = v[0].dim()
             # stack matrices along first axis
-            if dim >= 2:
-                ret[k] = torch.vstack(v)
+            if dim == 2:
+                ret[k] = stack_or_pad_2d(v)
             # concatenate vectors
             elif dim == 1:
                 ret[k] = torch.cat(v, dim=0)
-            # create vectors from list of single tensors
+            # pad varying dimension and concatenate
+            elif dim == 3:
+                ret[k] = concatenate_3d(v)
             else:
-                ret[k] = torch.stack(v)
+                raise NotImplementedError(
+                    f"Handling {dim} number of dimensions unimplemented"
+                )
         elif isinstance(v[0], np.ndarray):
             ret[k] = np.vstack(v)
         else:

@@ -73,6 +73,29 @@ class EvalMixin(LightningModule):
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
+    def logging(
+        self,
+        stage: str,
+        metric_key: str,
+        input: Union[int, float, dict],
+        log_kwargs: Optional[dict] = None,
+    ):
+        fn: Union[None, Callable] = OmegaConf.select(
+            self.evaluation, f"metrics_cfg.{stage}.{metric_key}.logging"
+        )
+        if fn is not None:
+            input = fn(input)
+        log_kwargs = log_kwargs if log_kwargs is not None else {}
+
+        if isinstance(input, dict):
+            # MAYBE(fdschmidt93): better default formatting? might be taken care by pytorch_lightning itself
+            log_kwargs["dictionary"] = input
+            self.log_dict(**log_kwargs)
+        else:
+            log_kwargs["name"] = f"{stage}/{metric_key}"
+            log_kwargs["value"] = input
+            self.log(**log_kwargs)
+
     # TODO(fdschmidt93): can we reduce overhead?
     def prepare_batch(self, stage: str, batch: dict) -> dict:
         fn: Union[None, Callable] = OmegaConf.select(
@@ -210,12 +233,12 @@ class EvalMixin(LightningModule):
             for k, v in metrics_cfg.items():
                 if getattr(v, "compute_on", False) == "eval_step":
                     # TODO(fdschmidt93): do not rely on having to call `compute` here
-                    self.log(f"{stage}/{k}", v["metric"].compute(), prog_bar=True)
+                    self.logging(stage=stage, metric_key=k, input=v["metric"].compute())
                 if getattr(v, "compute_on", False) == "epoch_end":
                     kwargs: dict = self._prepare_metric_input(
                         v.kwargs, flattened_step_outputs, None
                     )
-                    self.log(f"{stage}/{k}", v["metric"](**kwargs), prog_bar=True)
+                    self.logging(stage=stage, metric_key=k, input=v["metric"](**kwargs))
         return flattened_step_outputs
 
     def validation_step(self, batch: dict, batch_idx: int) -> Union[None, dict]:

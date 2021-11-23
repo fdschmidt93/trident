@@ -24,7 +24,7 @@ def get_local(var):
     return objects[-1]
 
 
-def partial(_partial_, *args, **kwargs):
+def partial(*args, **kwargs):
     """Implements functools.partial for Hydra.
 
     :obj:`partial` is very handy for repeated function calls as :obj:`hydra.utils.call` incurs a high latency.
@@ -76,6 +76,7 @@ def partial(_partial_, *args, **kwargs):
 
         You might think that the above example is rather convoluted. However, the pattern allows you to flexibly combine functions and class methods alike with a transparent syntax that avoids indirection via additional wrappers that would otherwise be required to define a class and its associated method call.
     """
+    _partial_ = kwargs.pop("_partial_")
     method = get_method(_partial_)
     if "self" in kwargs:
         obj = kwargs.pop("self")
