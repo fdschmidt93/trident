@@ -7,6 +7,9 @@ from omegaconf import DictConfig, OmegaConf
 
 _ExtraKeys = ["_method_", "_apply_"]
 
+from trident.utils.logging import get_logger
+
+log = get_logger(__name__)
 
 # TODO(fdschmidt93): test when wrapped up in partial
 def get_local(var):
@@ -86,7 +89,7 @@ def partial(*args, **kwargs):
 
 def expand(
     cfg: DictConfig,
-    keys: Union[str, list[str]] = ["train", "val", "test"],
+    merge_keys: Union[str, list[str]] = ["train", "val", "test"],
     gen_keys: bool = False,
 ) -> DictConfig:
     """Expands partial configuration of `keys` in `cfg` with the residual configuration.
@@ -138,15 +141,30 @@ def expand(
 
         while only the original config is the one being logged.
     """
+    special_keys = ["_datasets_"]
     if cfg is not None:
-        if isinstance(keys, str):
-            keys = [keys]
-        shared_keys = [key for key in cfg.keys() if key not in keys]
+        if isinstance(merge_keys, str):
+            merge_keys = [merge_keys]
+        shared_keys = [key for key in cfg.keys() if key not in merge_keys]
         cfg_excl_keys = OmegaConf.masked_copy(cfg, shared_keys)
-        for key in keys:
-            if key in cfg:
-                # right-most gets priority
-                cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
+        for key in merge_keys:  # train, val, test
+            if key_cfg := cfg.get(key, None):  # cfg
+                # if special key for multiple datasets/dataloaders
+                if any(
+                    # TODO(fdschmidt93): declare more "globally"
+                    # TODO(fdschmidt93): recursion to make this nicer?
+                    c in key_cfg
+                    for c in special_keys
+                ):  # if _datasets_ in cfg
+                    for sub_key in special_keys:  # for each special in cfg
+                        if sub_key_cfg := key_cfg.get(sub_key, None):  # "_datasets_"
+                            for name in sub_key_cfg:  # source: ... target: ...
+                                # merge True by default
+                                cfg[key][sub_key][name] = OmegaConf.merge(
+                                    cfg_excl_keys, cfg[key][sub_key][name]
+                                )
+                else:
+                    cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
             else:
                 if gen_keys:
                     cfg[key] = cfg_excl_keys
@@ -157,9 +175,7 @@ def expand(
 
 # TODO(fdschmidt93): update documentation once preprocessing routines are set
 # TODO(fdschmidt93): add _keep_ to docs
-def instantiate_and_apply(
-    cfg: Union[None, DictConfig], return_unprocessed: bool = False
-) -> Any:
+def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
     r"""Adds :obj:`_method_` and :obj:`_apply_` keywords for :code:`hydra.utils.instantiate`.
 
     :obj:`_method_` and :obj:`_apply_` describe methods and custom functions to be applied on the instantiated object in order of the configuration. Most commonly, you want to make use of :obj:`dataset` `processing methods <https://huggingface.co/docs/datasets/process.html>`_\. For convenience
@@ -226,20 +242,16 @@ def instantiate_and_apply(
         Any: your instantiated object processed with _method_ & _apply_ functions
     """
     if cfg is None:
-        return None, None
+        return None
 
     # instantiate top-level cfg
     cfg_keys = list(cfg.keys())  # avoid changing dictionary size in loop
     extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in _ExtraKeys}
-    ret = hydra.utils.instantiate(cfg)
-    orig = None
-    if return_unprocessed:
-        orig = hydra.utils.instantiate(cfg)
+    obj = hydra.utils.instantiate(cfg)
 
     if not extra_kwds:
-        return ret, None
+        return obj
     extra_kwds = hydra.utils.instantiate(OmegaConf.create(extra_kwds))
-
     # kwd: {_method_, _apply_}
     # kwd_config: their respective collections of functions
     # key: name of user method or function
@@ -253,17 +265,15 @@ def instantiate_and_apply(
                 key_cfg["_target_"] = "trident.utils.hydra.partial"
                 key_cfg[
                     "_partial_"
-                ] = f"{ret.__class__.__module__}.{ret.__class__.__name__}.{key}"
+                ] = f"{obj.__class__.__module__}.{obj.__class__.__name__}.{key}"
                 fn = hydra.utils.instantiate(key_cfg)
-                val = fn(ret)
+                val = fn(obj)
                 # `fn` might mutate ret in-place
                 if val is not None:
-                    ret = val
+                    obj = val
             else:
-                ret = hydra.utils.call(key_cfg, ret)
-    if return_unprocessed:
-        return (ret, orig)
-    return (ret, None)
+                obj = key_cfg(obj)
+    return obj
 
 
 def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
@@ -322,6 +332,9 @@ def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     .. seealso:: :py:func:`src.utils.hydra.expand`, :py:func:`src.utils.hydra.instantiate_and_apply`, :py:func:`src.datamodule.utils.load_dataset`
     """
     for key in cb_cfg:
-        processed_cfg = hydra.utils.call(cb_cfg.get(key), OmegaConf.select(cfg, key))
-        OmegaConf.update(cfg, key, processed_cfg)
+        if to_process_cfg := OmegaConf.select(cfg, key):
+            processed_cfg = hydra.utils.call(cb_cfg.get(key), to_process_cfg)
+            OmegaConf.update(cfg, key, processed_cfg)
+        else:
+            log.info(f"Attempted to mutate non-existing {key} configuration.")
     return cfg

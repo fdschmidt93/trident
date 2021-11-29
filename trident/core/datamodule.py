@@ -1,13 +1,15 @@
 from types import MethodType
-from typing import Optional
+from typing import Optional, Union
 
 import hydra
 from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
 from pytorch_lightning import LightningDataModule
+from pytorch_lightning.trainer.supporters import CombinedLoader
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
 
+from trident.utils.hydra import instantiate_and_apply
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
@@ -107,15 +109,16 @@ class TridentDataModule(LightningDataModule):
         self.dataset_cfg = dataset_cfg
         self.dataloader_cfg = dataloader_cfg
 
-        self.dataset_train: Optional[Dataset] = None
-        self.dataset_val: Optional[Dataset] = None
-        self.dataset_test: Optional[Dataset] = None
-        self.dataset_predict: Optional[Dataset] = None
+        # reserved attributes
+        self.dataset_train: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_val: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_test: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_predict: Optional[Union[Dataset, dict[str, Dataset]]] = None
 
-        self.dataset_train_raw: Optional[Dataset] = None
-        self.dataset_val_raw: Optional[Dataset] = None
-        self.dataset_test_raw: Optional[Dataset] = None
-        self.dataset_predict_raw: Optional[Dataset] = None
+        self.dataset_train_raw: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_val_raw: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_test_raw: Optional[Union[Dataset, dict[str, Dataset]]] = None
+        self.dataset_predict_raw: Optional[Union[Dataset, dict[str, Dataset]]] = None
 
         # # methods via hydra
         # for method in [
@@ -136,7 +139,12 @@ class TridentDataModule(LightningDataModule):
 
     def __len__(self) -> int:
         """Returns the number of instances in :obj:`dataset_train`."""
-        return len(self.dataset_train) if self.dataset_train is not None else 0
+        if self.dataset_train is None:
+            return 0
+        elif isinstance(self.dataset_train, dict):
+            return max([len(dataset) for dataset in self.dataset_train.values()])
+        else:
+            return len(self.dataset_train)
 
     def prepare_data(self) -> None:
         """
@@ -162,6 +170,43 @@ class TridentDataModule(LightningDataModule):
     #     .. seealso:: `LightningDataModule.on_after_batch_transfer <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-after-batch-transfer>`_
     #     """
     #     self.datamodule_cfg.on_after_batch_transfer(self, batch, dataloader_idx)
+
+    # Requiremets
+    # - raw dataset
+    # -
+
+    def _datamodule_hook(self, kind: str, *args, **kwargs) -> None:
+        # `call` returns None if cfg is None
+        hydra.utils.call(
+            getattr(self.datamodule_cfg, kind, None), datamodule=self, *args, **kwargs
+        )
+
+    # def _setup_dataset(cfg: DictConfig, stage: str, split: str):
+
+    # def _setup(self,
+    #     stage: Optional[str] = None,
+    #     ) -> None:
+    #     return_unprocessed = (
+    #         self.datamodule_cfg.get("keep_raw_dataset", None) == True
+    #     )
+
+    #     if stage in (None, "fit"):
+    #         self.dataset_train, self.dataset_train_raw = instantiate_and_apply(
+    #             config.get("train", None), return_unprocessed
+    #         )
+
+    #     if stage in (None, "fit", "validate"):
+    #         self.dataset_val, self.dataset_val_raw = instantiate_and_apply(
+    #             config.get("val", None), return_unprocessed
+    #         )
+    #     if stage in (None, "test"):
+    #         self.dataset_test, self.dataset_test_raw = instantiate_and_apply(
+    #             config.get("test", None), return_unprocessed
+    #         )
+    #     if stage in (None, "predict"):
+    #         self.dataset_test, self.dataset_test_raw = instantiate_and_apply(
+    #             config.get("predict", None), return_unprocessed
+    #         )
 
     def setup(self, stage: Optional[str] = None) -> None:
         """
@@ -197,36 +242,69 @@ class TridentDataModule(LightningDataModule):
 
         .. seealso:: `LightningDataModule.setup <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#setup>`_, :py:func:`src.datamodules.utils.load_dataset`, :py:func:`src.utils.hydra.instantiate_and_apply`
         """
+        self._datamodule_hook(kind="on_before_setup")
         hydra.utils.call(
             self.datamodule_cfg.setup, self, stage, getattr(self, "dataset_cfg", None)
         )
-        self.on_after_setup()
+        self._datamodule_hook(kind="on_after_setup")
 
-    # TODO
-    def on_before_setup(self):
-        hydra.utils.call(getattr(self.datamodule_cfg, "on_before_setup", None), self)
-
-    def on_after_setup(self):
-        hydra.utils.call(getattr(self.datamodule_cfg, "on_after_setup", None), datamodule=self)
-
-    def _get_dataloader(self, split: str) -> DataLoader:
+    def _get_dataloader(
+        self, split: str
+    ) -> Union[None, DataLoader, dict[str, DataLoader], CombinedLoader]:
         """Checks existence of dataset for :obj:`split` and returns :obj:`DataLoader` with cfg."""
         dataset = getattr(self, f"dataset_{split}")
         assert dataset is not None, f"Dataset for {split} missing!"
-        if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
-            dataset = self._remove_unused_columns(dataset)
-        return hydra.utils.call(getattr(self, "dataloader_cfg")[split], dataset=dataset)
+        if not isinstance(dataset, dict):
+            if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
+                dataset = self._remove_unused_columns(dataset)
+            return hydra.utils.call(
+                getattr(self, "dataloader_cfg")[split], dataset=dataset
+            )
+        else:
+            # TODO(fdschmidt93): check
+            loaders = {}
+            dataloader_cfg = getattr(self, "dataloader_cfg")[split]
+            if not "_datasets_" in dataloader_cfg:
+                log.info(
+                    f"Sharing {split}-dataloader configuration for {list(dataset.keys())}"
+                )
+                for k, v in dataset.items():
+                    _dataset = v
+                    if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
+                        _dataset = self._remove_unused_columns(_dataset)
+                    loaders[k] = hydra.utils.call(dataloader_cfg, dataset=_dataset)
+            else:
+                assert set(dataset.keys()) == set(
+                    dataloader_cfg._dataloader_.keys()
+                ), "Keys between datasets and dataloader do not align!"
+                for dataset_name, cfg in dataloader_cfg._dataloaders_.items():
+                    _dataset = dataset[dataset_name]
+                    if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
+                        _dataset = self._remove_unused_columns(_dataset)
+                    loaders[dataset_name] = hydra.utils.call(cfg, dataset=_dataset)
+                # training split automatically wrapped
+            if split in ("val", "test", "predict"):
+                loaders = CombinedLoader(loaders)
+            return loaders
 
-    def train_dataloader(self) -> DataLoader:
+    def train_dataloader(
+        self,
+    ) -> Union[None, DataLoader, dict[str, DataLoader], CombinedLoader]:
         return self._get_dataloader("train")
 
-    def val_dataloader(self) -> DataLoader:
+    def val_dataloader(
+        self,
+    ) -> Union[None, DataLoader, dict[str, DataLoader], CombinedLoader]:
         return self._get_dataloader("val")
 
-    def test_dataloader(self) -> DataLoader:
+    def test_dataloader(
+        self,
+    ) -> Union[None, DataLoader, dict[str, DataLoader], CombinedLoader]:
         return self._get_dataloader("test")
 
-    def predict_dataloader(self) -> DataLoader:
+    def predict_dataloader(
+        self,
+    ) -> Union[None, DataLoader, dict[str, DataLoader], CombinedLoader]:
         return self._get_dataloader("predict")
 
     # TODO(fdschmidt93): maybe move out-of trident-core and into trident-xtreme

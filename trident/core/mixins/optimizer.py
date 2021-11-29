@@ -32,11 +32,15 @@ class OptimizerMixin:
         """Computes the number of training steps per device, accounting for gradient accumulation."""
         accumulate_grad_batches = getattr(self.trainer, "accumulate_grad_batches", 1)
         if self.trainer.datamodule is not None:
-            num_training_samples = len(self.trainer.datamodule.train_dataloader())
+            dataloader = self.trainer.datamodule.train_dataloader()
+            if isinstance(dataloader, dict):
+                num_training_batches = max([len(dl) for dl in dataloader.values()])
+            else:
+                num_training_batches = len(dataloader)
         else:
-            num_training_samples = len(self.train_dataloader())
+            num_training_batches = len(self.train_dataloader())
         return (
-            num_training_samples
+            num_training_batches
             * self.trainer.max_epochs
             // max(1, self.trainer.num_gpus)
             // accumulate_grad_batches
@@ -106,7 +110,7 @@ class OptimizerMixin:
             parameters = self.parameters()
 
         optimizer = hydra.utils.instantiate(self.hparams.optimizer, parameters)
-        if hasattr(self.hparams, "scheduler"):
+        if getattr(self.hparams, "scheduler", None):
             scheduler = self.configure_scheduler(optimizer)
             return [optimizer], [scheduler]
         return [optimizer]

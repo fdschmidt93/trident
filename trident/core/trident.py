@@ -2,8 +2,9 @@ from types import MethodType
 from typing import Any, List, Optional, Union
 
 import hydra
+import torch
 from datasets.arrow_dataset import Dataset
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 from torch import nn
@@ -11,10 +12,10 @@ from torch.utils.data.dataloader import DataLoader
 
 from trident.core.mixins.evaluation import EvalMixin
 from trident.core.mixins.optimizer import OptimizerMixin
+from trident.utils import deepgetitem
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
-
 
 # TODO(fdschmidt93): function signatures fn(self, ...)
 # TODO(fdschmidt93): clean API for instantiation to depend on datamodule (token classification: label2id, id2label
@@ -145,6 +146,48 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             assert isinstance(
                 self.model, nn.Module
             ), "Please set up the model appriopriately"
+        if ckpt := getattr(self.hparams.module_cfg, "weights_from_checkpoint", None):
+            self.weights_from_checkpoint(**ckpt)
+
+    def weights_from_checkpoint(
+        self,
+        ckpt_path: str,
+        map_location: str = "cpu",
+        map_weights: Union[str, dict] = None,
+    ):
+        """Loads weights from existing Pytorch-Lightning checkpoint.
+
+
+        Args:
+            ckpt_path (:obj:`str`):
+                path to lightning checkpoint
+            map_location (:obj:`str`):
+                device to map to
+            map_weights (:obj:`Union[None, str, dict[str, str]]`, `optional`):
+                * If :obj:`None`: assumes 1-to-1 alignment between checkpoint and :obj:`TridentModule`
+                * If :obj:`str`: maps the weight of the `str` to :obj:`self.model`
+                * If :obj:`dict`: keys of the checkpoint's :obj:`state_dict` are mapped by values to :obj:`self.model`
+                    - Values should be in absolute dot notation e.g. :code:`encoder.embeddings: transformer.embeddings`
+        """
+        ckpt = torch.load(ckpt_path, map_location)["state_dict"]
+        if map_weights is None:
+            self.load_state_dict(ckpt)
+        elif isinstance(map_weights, str):
+            ckpt = ckpt[map_weights]
+            self.load_state_dict(ckpt)
+        elif isinstance(map_weights, dict):
+            for src_weights, trg_weights in map_weights.items():
+                trg_module: Union[nn.Module, None] = deepgetitem(self, trg_weights)
+                assert (
+                    trg_module is not None
+                ), f"{trg_module} is not a valid attribute of self.model"
+                src_module: Union[nn.Module, None] = deepgetitem(ckpt, src_weights)
+                assert (
+                    trg_module is not None
+                ), f"{trg_module} is not a valid attribute of state_dict"
+                trg_module.load_state_dict(src_module)
+
+        log.info(f"Successfully reloaded weights from {ckpt_path}")
 
     def set_mixins(self, mixin: list[str]) -> None:
         """Apply base class and mixins to a class instance after creation.
