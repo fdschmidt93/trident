@@ -1,17 +1,20 @@
 from typing import Callable, NamedTuple, Optional, Union
 
 import hydra
+import torch
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
 from pytorch_lightning.core.lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 
+from trident.utils.logging import get_logger
 from trident.utils.transform import flatten_dict
 
 # TODO(fdschmidt93): update docs
 # TODO(fdschmidt93): potential speed up by converting to primitve container? probably doesn't matter
 
+log = get_logger(__name__)
 
 # TODO(fdschmidt93): potential speed-ups
 # DictConfig vs dict -> ns "virtually" free
@@ -77,6 +80,23 @@ class EvalMixin(LightningModule):
 
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
+
+    # TODO enable strict opt-in
+    def _validate_tensors_epoch_end(
+        self,
+        outputs: dict,
+        num_samples: int,
+        stage: str,
+        dataset: Optional[str] = None,
+    ) -> None:
+        for k, v in outputs.items():
+            if isinstance(v, torch.Tensor):
+                if v.shape[0] != num_samples:
+                    prefix = (
+                        f"{stage}: " if dataset is None else f"{stage} - {dataset}: "
+                    )
+                    message = prefix + f"{k} only has {v.shape[0]}/{num_samples} rows"
+                    log.warn(message)
 
     def on_eval_start(self, stage):
         metrics_cfg = self.evaluation.metrics_cfg.get(stage, None)
@@ -352,7 +372,14 @@ class EvalMixin(LightningModule):
                     for dataset_name, outputs in flattened_step_outputs.items()
                 }
 
+                datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")
                 for dataset_name, dataset_metrics_cfg in metrics_cfg._datasets_.items():
+                    self._validate_tensors_epoch_end(
+                        flattened_step_outputs[dataset_name],
+                        len(datasets[dataset_name]),
+                        stage,
+                        dataset_name,
+                    )
                     for metric, metric_cfg in dataset_metrics_cfg.items():
                         if metric_cfg.get("compute_on", False) == "eval_step":
                             # TODO(fdschmidt93): do not rely on having to call `compute` here
