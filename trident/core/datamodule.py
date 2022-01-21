@@ -275,9 +275,9 @@ class TridentDataModule(LightningDataModule):
                     loaders[k] = hydra.utils.call(dataloader_cfg, dataset=_dataset)
             else:
                 assert set(dataset.keys()) == set(
-                    dataloader_cfg._dataloader_.keys()
+                    dataloader_cfg._datasets_.keys()
                 ), "Keys between datasets and dataloader do not align!"
-                for dataset_name, cfg in dataloader_cfg._dataloaders_.items():
+                for dataset_name, cfg in dataloader_cfg._datasets_.items():
                     _dataset = dataset[dataset_name]
                     if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
                         _dataset = self._remove_unused_columns(_dataset)
