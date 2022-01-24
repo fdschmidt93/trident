@@ -81,7 +81,7 @@ class EvalMixin(LightningModule):
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
-    # TODO enable strict opt-in
+    # TODO better message
     def _validate_tensors_epoch_end(
         self,
         outputs: dict,
@@ -89,14 +89,21 @@ class EvalMixin(LightningModule):
         stage: str,
         dataset: Optional[str] = None,
     ) -> None:
+        keys = []
+        prefix = f"{stage}: " if dataset is None else f"{stage} - {dataset}: "
         for k, v in outputs.items():
             if isinstance(v, torch.Tensor):
                 if v.shape[0] != num_samples:
-                    prefix = (
-                        f"{stage}: " if dataset is None else f"{stage} - {dataset}: "
-                    )
-                    message = prefix + f"{k} only has {v.shape[0]}/{num_samples} rows"
+                    message = prefix + f"{k} has {v.shape[0]}/{num_samples} rows"
                     log.warn(message)
+                    keys.append(k)
+
+        for k in keys:
+            outputs[k] = outputs[k][:num_samples]
+            message = (
+                prefix + f"Truncating {k} to {outputs[k].shape[0]} (#samples={num_samples}) rows"
+            )
+            log.warn(message)
 
     def on_eval_start(self, stage):
         metrics_cfg = self.evaluation.metrics_cfg.get(stage, None)

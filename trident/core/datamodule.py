@@ -284,7 +284,7 @@ class TridentDataModule(LightningDataModule):
                     loaders[dataset_name] = hydra.utils.call(cfg, dataset=_dataset)
                 # training split automatically wrapped
             if split in ("val", "test", "predict"):
-                loaders = CombinedLoader(loaders)
+                loaders = CombinedLoader(loaders, mode = "max_size_cycle")
             return loaders
 
     def train_dataloader(
