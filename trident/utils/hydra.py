@@ -156,12 +156,16 @@ def expand(
                     c in key_cfg
                     for c in special_keys
                 ):  # if _datasets_ in cfg
+                    # TODO(fdschmidt93): maybe generalize to anything other than "_datasets_"
+                    cfg_excl_datasets = OmegaConf.masked_copy(key_cfg, "_datasets_")
+                    # allow shared config in sub key
+                    shared_cfg = OmegaConf.merge(cfg_excl_keys, cfg_excl_datasets)
                     for sub_key in special_keys:  # for each special in cfg
                         if sub_key_cfg := key_cfg.get(sub_key, None):  # "_datasets_"
                             for name in sub_key_cfg:  # source: ... target: ...
                                 # merge True by default
                                 cfg[key][sub_key][name] = OmegaConf.merge(
-                                    cfg_excl_keys, cfg[key][sub_key][name]
+                                    shared_cfg, cfg[key][sub_key][name]
                                 )
                 else:
                     cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
