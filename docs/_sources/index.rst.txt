@@ -12,8 +12,6 @@
    Contributing <CONTRIBUTING>
    trident.core
 
-   self
-
 
 Indices and tables
 ==================
