@@ -3,10 +3,16 @@
 .. |project| replace:: trident
 .. _project: https://www.github.com/fdschmidt93/trident/
 
-Using |project|
-****************************
 
-|project| is generic framework to train and evaluate models and represents a thin layer of convenience on top of
+Notices
+=======
+
+|project| currently undergoes heavy development. The README and associated documentation needs to be vastly updated to reflect the changes in the code. That said, the documentation for individual functions in many cases still works as expected.
+
+Using |project|
+***************
+
+|project| is generic framework to train and evaluate (deep learning) models and represents a thin layer of convenience on top of
 
 * `Pytorch <https://https://pytorch.org/>`_
 * `Pytorch-Lightning <https://pytorch-lightning.readthedocs.io/>`_
@@ -15,7 +21,12 @@ Using |project|
 * `transformers <https://huggingface.co/transformers/>`_
 * `torchmetrics <https://torchmetrics.readthedocs.io/>`_
 
-It is quintessential that you familiarize yourself with Hydra as it constitutes the backbone for composing experiments in |project|.
+In particular, |project| intends to abstract any boilerplate away in a highly modular fashion:
+
+* Data & Preprocessing pipeline powered by `datasets <https://huggingface.co/docs/datasets/>`_ and :obj:`pytorch_lightning.LightningDataModule`: user setup required
+* Training and Evaluation wrappers constitute convenience layers around `Pytorch-Lightning <https://pytorch-lightning.readthedocs.io/>`_
+
+You can opt-out of any component and replace it with your implementation with ease (see :ref:`customization`). It is quintessential that you familiarize yourself with Hydra as it constitutes the backbone for composing experiments in |project|.
 
 Quick Start
 ===========
@@ -25,9 +36,11 @@ Quick Start
 Paradigms
 ---------
 
-* **Simplicity:** follow existing patterns of our stack for easy understanding and extending
+* **Simplicity:** follow existing patterns (e.g. naming conventions) of our stack as much as possible for easy understanding and extending
 * **Low code:** trident is a wrapper first -- prefer implementations from well-maintained frameworks
 * **Out-of-the-box:** provide readily available pipelines for popular benchmark datasets
+
+That said, you are encouraged to check the source code of the primary modules :doc:`src.modules` and :doc:`src.datamodules` which are thin wrappers around `LightningModule <https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html>`_ and `LightningDataModule <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html>`_\, respectively.
 
 Usage
 -----
@@ -38,48 +51,62 @@ Typical usage of trident follows the below schema:
 2. Write a configuration for your model (see also :ref:`customization`)
 3. Train on an existing experiment with `python run.py experiment=mnli module=my_model`
 
-You can find existing pipelines at :repo:`experiments configs <configs/experiments/>`. A full experiment (incl. `module`) is defined in the :repo:`MNLI-TinyBert config <configs/experiment/mnli_tinybert.yaml>`.
+You can find existing pipelines at :repo:`experiments configs <configs/experiment/>`. A full experiment (incl. `module`) is defined in the :repo:`MNLI-TinyBert config <configs/experiment/mnli_tinybert.yaml>`.
 
 Project Structure
 -----------------
 
 **Important Concepts**:
 
-* `module` encapsulates a :obj:`pytorch_lightning.LightningModule` in a Hydra config (example: :repo:`sequence classification <configs/module/sequence_classification.yaml>`)
+* `module` encapsulates a :obj:`pytorch_lightning.LightningModule` in a Hydra config (example: :repo:`sequence classification <configs/module/sequence_classification.yaml>`) and comprises the following keys:
+    
+    - model: your model that returns a container with loss and required attributes
+    - :ref:`evaluation <evaluation>`: use and existing or customized evaluation config
+    - optimizer: the optimizer for training
+    - scheduler: the scheduler for optimization
+    - :ref:`overrides <function-override>`: override and add single methods of the :obj:`TridentModule`
+    - :ref:`mixins <mixins>`: override and add groups of methods of the :obj:`TridentModule`
+
+    Please see more details in :ref:`trident_module`.
+
 * `datamodule` represents a :obj:`pytorch_lightning.LightningDataModule` in a Hydra config (example: :repo:`MNLI <configs/datamodule/mnli.yaml>`)
+
+* `experiment` constitutes a set of configuration that typically defines everything except for the `model`
 
 .. code-block::
     
-    ├── configs                 <- Hydra configuration files
-    │   ├── callbacks               <- Callbacks for model training
-    │   ├── datamodule              <- Datamodule configs
-    │   ├── experiment              <- Experiment configs encapsulate **at least** everything except model (but may include models)
-    │   ├── hparams_search          <- Hyperparameter search configs
-    │   ├── hydra                   <- Hydra related configs
-    │   ├── logger                  <- Logger configs
-    │   ├── module                  <- Module configs: model (mixins & overrides), optimizer, scheduler
-    │   ├── trainer                 <- Trainer configs
+    ├── configs             <- Hydra configuration files
+    │   ├── callbacks         <- Model training callbacks
+    │   ├── datamodule        <- Datamodule configs
+    │   ├── experiment        <- Experiment configs encapsulate **at least** everything except model (but may include models)
+    │   ├── hparams_search    <- Hyperparameter search configs
+    │   ├── hydra             <- Hydra related configs
+    │   ├── logger            <- Logger configs
+    │   ├── module            <- Module configs: model (mixins & overrides), optimizer, scheduler
+    │   ├── trainer           <- Trainer configs
     │   │
-    │   └── config.yaml             <- Main project configuration file
+    │   └── config.yaml       <- Main project configuration file
     │
-    ├── logs                    <- Logs generated by Hydra and PyTorch Lightning loggers
+    ├── logs                <- Logs generated by Hydra & PyTorch Lightning loggers
     │
-    ├── tests                   <- Tests of any kind
-    │   ├── helpers                 <- A couple of testing utilities
-    │   ├── shell                   <- Shell/command based tests
-    │   └── unit                    <- Unit tests
+    ├── tests               <- Tests of any kind
+    │   ├── helpers           <- A couple of testing utilities
+    │   ├── shell             <- Shell/command based tests
+    │   └── unit              <- Unit tests
     │
     ├── src
-    │   ├── callbacks               
-    │   ├── datamodules             
-    │   ├── modules                 
-    │   │  ├──── base               <- Definition of TridentModule
-    │   │  ├──── mixins             <- Extend base module with methods
-    │   │  ├──── functional         <- Extend base module functionally
-    │   ├── utils                   
+    │   ├── callbacks           
+    │   ├── datamodules         
+    │   ├── modules             
+    │   │  ├──── base         <- Definition of TridentModule
+    │   │  ├──── mixins       <- Extend TridentModule with methods
+    │   │  └──── functional   <- Extend TridentModule functionally
+    │   ├── utils               
     │   │
-    │   └── train.py                <- Training pipeline
+    │   └── train.py          <- Training pipeline
 
+
+.. _trident_module:
 
 (Trident)Module
 ---------------
@@ -124,7 +151,6 @@ For instance, you can then
     - /evaluation: classification # 
     # optionally
     - /overrides: ...
-    - /mixins: ...
     
     # you can set instructions here on how to embed your own model
     model:
@@ -139,32 +165,7 @@ The `TridentModule` by default incorporates mixins for optimizer configuration a
 DataModule
 ----------
 
-The :obj:`src.datamodule.base.BaseDataModule` is initalized as follows.
-
-.. code-block:: python
-    
-    # the python code is referenced explicitly here as opposed to yaml
-    # to highlight optional flags
-    def __init__(
-        self,
-        collate_fn: DictConfig, # collate_fn for dataloader
-        batch_size: int = 8,
-        num_workers: int = 8,
-        pin_memory: bool = True,
-        overrides: Optional[DictConfig] = None,
-        # linked by default against collate_fn
-        train_collate_fn: Optional[DictConfig] = None,  # for train_dataloader
-        val_collate_fn: Optional[DictConfig] = None,    # for val_dataloader
-        test_collate_fn: Optional[DictConfig] = None,   # for test_dataloader
-        seed: int = 42,
-    ):
-
-All datamodules inherit from the base datamodule and are required to at least define a :obj:`setup` method. See the :repo:`config <configs/datamodule/mnli.yaml>` and corresponding :repo:`implementation <src/datamodules/mnli.py>` on how to define your own datamodules easily. 
-
-In addition, overrides allows you to functionally override and extend the datamodule instance. See more at :ref:`function-override`.
-
-At last, you can arbitrarily combine datamodules with the :obj:`src.datamodules.meta.MetaDatamodule` (example experiment: :repo:`config <configs/experiment/pawsx.yaml>`, TODO).
-
+TODO
 
 Extensibility
 -------------
@@ -181,14 +182,11 @@ trident allows you to integrate your existing projects via:
 
 For details on how to incorporate custom models or datamodules into the framework, see :ref:`customization`.
 
-TODO
--------
+Contributing
+------------
 
-The below list for now only reflects the most urgent TODOs in immediate scope of the project. Contributions are very welcome!
+Please see :ref:`Contributing <contributing>`!
 
-* Full out-of-the-box for `XTREME benchmark <https://github.com/google-research/xtreme>`_
-* Automated docgen via Github actions to readthedocs
-* Basic tests
 
 Credits
 -------
@@ -200,5 +198,5 @@ Author
 -------
 
 | Name: Fabian David Schmidt
-| Mail: fabian@informatik.uni-mannheim.de
-| Affiliation: University of Mannheim
+| Mail: fabian.schmidt@uni-wuerzburg.de
+| Affiliation: University of Würzburg
