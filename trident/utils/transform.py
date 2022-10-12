@@ -45,22 +45,6 @@ def concatenate_3d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
     return out
 
 
-# def concatenate_3d(tensors: list[torch.Tensor]) -> torch.Tensor:
-#     """Concatenates list of varying length sequences."""
-#     # get individual set length
-#     a, b, c = zip(*[tuple(x.shape) for x in tensors])
-#     alen = np.array([len(set(a)), len(set(b)), len(set(c))])
-#     # axis with most variation is unpadded
-#     idx = int(alen.argmax())  # satisfy linter
-#     # swap to beginning for simpler padding
-#     cat_tensor = pad_sequence([t.swapaxes(0, idx) for t in tensors], True, -100)
-#     # swap back -- mind extra dim in beginning
-#     cat_tensor = cat_tensor.swapaxes(1, 1 + idx)
-#     # reshape to (batch, length, dim) shape
-#     cat_tensor = cat_tensor.reshape(-1, *cat_tensor.shape[2:])
-#     return cat_tensor
-
-
 def flatten_dict(inputs: list[dict]) -> dict:
     """Conflates keys of list[dict] and stacks np arrays & tensors along 0-dim."""
     ret = {}

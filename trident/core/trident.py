@@ -1,14 +1,12 @@
 from types import MethodType
-from typing import Any, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 import hydra
 import torch
-from datasets.arrow_dataset import Dataset
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 from pytorch_lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 from torch import nn
-from torch.utils.data.dataloader import DataLoader
 
 from trident.core.mixins.evaluation import EvalMixin
 from trident.core.mixins.optimizer import OptimizerMixin
@@ -110,9 +108,8 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         # TODO(fdschmidt93): verify ordering
         LightningModule.__init__(self)
         super().__init__()
-        if hasattr(self.hparams, "mixins") and self.hparams.mixins is not None:
-            self.set_mixins(self.hparams.mixins)
 
+        # TODO(fschmidt93): consider removing override syntax, as typically TridentModule is sub-classed
         # forcefully override trident methods
         self.overrides = hydra.utils.instantiate(self.hparams.overrides)
         if self.overrides is not None:
@@ -153,7 +150,9 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         self,
         ckpt_path: str,
         map_location: str = "cpu",
-        map_weights: Union[str, dict] = None,
+        strict: bool = True,
+        processing_fn: Optional[Callable] = None,
+        map_weights: Optional[Union[str, dict]] = None,
     ):
         """Loads weights from existing Pytorch-Lightning checkpoint.
 
@@ -163,51 +162,40 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
                 path to lightning checkpoint
             map_location (:obj:`str`):
                 device to map to
+            strict (:obj:`bool`):
+                force agreement (:obj:`True`) or accept non-matching keys (:obj:`False`)
             map_weights (:obj:`Union[None, str, dict[str, str]]`, `optional`):
                 * If :obj:`None`: assumes 1-to-1 alignment between checkpoint and :obj:`TridentModule`
                 * If :obj:`str`: maps the weight of the `str` to :obj:`self.model`
                 * If :obj:`dict`: keys of the checkpoint's :obj:`state_dict` are mapped by values to :obj:`self.model`
                     - Values should be in absolute dot notation e.g. :code:`encoder.embeddings: transformer.embeddings`
+            map_location (:obj:`Optional[Callable]`):
+                function that takes the state dict of the loaded checkpoint, process and outputs the state dict
         """
         ckpt = torch.load(ckpt_path, map_location)["state_dict"]
+        if isinstance(processing_fn, Callable):
+            processing_fn = hydra.utils.instantiate(processing_fn)
+            if isinstance(processing_fn, Callable):
+                ckpt = processing_fn(ckpt)
         if map_weights is None:
-            self.load_state_dict(ckpt)
+            self.load_state_dict(ckpt, strict=strict)
         elif isinstance(map_weights, str):
             ckpt = ckpt[map_weights]
-            self.load_state_dict(ckpt)
+            self.load_state_dict(ckpt, strict=strict)
         elif isinstance(map_weights, dict):
+            # for from, to in weights
             for src_weights, trg_weights in map_weights.items():
+                src_module = deepgetitem(ckpt, src_weights)
+                assert (
+                    src_module is not None
+                ), f"{src_module} is not a valid attribute of state_dict"
                 trg_module: Union[nn.Module, None] = deepgetitem(self, trg_weights)
                 assert (
                     trg_module is not None
                 ), f"{trg_module} is not a valid attribute of self.model"
-                src_module: Union[nn.Module, None] = deepgetitem(ckpt, src_weights)
-                assert (
-                    trg_module is not None
-                ), f"{trg_module} is not a valid attribute of state_dict"
-                trg_module.load_state_dict(src_module)
+                trg_module.load_state_dict(src_module, strict=strict)
 
         log.info(f"Successfully reloaded weights from {ckpt_path}")
-
-    def set_mixins(self, mixin: list[str]) -> None:
-        """Apply base class and mixins to a class instance after creation.
-
-        Reference:
-            Modified from below StackOverflow post
-            Author: Ethan Furman
-            URL: https://stackoverflow.com/a/8545287
-
-        Args:
-            mixin: list of imports, e.g. [src.modules.mixin.eval.EvalMixin]
-
-        Returns:
-            None:
-        """
-        classes: List[object] = [hydra.utils.get_class(c) for c in mixin]
-        base_cls = self.__class__
-        self.__class__ = type(base_cls.__name__, (*classes, base_cls), {})
-        for cls_ in classes:
-            cls_.__init__(self)
 
     def forward(self, batch: dict) -> dict:
         """Plain forward pass of your model for which the batch is unpacked.

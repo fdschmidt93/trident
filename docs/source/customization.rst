@@ -144,52 +144,6 @@ b. Override existing or add functions to :obj:`src.modules.base.TridentModule`
 
 Should your dataset fit the project, please consider a PR!
 
-.. _mixins:
-
-Mixins
-------
-
-In the context of trident, mixins constitute a series of methods that define behaviour of your model or datamodule. Your mixins must not reinstantiate :obj:`LightningModule` or  `LightningDataModule` (e.g. via obj:`super`), but instead should follow the below pattern.
-
-
-.. code-block:: python
-
-    class MyModelMixin:
-
-        def __init__(self) -> None:
-            # self.hparams comprises the instantiated attributes
-            self.my_object = hydra.utils.instantiate(self.hparams.my_new_module_attribute)
-        
-        # override model forward
-        def forward(self, batch: BatchEncoding) -> BaseModelOuput:
-            ...
-
-        # add new functions
-        def other_function1(self, *args, **kwargs) -> Any:
-            ...
-
-        def other_function2(self, *args, **kwargs) -> Any:
-            ...
-
-You then provide paths to the objects in `/configs/mixins`:
-
-:obj:`/configs/mixins/my_model_mixin.yaml`
-
-.. code-block:: yaml
-    # list[str]
-    - src.my_modules.mixin.MyModelMixin
-
-and link  them in your module
-
-:obj:`/configs/module/my_module.yaml`
-    
-.. code-block:: yaml
-    
-    defaults:
-    ...
-    - /mixins: my_model_mixin
-    ...
-
 .. _evaluation:
 
 Evaluation

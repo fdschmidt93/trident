@@ -11,7 +11,6 @@
    customization
    Contributing <CONTRIBUTING>
    trident.core
-    
 
 
 Indices and tables

@@ -10,7 +10,7 @@ Notices
 |project| currently undergoes heavy development. The README and associated documentation needs to be vastly updated to reflect the changes in the code. That said, the documentation for individual functions in many cases still works as expected.
 
 Using |project|
-****************************
+***************
 
 |project| is generic framework to train and evaluate (deep learning) models and represents a thin layer of convenience on top of
 
@@ -71,7 +71,7 @@ Project Structure
 
 * `datamodule` represents a :obj:`pytorch_lightning.LightningDataModule` in a Hydra config (example: :repo:`MNLI <configs/datamodule/mnli.yaml>`)
 
-* `experiment` constitutes a set of configuration that typically defines everything _except_ for the `model`
+* `experiment` constitutes a set of configuration that typically defines everything except for the `model`
 
 .. code-block::
     
@@ -151,7 +151,6 @@ For instance, you can then
     - /evaluation: classification # 
     # optionally
     - /overrides: ...
-    - /mixins: ...
     
     # you can set instructions here on how to embed your own model
     model:
@@ -166,32 +165,7 @@ The `TridentModule` by default incorporates mixins for optimizer configuration a
 DataModule
 ----------
 
-The :obj:`src.datamodules.base.BaseDataModule` is initalized as follows.
-
-.. code-block:: python
-    
-    # the python code is referenced explicitly here as opposed to yaml
-    # to highlight optional flags
-    def __init__(
-        self,
-        collate_fn: DictConfig, # collate_fn for dataloader
-        batch_size: int = 8,
-        num_workers: int = 8,
-        pin_memory: bool = True,
-        overrides: Optional[DictConfig] = None,
-        # linked by default against collate_fn
-        train_collate_fn: Optional[DictConfig] = None,  # for train_dataloader
-        val_collate_fn: Optional[DictConfig] = None,    # for val_dataloader
-        test_collate_fn: Optional[DictConfig] = None,   # for test_dataloader
-        seed: int = 42,
-    ):
-
-All datamodules inherit from the base datamodule and are required to at least define a :obj:`setup` method. See the :repo:`config <configs/datamodule/mnli.yaml>` and corresponding :repo:`implementation <src/datamodules/mnli.py>` on how to define your own datamodules easily. 
-
-In addition, overrides allows you to functionally override and extend the datamodule instance. See more at :ref:`function-override`.
-
-At last, you can arbitrarily combine datamodules with the :obj:`src.datamodules.meta.MetaDatamodule` (example experiment: :repo:`config <configs/experiment/pawsx.yaml>`, TODO).
-
+TODO
 
 Extensibility
 -------------
@@ -214,40 +188,6 @@ Contributing
 Please see :ref:`Contributing <contributing>`!
 
 
-TODO
--------
-
-The below list for now only reflects the most urgent TODOs in immediate scope of the project. Contributions are very welcome!
-
-* Support XTREME: ~2 weeks
-
-  * Support QA, NER, UDP, XCOPA
-  * Primary question: how to support with little-to-no maintenance
-  * Streamline `datasets` to be fully compatbile with HF: see `train_dataset.map` in `example <https://github.com/huggingface/transformers/blob/d5b82bb70c2e8c4b184a6f2a7d1c91d7fd156956/examples/pytorch/token-classification/run_ner.py#L402>`_ (which are then padded in the trainer)
-    * Pre-Tokenize input with `datasets.map`
-    * Re-use `collators <https://github.com/huggingface/transformers/blob/master/src/transformers/data/data_collator.py>`_ from `transformers`
-
-* Streamline
-    * Datamodules
-        * Preprocessing and setup should share functionality across datasets
-        * Datasets should be adequately documented (Name, Paper, URLs to Website & hf datasets, raw input, expected batch)
-    * Evaluation
-        * Templates for XTREME tasks
-        * Provide documentation and functionality out-of-the-box
-
-* Documentation for
-    
-    * Individual datamodules (setup, Preprocessing, expected batch format, collator)
-    * Experiment configurations (global defaults, existing experiments, etc.)
-    * Autogenerate files for out-of-the-box supported "task" (datamodule, evaluation, coverage)
-
-* Dictionary of task types aligned with HF examples
-        
-* Tests
-
-* `src.models` as model templates (with `src.models.{losses, ...}` for added functionality)
-
-
 Credits
 -------
 
@@ -258,5 +198,5 @@ Author
 -------
 
 | Name: Fabian David Schmidt
-| Mail: fabian@informatik.uni-mannheim.de
-| Affiliation: University of Mannheim
+| Mail: fabian.schmidt@uni-wuerzburg.de
+| Affiliation: University of Würzburg
