@@ -20,8 +20,11 @@ def deepgetitem(obj, item, default=None):
 
     def getitem(obj, name):
         try:
-            return obj[name]
-        except (KeyError, TypeError):
+            if isinstance(obj, dict):
+                return obj[name]
+            else:
+                return getattr(obj, name)
+        except (KeyError, TypeError, AttributeError):
             return default
 
     return reduce(getitem, item.split("."), obj)

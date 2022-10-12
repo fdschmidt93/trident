@@ -262,10 +262,10 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
             # _method_ is for convenience
             # construct partial wrapper, instantiate with cfg, and apply to ret
             if kwd == "_method_":
-                key_cfg["_target_"] = "trident.utils.hydra.partial"
                 key_cfg[
-                    "_partial_"
+                    "_target_"
                 ] = f"{obj.__class__.__module__}.{obj.__class__.__name__}.{key}"
+                key_cfg["_partial_"] = True
                 fn = hydra.utils.instantiate(key_cfg)
                 val = fn(obj)
                 # `fn` might mutate ret in-place

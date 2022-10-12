@@ -3,23 +3,17 @@ from typing import Callable, NamedTuple, Optional, Union
 import hydra
 import torch
 from omegaconf import OmegaConf
+from omegaconf.base import DictKeyType
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
 from pytorch_lightning.core.lightning import LightningModule
 from pytorch_lightning.utilities.parsing import AttributeDict
 
+from trident.utils import deepgetitem
 from trident.utils.logging import get_logger
 from trident.utils.transform import flatten_dict
 
-# TODO(fdschmidt93): update docs
-# TODO(fdschmidt93): potential speed up by converting to primitve container? probably doesn't matter
-
 log = get_logger(__name__)
-
-# TODO(fdschmidt93): potential speed-ups
-# DictConfig vs dict -> ns "virtually" free
-# DictConfig.get twice as fast as OmegaConf.select(cfg, key)
-# dict access orders of magnitude faster accessed than DictConfig (us vs ns)
 
 
 class EvalMixin(LightningModule):
@@ -101,19 +95,23 @@ class EvalMixin(LightningModule):
         for k in keys:
             outputs[k] = outputs[k][:num_samples]
             message = (
-                prefix + f"Truncating {k} to {outputs[k].shape[0]} (#samples={num_samples}) rows"
+                prefix
+                + f"Truncating {k} to {outputs[k].shape[0]} (#samples={num_samples}) rows"
             )
             log.warn(message)
 
     def on_eval_start(self, stage):
-        metrics_cfg = self.evaluation.metrics_cfg.get(stage, None)
-        dataset = getattr(self.trainer.datamodule, f"dataset_{stage}")
+        metrics_cfg = self.evaluation.metrics_cfg
+        if metrics_cfg is None:
+            return
+        stage_metrics_cfg = self.evaluation.metrics_cfg.get(stage, None)
+        dataset = getattr(self.trainer.datamodule, f"dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
 
-        if metrics_cfg is not None:
+        if stage_metrics_cfg is not None:
             configs = (
-                metrics_cfg["_datasets_"]
-                if "_datasets_" in metrics_cfg
-                else {"val": metrics_cfg}
+                stage_metrics_cfg["_datasets_"]
+                if "_datasets_" in stage_metrics_cfg
+                else {"val": stage_metrics_cfg}
             )
             # torchmetrics must be moved to GPU
             for cfg in configs.values():
@@ -127,7 +125,8 @@ class EvalMixin(LightningModule):
                         metric.to(self.device)
 
             # deepcopy original metrics cfg for each dataset
-            if isinstance(dataset, dict) and not "_datasets_" in metrics_cfg:
+            # TODO(fdschmidt93): probably should be part of config_callbacks but torchmetrics OOP api requires later merging
+            if isinstance(dataset, dict) and not "_datasets_" in stage_metrics_cfg:
                 self.evaluation.metrics_cfg[stage] = {}
                 self.evaluation.metrics_cfg[stage]["_datasets_"] = {}
                 for name in dataset:
@@ -159,27 +158,26 @@ class EvalMixin(LightningModule):
     def logging(
         self,
         stage: str,
-        metric_key: str,
+        metric_key: Union[str, DictKeyType],
         input: Union[int, float, dict],
         log_kwargs: Optional[dict] = None,
-        dataset_name: str = "",
+        dataset_name: Optional[str] = None,
     ):
         # TODO(fdschmidt93): document logging function
         fn: Union[None, Callable] = OmegaConf.select(
             self.evaluation, f"metrics_cfg.{stage}.{metric_key}.logging"
         )
-        if fn is not None:
+        if isinstance(fn, Callable):
             input = fn(input)
         log_kwargs = log_kwargs if log_kwargs is not None else {}
         log_kwargs["prog_bar"] = True
         if isinstance(input, dict):
-            # TODO(fdschmidt93): input_dict for multiple datasets
-            # MAYBE(fdschmidt93): better default formatting? might be taken care by pytorch_lightning itself
-            log_kwargs["dictionary"] = input
+            prefix = dataset_name + "/" + stage if dataset_name is not None else stage
+            log_kwargs["dictionary"] = {f"{prefix}/{k}": v for k, v in input.items()}
             self.log_dict(**log_kwargs)
         else:
             log_kwargs["name"] = f"{stage}/{metric_key}"
-            if dataset_name:
+            if dataset_name is not None:
                 log_kwargs["name"] = f"{dataset_name}/{log_kwargs['name']}"
             log_kwargs["value"] = input
             self.log(**log_kwargs)
@@ -194,7 +192,7 @@ class EvalMixin(LightningModule):
         if fn and isinstance(fn, DictConfig) and dataset is not None:
             fn = fn._datasets_.get(dataset)
         if isinstance(fn, Callable):
-            return fn(self, batch, stage)
+            return fn(self, batch=batch, stage=stage)
         return batch
 
     def prepare_outputs(
@@ -206,7 +204,7 @@ class EvalMixin(LightningModule):
         if fn and isinstance(fn, DictConfig) and dataset is not None:
             fn = fn._datasets_.get(dataset)
         if isinstance(fn, Callable):
-            return fn(self, outputs, batch, stage)
+            return fn(self, outputs=outputs, batch=batch, stage=stage)
         return outputs
 
     def prepare_step_outputs(
@@ -218,7 +216,7 @@ class EvalMixin(LightningModule):
         if fn and isinstance(fn, DictConfig) and dataset is not None:
             fn = fn._datasets_.get(dataset)
         if isinstance(fn, Callable):
-            return fn(self, step_outputs, stage)
+            return fn(self, outputs=step_outputs, stage=dataset)
         return step_outputs
 
     # TODO(fdschmidt93): switch from `locals` to kwargs?
@@ -249,11 +247,14 @@ class EvalMixin(LightningModule):
             var, key = v.split(":")
             # TODO(fdschmidt93): rfc
             input_: dict = local_vars.get(var, {})
-            val = (
-                input_.get(key, None)
-                if isinstance(input_, dict)
-                else getattr(input_, key, None)
-            )
+            if var == "self":
+                val = deepgetitem(input_, key)
+            else:
+                val = (
+                    input_.get(key, None)
+                    if isinstance(input_, dict)
+                    else getattr(input_, key, None)
+                )
             if val is not None:
                 ret[k] = val
             else:
@@ -292,66 +293,88 @@ class EvalMixin(LightningModule):
             return ret
         return {"outputs": outputs, "batch": batch}
 
-    # TODO(fdschmidt93):
-    # - check that corresponding dataset is dict
-    # - if so, then do metrics by dataset
-    def eval_step(self, stage: str, batch: dict) -> dict:
+    def eval_step(
+        self, stage: str, batch: dict, dataloader_idx: Optional[int] = None
+    ) -> Optional[dict]:
         """Performs model forward & user batch transformation in an eval step."""
-
         # TODO(fdschmidt93): can we maybe make accessing faster?
-        # TODO(fdschmidt93): implement pattern get("stage", default=base_config)?
-        metrics_cfg: DictConfig = self.evaluation.metrics_cfg.get(
-            stage, self.evaluation.metrics_cfg
-        )
+        # TODO(fdschmidt93): implement pattern get("stage", default=base_config)? - so on_eval_start discussion
+        metrics_cfg = self.evaluation.metrics_cfg
+        if metrics_cfg is None:
+            return
+        metrics_cfg: DictConfig = self.evaluation.metrics_cfg.get(stage, metrics_cfg)
+        if metrics_cfg is not None and "_datasets_" in metrics_cfg:
+            dataset2idx = getattr(self.trainer.datamodule, f"dataset_{stage}_idx")  # type: ignore - datamodule not appropriately embedded
+            # dataloader_idx must come from list so datasets with varying length are appropriately iterated
+            # since Pytorch Lightning's CombinedLoader either reduces to shortest or extends to longest dataset otherwise
+            metrics_cfg = metrics_cfg["_datasets_"][dataset2idx[dataloader_idx]]
         # `step_collection_dico` maps what to collect from `outputs` and `batch`
         # eg {"outputs": "logits", "batch": ["input_ids", "attention_mask"]
         step_collection_dico: Union[None, DictConfig] = OmegaConf.select(
             self.evaluation, f"step_outputs.{stage}"
         )
         # if multiple datasets val or test dataloaders
-        if "_datasets_" in metrics_cfg:
-            # forward pass for each dataset
-            batch = {
-                k: self.prepare_batch(stage=stage, batch=v, dataset=k)
-                for k, v in batch.items()
-            }
-            outputs = {
-                k: self.prepare_outputs(
-                    stage=stage, outputs=self(v), batch=v, dataset=k
-                )
-                for k, v in batch.items()
-            }
-            for dataset_name, dataset_metrics_cfg in metrics_cfg._datasets_.items():
-                for v in dataset_metrics_cfg.values():
-                    if getattr(v, "compute_on", False) == "eval_step":
-                        kwargs = self._prepare_metric_input(
-                            v.kwargs, outputs[dataset_name], batch[dataset_name]
-                        )
-                        v["metric"](**kwargs)
-            step_outputs = {
-                dataset_name: self._collect_step_output(
-                    outputs[dataset_name],
-                    batch[dataset_name],
-                    step_collection_dico
-                    if step_collection_dico is None
-                    or not "_datasets_" in step_collection_dico
-                    else step_collection_dico._datasets_[dataset_name],
-                )
-                for dataset_name in batch
-            }
-            return step_outputs
-        else:
-            outputs = self.prepare_outputs(stage, self(batch), batch)
+        batch = self.prepare_batch(stage=stage, batch=batch)
+        outputs = self.prepare_outputs(stage, self(batch), batch)
+        if metrics_cfg is not None:
             for v in metrics_cfg.values():
                 if getattr(v, "compute_on", False) == "eval_step":
                     kwargs = self._prepare_metric_input(v.kwargs, outputs, batch)
                     v["metric"](**kwargs)
-            return self._collect_step_output(outputs, batch, step_collection_dico)
+        return self._collect_step_output(outputs, batch, step_collection_dico)
 
-    def eval_epoch_end(self, stage: str, step_outputs: list[dict]) -> Optional[dict]:
-        """Computes evaluation metric at epoch end for respective `stage`.
+    def eval_epoch_end_dataset(
+        self,
+        stage: str,
+        step_outputs: list[dict],
+        metrics_cfg: DictConfig,
+        dataset_name: Optional[str] = None,
+    ):
+        """Runs evaluation configuration on step_outputs for passed dataset.
 
-        Flattening step outputs attempts to stack numpy arrays and tensors along 0 axis.
+        Args:
+            stage: either "val", "test", or "predict"
+            step_outputs: end_of_epoch `step_outputs` for corresponding dataset
+            metrics_cfg: evaluation configuration of corresponding datasets
+            dataset_name: name of dataset as denoted in datamodule config
+        """
+        flattened_step_outputs = flatten_dict(step_outputs)
+        flattened_step_outputs = self.prepare_step_outputs(
+            stage, flattened_step_outputs
+        )
+        if dataset_name is not None:
+            datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
+            self._validate_tensors_epoch_end(
+                flattened_step_outputs,
+                len(datasets[dataset_name]),
+                stage,
+                dataset_name,
+            )
+        for metric, metric_cfg in metrics_cfg.items():
+            if getattr(metric_cfg, "compute_on", False) == "eval_step":
+                # TODO(fdschmidt93): do not rely on having to call `compute` here
+                self.logging(
+                    stage=stage,
+                    metric_key=metric,
+                    input=metric_cfg["metric"],
+                )
+            if getattr(metric_cfg, "compute_on", False) == "epoch_end":
+                kwargs: dict = self._prepare_metric_input(
+                    metric_cfg.kwargs, flattened_step_outputs, None
+                )
+                self.logging(
+                    stage=stage,
+                    metric_key=metric,
+                    input=metric_cfg["metric"](**kwargs),
+                    dataset_name=dataset_name,
+                )
+
+    def eval_epoch_end(
+        self, stage: str, step_outputs: Union[list[dict], list[list[dict]]]
+    ) -> None:
+        """Computes evaluation metric at epoch end for respective `stage` for dataset(s).
+
+        dataset(s) may potentially have individual evaluation configuration.
 
         Args:
             stage: typically either 'val' or 'test', affects logging
@@ -360,86 +383,46 @@ class EvalMixin(LightningModule):
         Returns:
             dict: flattened outputs from evaluation steps
         """
-        if metrics_cfg := self.evaluation.metrics_cfg.get(
-            stage, self.evaluation.metrics_cfg
-        ):
-            # if multiple datasets in val or test dataloaders
-            if "_datasets_" in metrics_cfg:
-                # flatten by dataset
-                flattened_step_outputs = {
-                    dataset_name: flatten_dict(
-                        [dico[dataset_name] for dico in step_outputs]
-                    )
-                    for dataset_name in metrics_cfg._datasets_
-                }
-                flattened_step_outputs = {
-                    dataset_name: self.prepare_step_outputs(
-                        stage, outputs, dataset_name
-                    )
-                    for dataset_name, outputs in flattened_step_outputs.items()
-                }
-
-                datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")
-                for dataset_name, dataset_metrics_cfg in metrics_cfg._datasets_.items():
-                    self._validate_tensors_epoch_end(
-                        flattened_step_outputs[dataset_name],
-                        len(datasets[dataset_name]),
-                        stage,
-                        dataset_name,
-                    )
-                    for metric, metric_cfg in dataset_metrics_cfg.items():
-                        if metric_cfg.get("compute_on", False) == "eval_step":
-                            # TODO(fdschmidt93): do not rely on having to call `compute` here
-                            self.logging(
-                                stage=stage,
-                                metric_key=metric,
-                                input=metric_cfg["metric"],
-                                dataset_name=dataset_name,
-                            )
-                        if metric_cfg.get("compute_on", False) == "epoch_end":
-                            kwargs: dict = self._prepare_metric_input(
-                                metric_cfg.kwargs,
-                                flattened_step_outputs[dataset_name],
-                                None,
-                            )
-                            self.logging(
-                                stage=stage,
-                                metric_key=metric,
-                                input=metric_cfg["metric"](**kwargs),
-                                dataset_name=dataset_name,
-                            )
-
-            else:
-                flattened_step_outputs = flatten_dict(step_outputs)
-                flattened_step_outputs = self.prepare_step_outputs(
-                    stage, flattened_step_outputs
+        metrics_cfg = self.evaluation.metrics_cfg
+        if metrics_cfg is not None:
+            metrics_cfg = self.evaluation.metrics_cfg.get(
+                stage, self.evaluation.metrics_cfg
+            )
+        if metrics_cfg is None:
+            return
+        # multiple datasets in `stage` dataloaders
+        if "_datasets_" in metrics_cfg:
+            for (dataset_name, dataset_metrics), dataset_outputs in zip(
+                metrics_cfg._datasets_.items(), step_outputs
+            ):
+                assert isinstance(dataset_outputs, list)  # avoid linting error
+                self.eval_epoch_end_dataset(
+                    stage=stage,
+                    step_outputs=dataset_outputs,
+                    dataset_name=dataset_name,
+                    metrics_cfg=dataset_metrics,
                 )
-                for metric, metric_cfg in metrics_cfg.items():
-                    if getattr(metric_cfg, "compute_on", False) == "eval_step":
-                        # TODO(fdschmidt93): do not rely on having to call `compute` here
-                        self.logging(
-                            stage=stage,
-                            metric_key=metric,
-                            input=metric_cfg["metric"],
-                        )
-                    if getattr(metric_cfg, "compute_on", False) == "epoch_end":
-                        kwargs: dict = self._prepare_metric_input(
-                            metric_cfg.kwargs, flattened_step_outputs, None
-                        )
-                        self.logging(
-                            stage=stage,
-                            metric_key=metric,
-                            input=metric_cfg["metric"](**kwargs),
-                        )
+        else:
 
-    def validation_step(self, batch: dict, batch_idx: int) -> Union[None, dict]:
-        return self.eval_step("val", batch)
+            self.eval_epoch_end_dataset(
+                stage=stage,
+                # TODO(fdschmidt93): resolve linting error
+                step_outputs=step_outputs,  # type: ignore
+                metrics_cfg=metrics_cfg,
+            )
+
+    def validation_step(
+        self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
+    ) -> Union[None, dict]:
+        return self.eval_step("val", batch, dataloader_idx)
 
     def validation_epoch_end(self, validation_step_outputs: list[dict]):
         return self.eval_epoch_end("val", validation_step_outputs)
 
-    def test_step(self, batch: dict, batch_idx: int) -> Union[None, dict]:
-        return self.eval_step("test", batch)
+    def test_step(
+        self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
+    ) -> Union[None, dict]:
+        return self.eval_step("test", batch, dataloader_idx)
 
     def test_epoch_end(self, test_step_outputs: list[dict]):
         return self.eval_epoch_end("test", test_step_outputs)
