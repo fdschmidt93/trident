@@ -276,9 +276,9 @@ class EvalMixin(LightningModule):
 
             def set_val(dico, key, val):
                 ret_val = local_vars.get(key, {}).get(val, None)
-                if ret_val is None:
-                    raise AttributeError(f"{val} not in {key}")
-                dico[val] = ret_val
+                if ret_val is not None:
+                    # raise AttributeError(f"{val} not in {key}")
+                    dico[val] = ret_val
 
             for key, vals in stage_dico.items():
                 if isinstance(vals, (ListConfig, list)):
