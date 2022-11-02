@@ -216,7 +216,7 @@ class EvalMixin(LightningModule):
         if fn and isinstance(fn, DictConfig) and dataset is not None:
             fn = fn._datasets_.get(dataset)
         if isinstance(fn, Callable):
-            return fn(self, outputs=step_outputs, stage=dataset)
+            return fn(self, outputs=step_outputs, stage=stage, dataset=dataset)
         return step_outputs
 
     # TODO(fdschmidt93): switch from `locals` to kwargs?
@@ -277,6 +277,7 @@ class EvalMixin(LightningModule):
             def set_val(dico, key, val):
                 ret_val = local_vars.get(key, {}).get(val, None)
                 if ret_val is not None:
+                    # TODO: refactor, fusion of step outputs over datasets instead of batch results with some keys missing
                     # raise AttributeError(f"{val} not in {key}")
                     dico[val] = ret_val
 
@@ -340,7 +341,7 @@ class EvalMixin(LightningModule):
         """
         flattened_step_outputs = flatten_dict(step_outputs)
         flattened_step_outputs = self.prepare_step_outputs(
-            stage, flattened_step_outputs
+            stage, flattened_step_outputs, dataset_name
         )
         if dataset_name is not None:
             datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
