@@ -350,14 +350,6 @@ class EvalMixin(LightningModule):
         flattened_step_outputs = self.prepare_step_outputs(
             stage, flattened_step_outputs, dataset_name
         )
-        # if dataset_name is not None:
-        #     datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
-        #     self._validate_tensors_epoch_end(
-        #         flattened_step_outputs,
-        #         len(datasets[dataset_name]),
-        #         stage,
-        #         dataset_name,
-        #     )
         for metric, metric_cfg in metrics_cfg.items():
             if getattr(metric_cfg, "compute_on", False) == "eval_step":
                 # TODO(fdschmidt93): do not rely on having to call `compute` here
