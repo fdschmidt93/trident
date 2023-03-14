@@ -216,7 +216,7 @@ class EvalMixin(LightningModule):
         if fn and isinstance(fn, DictConfig) and dataset is not None:
             fn = fn._datasets_.get(dataset)
         if isinstance(fn, Callable):
-            return fn(self, outputs=step_outputs, stage=dataset)
+            return fn(self, outputs=step_outputs, stage=stage, dataset=dataset)
         return step_outputs
 
     # TODO(fdschmidt93): switch from `locals` to kwargs?
@@ -276,9 +276,10 @@ class EvalMixin(LightningModule):
 
             def set_val(dico, key, val):
                 ret_val = local_vars.get(key, {}).get(val, None)
-                if ret_val is None:
-                    raise AttributeError(f"{val} not in {key}")
-                dico[val] = ret_val
+                if ret_val is not None:
+                    # TODO: refactor, fusion of step outputs over datasets instead of batch results with some keys missing
+                    # raise AttributeError(f"{val} not in {key}")
+                    dico[val] = ret_val
 
             for key, vals in stage_dico.items():
                 if isinstance(vals, (ListConfig, list)):
@@ -310,12 +311,19 @@ class EvalMixin(LightningModule):
             metrics_cfg = metrics_cfg["_datasets_"][dataset2idx[dataloader_idx]]
         # `step_collection_dico` maps what to collect from `outputs` and `batch`
         # eg {"outputs": "logits", "batch": ["input_ids", "attention_mask"]
+
+        dataset = None
+        if dataloader_idx is not None:
+            dataset2idx = getattr(self.trainer.datamodule, f"dataset_{stage}_idx")
+            dataset = dataset2idx[dataloader_idx]
         step_collection_dico: Union[None, DictConfig] = OmegaConf.select(
             self.evaluation, f"step_outputs.{stage}"
         )
+        if dataset is not None and "_dataset_" in step_collection_dico:
+            step_collection_dico = step_collection_dico._datasets_.get(dataset)
         # if multiple datasets val or test dataloaders
-        batch = self.prepare_batch(stage=stage, batch=batch)
-        outputs = self.prepare_outputs(stage, self(batch), batch)
+        batch = self.prepare_batch(stage=stage, batch=batch, dataset=dataset)
+        outputs = self.prepare_outputs(stage, self(batch), batch, dataset=dataset)
         if metrics_cfg is not None:
             for v in metrics_cfg.values():
                 if getattr(v, "compute_on", False) == "eval_step":
@@ -340,16 +348,8 @@ class EvalMixin(LightningModule):
         """
         flattened_step_outputs = flatten_dict(step_outputs)
         flattened_step_outputs = self.prepare_step_outputs(
-            stage, flattened_step_outputs
+            stage, flattened_step_outputs, dataset_name
         )
-        if dataset_name is not None:
-            datasets = getattr(self.trainer.datamodule, f"dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
-            self._validate_tensors_epoch_end(
-                flattened_step_outputs,
-                len(datasets[dataset_name]),
-                stage,
-                dataset_name,
-            )
         for metric, metric_cfg in metrics_cfg.items():
             if getattr(metric_cfg, "compute_on", False) == "eval_step":
                 # TODO(fdschmidt93): do not rely on having to call `compute` here
