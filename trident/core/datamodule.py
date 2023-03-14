@@ -8,6 +8,7 @@ from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
 from pytorch_lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
+from torch.utils.data.dataset import IterableDataset
 
 from trident.utils.logging import get_logger
 
@@ -171,10 +172,15 @@ class TridentDataModule(LightningDataModule):
         elif isinstance(self.dataset_train, dict):
             return max([len(dataset) for dataset in self.dataset_train.values()])
         else:
-            return len(self.dataset_train)
+            if not isinstance(self.dataset_train, IterableDataset):
+                return len(self.dataset_train)
+            else:
+                return self.trainer.global_step
 
     def prepare_data(self) -> None:
         """
+        Notice: untested.
+
         .. seealso:: `LightningDataModule.prepare_data <https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html#prepare-data>`_
         """
         hydra.utils.call(self.datamodule_cfg.get("prepare_data", None), self)
@@ -225,8 +231,8 @@ class TridentDataModule(LightningDataModule):
         .. code-block:: yaml
 
             dataset_cfg:
-                _target_: src.utils.hydra.partial
-                _partial_: src.custom.my_setup_func
+                _target_: src.custom.my_setup_func
+                _partial_: true
 
                 my_dataset:
                     _target_: src.custom.dataset.MyDataset

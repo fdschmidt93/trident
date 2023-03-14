@@ -47,7 +47,7 @@ class OptimizerMixin(LightningModule):
         return (
             num_training_batches
             * self.trainer.max_epochs
-            // max(1, self.trainer.num_gpus)
+            // max(1, self.trainer.num_devices)
             // accumulate_grad_batches
         )
 
@@ -92,7 +92,7 @@ class OptimizerMixin(LightningModule):
 
     def configure_optimizers(self):
         """Prepares optimizer and scheduler."""
-        if weight_decay := getattr(self.hparams.optimizer, "weight_decay"):
+        if weight_decay := getattr(self.hparams.optimizer, "weight_decay", None):
             param_optimizer = list(self.named_parameters())
             no_decay = ["bias", "LayerNorm.bias", "LayerNorm.weight"]
             parameters = [
