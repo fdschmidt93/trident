@@ -11,7 +11,7 @@ from trident.utils.hydra import instantiate_and_apply
 
 def load_dataset(
     cfg: Union[None, DictConfig], keep_raw_dataset: bool
-) -> Tuple[Union[None, Dataset], Union[None, Dataset]]:
+) -> Tuple[Dataset, Union[None, Dataset]]:
     dataset_raw = None
     if cfg is not None and keep_raw_dataset:
         raw_cfg = OmegaConf.masked_copy(
@@ -25,7 +25,9 @@ def load_dataset(
     return (dataset, dataset_raw)
 
 
-def setup_dataset(self: TridentDataModule, cfg: Union[None, DictConfig], split: str):
+def setup_dataset(
+    self: TridentDataModule, cfg: Union[None, DictConfig], split: str
+) -> None:
     keep_raw_dataset = self.datamodule_cfg.get("keep_raw_dataset", False)
     self._datamodule_hook("on_before_dataset_setup", split=split)
     if cfg and "_datasets_" in cfg:

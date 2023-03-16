@@ -126,25 +126,25 @@ class TridentDataModule(LightningDataModule):
                 setattr(self, key, MethodType(value, self))
 
     @cached_property
-    def dataset_train_idx(self) -> Optional[dict]:
+    def idx2dataset_train(self) -> Optional[dict[int, str]]:
         """Returns dict aligning dataloader_idx to dataset name for multi-train datasets."""
         if isinstance(self.dataset_train, dict):
             return {i: k for i, k in enumerate(self.dataset_train.keys())}
 
     @cached_property
-    def dataset_val_idx(self) -> Optional[dict]:
+    def idx2dataset_val(self) -> Optional[dict[int, str]]:
         """Returns dict aligning dataloader_idx to dataset name for multi-val datasets."""
         if isinstance(self.dataset_val, dict):
             return {i: k for i, k in enumerate(self.dataset_val.keys())}
 
     @cached_property
-    def dataset_test_idx(self) -> Optional[dict]:
+    def idx2dataset_test(self) -> Optional[dict[int, str]]:
         """Returns dict aligning dataloader_idx to dataset name for multi-test datasets."""
         if isinstance(self.dataset_test, dict):
             return {i: k for i, k in enumerate(self.dataset_test.keys())}
 
     @cached_property
-    def dataset_predict_idx(self) -> Optional[dict]:
+    def idx2dataset_predict(self) -> Optional[dict]:
         """Returns dict aligning dataloader_idx to dataset name for multi-predict datasets."""
         if isinstance(self.dataset_predict, dict):
             return {i: k for i, k in enumerate(self.dataset_predict.keys())}
@@ -253,7 +253,7 @@ class TridentDataModule(LightningDataModule):
     # TODO(fdschmidt93): document (or refactor) _remove_unused_columns
     def _get_dataloader(
         self, split: str
-    ) -> Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
         """Checks existence of dataset for :obj:`split` and returns :obj:`DataLoader` with cfg.
 
         The return type of this function typically depends on the scenario:
@@ -267,7 +267,7 @@ class TridentDataModule(LightningDataModule):
             split: one of :obj:`train`, :obj:`val`, :obj:`test`, or :obj:`predict`
 
         Returns:
-            Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]: [TODO:description]
+            Union[DataLoader, list[DataLoader], dict[str, DataLoader]]: [TODO:description]
         """
         dataset = getattr(self, f"dataset_{split}")
         assert dataset is not None, f"Dataset for {split} missing!"
@@ -306,22 +306,22 @@ class TridentDataModule(LightningDataModule):
 
     def train_dataloader(
         self,
-    ) -> Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
         return self._get_dataloader("train")
 
     def val_dataloader(
         self,
-    ) -> Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
         return self._get_dataloader("val")
 
     def test_dataloader(
         self,
-    ) -> Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
         return self._get_dataloader("test")
 
     def predict_dataloader(
         self,
-    ) -> Union[None, DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
         return self._get_dataloader("predict")
 
     # TODO(fdschmidt93): maybe move out-of trident-core and into trident-xtreme
