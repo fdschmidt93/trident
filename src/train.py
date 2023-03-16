@@ -2,7 +2,13 @@ import sys
 from typing import List, Optional
 
 import hydra
-from lightning import Callback, LightningDataModule, LightningModule, Trainer, seed_everything
+from lightning import (
+    Callback,
+    LightningDataModule,
+    LightningModule,
+    Trainer,
+    seed_everything,
+)
 from lightning.pytorch.loggers import LightningLoggerBase
 from omegaconf import DictConfig
 
