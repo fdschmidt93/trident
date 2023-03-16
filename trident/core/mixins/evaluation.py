@@ -71,7 +71,6 @@ class EvalMixin(LightningModule):
     log: Callable
 
     def __init__(self) -> None:
-
         # hparams used to fast-forward required attributes
         self.evaluation = hydra.utils.instantiate(self.hparams.evaluation)
 
@@ -387,9 +386,7 @@ class EvalMixin(LightningModule):
                     dataset_name=dataset_name,
                 )
 
-    def on_eval_epoch_end(
-        self, stage: str
-    ) -> None:
+    def on_eval_epoch_end(self, stage: str) -> None:
         """Computes evaluation metric at epoch end for respective `stage` for dataset(s).
 
         dataset(s) may potentially have individual evaluation configuration.
@@ -421,7 +418,6 @@ class EvalMixin(LightningModule):
                     metrics_cfg=dataset_metrics,
                 )
         else:
-
             self.eval_epoch_end_dataset(
                 stage=stage,
                 # TODO(fdschmidt93): resolve linting error

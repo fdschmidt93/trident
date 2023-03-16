@@ -4,8 +4,8 @@ from typing import Any, Callable, Optional, Union
 import hydra
 import torch
 from lightning import LightningModule
-from omegaconf import DictConfig
 from lightning.pytorch.utilities.parsing import AttributeDict
+from omegaconf import DictConfig
 from torch import nn
 
 from trident.core.mixins.evaluation import EvalMixin
@@ -14,6 +14,7 @@ from trident.utils import deepgetitem
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
+
 
 # TODO(fdschmidt93): function signatures fn(self, ...)
 # TODO(fdschmidt93): clean API for instantiation to depend on datamodule (token classification: label2id, id2label

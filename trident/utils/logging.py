@@ -1,7 +1,7 @@
 import logging
 
-
 from lightning.pytorch.utilities import rank_zero_only
+
 
 def get_logger(name=__name__, level=logging.INFO) -> logging.Logger:
     """Initializes multi-GPU-friendly python logger."""

@@ -1,3 +1,3 @@
-from trident.core import TridentModule, TridentDataModule
+from trident.core import TridentDataModule, TridentModule
 
 __all__ = ["TridentModule", "TridentDataModule"]

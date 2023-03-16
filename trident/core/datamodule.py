@@ -4,9 +4,9 @@ from typing import Optional, Union
 
 import hydra
 from datasets.arrow_dataset import Dataset
+from lightning import LightningDataModule
 from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
-from lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import IterableDataset
 

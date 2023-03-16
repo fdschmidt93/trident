@@ -2,14 +2,13 @@ import sys
 from typing import List, Optional
 
 import hydra
-from omegaconf import DictConfig
-from lightning import (Callback, LightningDataModule, LightningModule,
-                               Trainer, seed_everything)
+from lightning import Callback, LightningDataModule, LightningModule, Trainer, seed_everything
 from lightning.pytorch.loggers import LightningLoggerBase
-from trident.utils.hydra import config_callback
-from trident.utils.log import get_logger
+from omegaconf import DictConfig
 
 from src.utils.runner import finish, log_hyperparameters
+from trident.utils.hydra import config_callback
+from trident.utils.log import get_logger
 
 log = get_logger(__name__)
 

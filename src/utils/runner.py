@@ -4,8 +4,9 @@ from typing import List, Sequence
 import lightning as pl
 import rich.syntax
 import rich.tree
-from omegaconf import DictConfig, OmegaConf
 from lightning.pytorch.utilities.distributed import rank_zero_only
+from omegaconf import DictConfig, OmegaConf
+
 from trident.utils.logging import get_logger
 
 

@@ -11,6 +11,7 @@ from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
 
+
 # TODO(fdschmidt93): test when wrapped up in partial
 def get_local(var):
     import inspect
