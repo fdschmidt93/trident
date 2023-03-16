@@ -6,7 +6,7 @@ import hydra
 from datasets.arrow_dataset import Dataset
 from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
-from pytorch_lightning import LightningDataModule
+from lightning import LightningDataModule
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import IterableDataset
 
@@ -45,7 +45,7 @@ class TridentDataModule(LightningDataModule):
 
         seed (:obj:`int`, `optional`):
             Linked against `config.seed` by default for convenience and maybe used
-            for functionality that is not yet set by :obj:`pytorch_lightning.seed_everything`,
+            for functionality that is not yet set by :obj:`lightning.seed_everything`,
             which sets the seed for `pytorch`, `numpy` and `python.random`.
 
     Notes:
@@ -194,7 +194,7 @@ class TridentDataModule(LightningDataModule):
 
     # def on_before_batch_transfer(self, batch, dataloader_idx: int) -> None:
     #     """
-    #     .. seealso:: `LightningDataModule.on_before_batch_transfer <https://pytorch_lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-before-batch-transfer>`_
+    #     .. seealso:: `LightningDataModule.on_before_batch_transfer <https://lightning.readthedocs.io/en/latest/extensions/datamodules.html#on-before-batch-transfer>`_
     #     """
     #     self.datamodule_cfg.on_before_batch_transfer(self, batch, dataloader_idx)
 

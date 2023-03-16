@@ -3,9 +3,9 @@ from typing import List, Optional
 
 import hydra
 from omegaconf import DictConfig
-from pytorch_lightning import (Callback, LightningDataModule, LightningModule,
+from lightning import (Callback, LightningDataModule, LightningModule,
                                Trainer, seed_everything)
-from pytorch_lightning.loggers import LightningLoggerBase
+from lightning.pytorch.loggers import LightningLoggerBase
 from trident.utils.hydra import config_callback
 from trident.utils.log import get_logger
 

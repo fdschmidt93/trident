@@ -2,12 +2,12 @@ from typing import Callable, NamedTuple, Optional, Union
 
 import hydra
 import torch
+from lightning import LightningModule
+from lightning.pytorch.utilities.parsing import AttributeDict
 from omegaconf import OmegaConf
 from omegaconf.base import DictKeyType
 from omegaconf.dictconfig import DictConfig
 from omegaconf.listconfig import ListConfig
-from pytorch_lightning.core.lightning import LightningModule
-from pytorch_lightning.utilities.parsing import AttributeDict
 
 from trident.utils import deepgetitem
 from trident.utils.logging import get_logger
@@ -296,7 +296,7 @@ class EvalMixin(LightningModule):
 
     def eval_step(
         self, stage: str, batch: dict, dataloader_idx: Optional[int] = None
-    ) -> Optional[dict]:
+    ) -> None:
         """Performs model forward & user batch transformation in an eval step."""
         # TODO(fdschmidt93): can we maybe make accessing faster?
         # TODO(fdschmidt93): implement pattern get("stage", default=base_config)? - so on_eval_start discussion
@@ -329,7 +329,25 @@ class EvalMixin(LightningModule):
                 if getattr(v, "compute_on", False) == "eval_step":
                     kwargs = self._prepare_metric_input(v.kwargs, outputs, batch)
                     v["metric"](**kwargs)
-        return self._collect_step_output(outputs, batch, step_collection_dico)
+        if dataloader_idx is None:
+            container = self.eval_outputs
+        else:
+            # TODO(fdschmidt93): better validation against datasets (maybe even by name)
+            try:
+                container = self.eval_outputs[dataloader_idx]
+            except IndexError as _:
+                if len(self.eval_outputs) == (dataloader_idx - 1):
+                    self.eval_outputs[dataloader_idx] = []
+                    container = self.eval_outputs[dataloader_idx]
+                else:
+                    raise IndexError(
+                        f"dataloader_idx {dataloader_idx} is not subsequent index in evaluation, check warranted!"
+                    )
+            except Exception:
+                raise Exception("This must not happen.")
+        container.append(
+            self._collect_step_output(outputs, batch, step_collection_dico)
+        )
 
     def eval_epoch_end_dataset(
         self,
@@ -369,8 +387,8 @@ class EvalMixin(LightningModule):
                     dataset_name=dataset_name,
                 )
 
-    def eval_epoch_end(
-        self, stage: str, step_outputs: Union[list[dict], list[list[dict]]]
+    def on_eval_epoch_end(
+        self, stage: str
     ) -> None:
         """Computes evaluation metric at epoch end for respective `stage` for dataset(s).
 
@@ -413,16 +431,16 @@ class EvalMixin(LightningModule):
 
     def validation_step(
         self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
-    ) -> Union[None, dict]:
+    ) -> None:
         return self.eval_step("val", batch, dataloader_idx)
 
-    def validation_epoch_end(self, validation_step_outputs: list[dict]):
-        return self.eval_epoch_end("val", validation_step_outputs)
+    def on_validation_epoch_end(self):
+        return self.on_eval_epoch_end("val")
 
     def test_step(
         self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
-    ) -> Union[None, dict]:
+    ) -> None:
         return self.eval_step("test", batch, dataloader_idx)
 
-    def test_epoch_end(self, test_step_outputs: list[dict]):
-        return self.eval_epoch_end("test", test_step_outputs)
+    def on_test_epoch_end(self):
+        return self.on_eval_epoch_end("test")

@@ -23,7 +23,7 @@ Using |project|
 
 In particular, |project| intends to abstract any boilerplate away in a highly modular fashion:
 
-* Data & Preprocessing pipeline powered by `datasets <https://huggingface.co/docs/datasets/>`_ and :obj:`pytorch_lightning.LightningDataModule`: user setup required
+* Data & Preprocessing pipeline powered by `datasets <https://huggingface.co/docs/datasets/>`_ and :obj:`lightning.LightningDataModule`: user setup required
 * Training and Evaluation wrappers constitute convenience layers around `Pytorch-Lightning <https://pytorch-lightning.readthedocs.io/>`_
 
 You can opt-out of any component and replace it with your implementation with ease (see :ref:`customization`). It is quintessential that you familiarize yourself with Hydra as it constitutes the backbone for composing experiments in |project|.
@@ -58,7 +58,7 @@ Project Structure
 
 **Important Concepts**:
 
-* `module` encapsulates a :obj:`pytorch_lightning.LightningModule` in a Hydra config (example: :repo:`sequence classification <configs/module/sequence_classification.yaml>`) and comprises the following keys:
+* `module` encapsulates a :obj:`lightning.LightningModule` in a Hydra config (example: :repo:`sequence classification <configs/module/sequence_classification.yaml>`) and comprises the following keys:
     
     - model: your model that returns a container with loss and required attributes
     - :ref:`evaluation <evaluation>`: use and existing or customized evaluation config
@@ -69,7 +69,7 @@ Project Structure
 
     Please see more details in :ref:`trident_module`.
 
-* `datamodule` represents a :obj:`pytorch_lightning.LightningDataModule` in a Hydra config (example: :repo:`MNLI <configs/datamodule/mnli.yaml>`)
+* `datamodule` represents a :obj:`lightning.LightningDataModule` in a Hydra config (example: :repo:`MNLI <configs/datamodule/mnli.yaml>`)
 
 * `experiment` constitutes a set of configuration that typically defines everything except for the `model`
 
@@ -117,7 +117,7 @@ Most importantly, |project| allows you to:
 - Embed your own model into the TridentModule
 - Easily leverage existing frameworks like `transformers <https://huggingface.co/transformers/>`_ (see below)
 
-A `TridentModule` is analogous to what a :obj:`pytorch_lightning.LightningDataModule` comprises (model, optimizer, scheduler, ...) and commonly defined with **shared and individual flags**. Here's an example for sequence classification.
+A `TridentModule` is analogous to what a :obj:`lightning.LightningDataModule` comprises (model, optimizer, scheduler, ...) and commonly defined with **shared and individual flags**. Here's an example for sequence classification.
 
 First, the included model configurations inherit **shared options** from the :repo:`base module config <configs/module/base.yaml>`.
 

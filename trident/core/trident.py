@@ -1,11 +1,11 @@
 from types import MethodType
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import hydra
 import torch
+from lightning import LightningModule
 from omegaconf import DictConfig
-from pytorch_lightning import LightningModule
-from pytorch_lightning.utilities.parsing import AttributeDict
+from lightning.pytorch.utilities.parsing import AttributeDict
 from torch import nn
 
 from trident.core.mixins.evaluation import EvalMixin
@@ -108,6 +108,7 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         # TODO(fdschmidt93): verify ordering
         LightningModule.__init__(self)
         super().__init__()
+        self.eval_outputs = []
 
         # TODO(fschmidt93): consider removing override syntax, as typically TridentModule is sub-classed
         # forcefully override trident methods

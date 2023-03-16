@@ -522,7 +522,7 @@ defaults:
 seed: 12345
 
 trainer:
-    _target_: pytorch_lightning.Trainer
+    _target_: lightning.Trainer
     gpus: 0
     min_epochs: 1
     max_epochs: 10
@@ -548,7 +548,7 @@ datamodule:
 
 logger:
     wandb:
-        _target_: pytorch_lightning.loggers.wandb.WandbLogger
+        _target_: lightning.loggers.wandb.WandbLogger
         project: "lightning-hydra-template"
         tags: ["best_model", "uwu"]
         notes: "Description of this model."

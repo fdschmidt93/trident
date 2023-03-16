@@ -1,11 +1,11 @@
 import warnings
 from typing import List, Sequence
 
-import pytorch_lightning as pl
+import lightning as pl
 import rich.syntax
 import rich.tree
 from omegaconf import DictConfig, OmegaConf
-from pytorch_lightning.utilities.distributed import rank_zero_only
+from lightning.pytorch.utilities.distributed import rank_zero_only
 from trident.utils.logging import get_logger
 
 
