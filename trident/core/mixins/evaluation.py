@@ -319,7 +319,7 @@ class EvalMixin(LightningModule):
         step_collection_dico: Union[None, DictConfig] = OmegaConf.select(
             self.evaluation, f"step_outputs.{stage}"
         )
-        if dataset is not None and "_dataset_" in step_collection_dico:
+        if dataset is not None and "_datasets_" in step_collection_dico:
             step_collection_dico = step_collection_dico._datasets_.get(dataset)
         # if multiple datasets val or test dataloaders
         batch = self.prepare_batch(stage=stage, batch=batch, dataset=dataset)
