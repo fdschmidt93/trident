@@ -338,23 +338,27 @@ class EvalMixin(LightningModule):
                 if getattr(v, "compute_on", False) == "eval_step":
                     kwargs = self._prepare_metric_input(v.kwargs, outputs, batch)
                     v["metric"](**kwargs)
+
+        # lightning 2.0 now requires user to maintain step outputs themselves
+        # dataloader_idx == None is considered the equivalent of
+        # the first dataset in a multi dataset evaluation
+        # to harmonize handling on epoch end
         if dataloader_idx is None:
-            container = self.eval_outputs
-        else:
-            # TODO(fdschmidt93): better validation against datasets (maybe even by name)
-            try:
-                container = self.eval_outputs[dataloader_idx]
-            except IndexError as _:
-                if len(self.eval_outputs) == (dataloader_idx - 1):
-                    self.eval_outputs[dataloader_idx] = []
-                    container = self.eval_outputs[dataloader_idx]
-                else:
-                    raise IndexError(
-                        f"dataloader_idx {dataloader_idx} is not subsequent index in evaluation, check warranted!"
-                    )
-            except Exception:
-                raise Exception("This must not happen.")
-        container.append(
+            dataloader_idx = 0
+        # TODO(fdschmidt93): better validation against datasets (eg include dataset name)
+        try:
+            eval_outputs = self._eval_outputs[dataloader_idx]
+        except IndexError as _:
+            if len(self._eval_outputs) == (dataloader_idx - 1):
+                self._eval_outputs[dataloader_idx] = []
+                eval_outputs = self._eval_outputs[dataloader_idx]
+            else:
+                raise IndexError(
+                    f"dataloader_idx {dataloader_idx} is not subsequent index in evaluation, check warranted!"
+                )
+        except Exception:
+            raise Exception("This must not happen.")
+        eval_outputs.append(
             self._collect_step_output(outputs, batch, step_collection_dico)
         )
 
@@ -399,7 +403,10 @@ class EvalMixin(LightningModule):
     def on_eval_epoch_end(self, stage: str) -> None:
         """Computes evaluation metric at epoch end for respective `stage` for dataset(s).
 
-        dataset(s) may potentially have individual evaluation configuration.
+        Notes:
+            - Loops over datasets only once all
+            - dataset(s) may potentially have individual evaluation configuration.
+
 
         Args:
             stage: typically either 'val' or 'test', affects logging
@@ -415,11 +422,14 @@ class EvalMixin(LightningModule):
             )
         if metrics_cfg is None:
             return
+
+        step_outputs: list[list[dict]] = self._eval_outputs
+        idx2dataset: Union[None, dict[int, str]] = getattr(self.trainer.datamodule, f"idx2dataset_{stage}")  # type: ignore - datamodule not appropriately embedded
         # multiple datasets in `stage` dataloaders
-        if "_datasets_" in metrics_cfg:
-            for (dataset_name, dataset_metrics), dataset_outputs in zip(
-                metrics_cfg._datasets_.items(), step_outputs
-            ):
+        if idx2dataset is not None:
+            for idx, dataset_name in idx2dataset.items():
+                dataset_metrics = metrics_cfg._datasets_[dataset_name]
+                dataset_outputs = step_outputs[idx]
                 assert isinstance(dataset_outputs, list)  # avoid linting error
                 self.eval_epoch_end_dataset(
                     stage=stage,
@@ -428,12 +438,17 @@ class EvalMixin(LightningModule):
                     metrics_cfg=dataset_metrics,
                 )
         else:
+            assert (
+                len(step_outputs) == 1
+            ), "Something' off: `step_outputs` does not refer to single dataset!"
             self.eval_epoch_end_dataset(
                 stage=stage,
                 # TODO(fdschmidt93): resolve linting error
-                step_outputs=step_outputs,  # type: ignore
+                step_outputs=step_outputs[0],
                 metrics_cfg=metrics_cfg,
             )
+        # clean up cached dataset(s) outputs
+        self._eval_outputs.clear()
 
     def validation_step(
         self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None

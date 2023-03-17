@@ -301,7 +301,13 @@ class TridentDataModule(LightningDataModule):
                 # training split automatically wrapped
             if split in ("val", "test", "predict"):
                 # Need to iterate over list[Dataloader] to appropriately iterate smaller datasets
-                loaders = list(loaders.values())
+                dataloaders: list[DataLoader] = list(loaders.values())
+                # verify order
+                idx2dataset: dict[str, str] = getattr(self, f"idx2dataset_{split}")
+                for idx, dataset_name_ in idx2dataset.items():
+                    # `is` checks equality of memory addresses
+                    assert loaders[idx] is loaders[dataset_name_]
+                return dataloaders
             return loaders
 
     def train_dataloader(
