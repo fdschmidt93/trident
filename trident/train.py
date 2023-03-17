@@ -9,12 +9,12 @@ from lightning import (
     Trainer,
     seed_everything,
 )
-from lightning.pytorch.loggers import LightningLoggerBase
+from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
-from src.utils.runner import finish, log_hyperparameters
-from trident.utils.hydra import config_callback
-from trident.utils.log import get_logger
+from trident.utils.hydra import config_callbacks
+from trident.utils.logging import get_logger
+from trident.utils.runner import finish, log_hyperparameters
 
 log = get_logger(__name__)
 
@@ -29,12 +29,13 @@ def train(cfg: DictConfig) -> Optional[float]:
     Returns:
         Optional[float]: Metric score for hyperparameter optimization.
     """
-    # Init lightning datamodule
 
-    if "config_callback" in cfg:
-        log.info(f"Applying configuration callbacks for <{cfg.config_callback.keys()}>")
-        config_callback(cfg, cfg.config_callback)
-
+    if "config_callbacks" in cfg:
+        log.info(
+            f"Applying configuration callbacks for <{cfg.config_callbacks.keys()}>"
+        )
+        config_callbacks(cfg, cfg.config_callbacks)
+    log.info(f"test_after_training: {cfg.test_after_training}")
     if "imports" in cfg:
         if isinstance(cfg.imports, str):
             cfg.imports = [cfg.imports]
@@ -45,11 +46,9 @@ def train(cfg: DictConfig) -> Optional[float]:
     # Set seed for random number generators in pytorch, numpy and python.random
     if "seed" in cfg:
         seed_everything(cfg.seed, workers=True)
-
     # Init lightning datamodule
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
-    datamodule.setup(stage=None)
 
     # Init lightning model
     log.info(f"Instantiating model <{cfg.module._target_}>")
@@ -64,7 +63,7 @@ def train(cfg: DictConfig) -> Optional[float]:
                 callbacks.append(hydra.utils.instantiate(cb_conf))
 
     # Init lightning loggers
-    logger: List[LightningLoggerBase] = []
+    logger: List[Logger] = []
     if "logger" in cfg:
         for _, lg_conf in cfg.logger.items():
             if "_target_" in lg_conf:
@@ -78,7 +77,6 @@ def train(cfg: DictConfig) -> Optional[float]:
     )
 
     # Send some parameters from config to all lightning loggers
-    log.info("Logging hyperparameters!")
     log_hyperparameters(
         cfg=cfg,
         module=module,
@@ -93,12 +91,17 @@ def train(cfg: DictConfig) -> Optional[float]:
         log.info("Starting training!")
         trainer.fit(model=module, datamodule=datamodule)
 
+    score = None
+    if optimized_metric := cfg.get("optimized_metric", None):
+        score = trainer.callback_metrics[optimized_metric]
+
     # Evaluate model on test set, using the best model achieved during training
     if cfg.get("test_after_training") and not cfg.trainer.get("fast_dev_run"):
         log.info("Starting testing!")
-        if cfg.get("train", True):
-            trainer.test()
-        else:
+        # TODO(fdschmidt93): clean up hack
+        try:
+            trainer.test(module, datamodule=datamodule, ckpt_path="best")
+        except:
             trainer.test(module, datamodule=datamodule)
 
     # Make sure everything closed properly
@@ -113,9 +116,8 @@ def train(cfg: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    log.info(f"Best checkpoint path:\n{trainer.checkpoint_callback.best_model_path}")
+    if best_model_path := getattr((trainer, "checkpoint_callback"), "best_model_path"):
+        log.info(f"Best checkpoint path:\n{best_model_path}")
 
     # Return metric score for hyperparameter optimization
-    optimized_metric = cfg.get("optimized_metric")
-    if optimized_metric:
-        return trainer.callback_metrics[optimized_metric]
+    return score
