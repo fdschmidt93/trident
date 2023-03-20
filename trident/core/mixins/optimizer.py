@@ -1,10 +1,9 @@
 from typing import Union
 
 import hydra
+from lightning import LightningModule
+from lightning.pytorch.utilities.parsing import AttributeDict
 from omegaconf.dictconfig import DictConfig
-from pytorch_lightning import LightningDataModule
-from pytorch_lightning.core.lightning import LightningModule
-from pytorch_lightning.utilities.parsing import AttributeDict
 
 from trident.utils.logging import get_logger
 

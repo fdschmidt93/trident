@@ -55,7 +55,7 @@ autodoc_mock_imports = [
     "omegaconf",
     "tmp",
     "rich",
-    "pytorch_lightning",
+    "lightning",
     "transformers",
     "datasets",
     "matplotlib",

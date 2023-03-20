@@ -3,7 +3,7 @@ from importlib.util import find_spec
 
 """
 Adapted from:
-    https://github.com/PyTorchLightning/pytorch-lightning/blob/master/pytorch_lightning/utilities/imports.py
+    https://github.com/PyTorchLightning/pytorch-lightning/blob/master/lightning/utilities/imports.py
 """
 
 

@@ -3,11 +3,6 @@
 # specify here default training configuration
 defaults:
   - trainer: default.yaml
-  - module: trident.yaml
-  - optimizer: adamw.yaml
-  - scheduler: linear_warm_up.yaml
-  - datamodule: mnist_datamodule.yaml
-  - tokenizer: trident.yaml
   - config_callbacks: trident.yaml
 
   - callbacks: default.yaml # set this to null if you don't want to use callbacks

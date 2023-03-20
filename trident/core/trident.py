@@ -1,11 +1,11 @@
 from types import MethodType
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import hydra
 import torch
+from lightning import LightningModule
+from lightning.pytorch.utilities.parsing import AttributeDict
 from omegaconf import DictConfig
-from pytorch_lightning import LightningModule
-from pytorch_lightning.utilities.parsing import AttributeDict
 from torch import nn
 
 from trident.core.mixins.evaluation import EvalMixin
@@ -14,6 +14,7 @@ from trident.utils import deepgetitem
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
+
 
 # TODO(fdschmidt93): function signatures fn(self, ...)
 # TODO(fdschmidt93): clean API for instantiation to depend on datamodule (token classification: label2id, id2label
@@ -108,6 +109,8 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         # TODO(fdschmidt93): verify ordering
         LightningModule.__init__(self)
         super().__init__()
+        # Lightning 2.0 requires manual management of evaluation step outputs
+        self._eval_outputs = []
 
         # TODO(fschmidt93): consider removing override syntax, as typically TridentModule is sub-classed
         # forcefully override trident methods

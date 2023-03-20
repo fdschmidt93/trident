@@ -1,12 +1,15 @@
 import warnings
 from typing import List, Sequence
 
-import pytorch_lightning as pl
+import lightning as L
 import rich.syntax
 import rich.tree
-from omegaconf import DictConfig, OmegaConf
-from pytorch_lightning.utilities.distributed import rank_zero_only
+from lightning.pytorch.utilities import rank_zero_only
+from omegaconf import DictConfig, ListConfig, OmegaConf
+
 from trident.utils.logging import get_logger
+
+log = get_logger(__name__)
 
 
 def extras(config: DictConfig) -> None:
@@ -56,7 +59,7 @@ def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
         "trainer",
-        "model",
+        "module",
         "datamodule",
         "callbacks",
         "logger",
@@ -97,11 +100,11 @@ def print_config(
 @rank_zero_only
 def log_hyperparameters(
     cfg: DictConfig,
-    module: pl.LightningModule,
-    datamodule: pl.LightningDataModule,
-    trainer: pl.Trainer,
-    callbacks: List[pl.Callback],
-    logger: List[pl.loggers.LightningLoggerBase],
+    module: L.LightningModule,
+    datamodule: L.LightningDataModule,
+    trainer: L.Trainer,
+    callbacks: List[L.Callback],
+    logger: List[L.pytorch.loggers.Logger],
 ) -> None:
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
@@ -110,16 +113,20 @@ def log_hyperparameters(
     """
 
     hparams = {}
+    if not trainer.logger:
+        log.warning("Logger not found! Skipping hyperparameter logging...")
+        return
+    log.info("Logging hyperparameters!")
 
     # choose which parts of hydra config will be saved to loggers
-    hparams["trainer"] = cfg["trainer"]
-    hparams["module"] = cfg["module"]
-    hparams["datamodule"] = cfg["datamodule"]
-
-    if "seed" in cfg:
-        hparams["seed"] = cfg["seed"]
-    if "callbacks" in cfg:
-        hparams["callbacks"] = cfg["callbacks"]
+    for key in ["trainer", "module", "datamodule", "seed", "callbacks"]:
+        if key in cfg:
+            cfg_ = cfg[key]
+            hparams[key] = (
+                cfg_
+                if not isinstance(cfg_, (ListConfig, DictConfig))
+                else OmegaConf.to_container(cfg[key])
+            )
 
     # save number of module parameters
     hparams["module/params/total"] = sum(p.numel() for p in module.parameters())
@@ -135,18 +142,18 @@ def log_hyperparameters(
 
 
 def finish(
-    config: DictConfig,
-    module: pl.LightningModule,
-    datamodule: pl.LightningDataModule,
-    trainer: pl.Trainer,
-    callbacks: List[pl.Callback],
-    logger: List[pl.loggers.LightningLoggerBase],
+    cfg: DictConfig,
+    module: L.LightningModule,
+    datamodule: L.LightningDataModule,
+    trainer: L.Trainer,
+    callbacks: List[L.Callback],
+    logger: List[L.pytorch.loggers.Logger],
 ) -> None:
     """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash!
     for lg in logger:
-        if isinstance(lg, pl.loggers.wandb.WandbLogger):
+        if isinstance(lg, L.pytorch.loggers.wandb.WandbLogger):
             import wandb
 
             wandb.finish()
