@@ -3,19 +3,59 @@
 # to execute this experiment run:
 # python run.py experiment=mnli
 
-defaults:
-  - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
-  - override /callbacks: null
-  - override /config_callbacks: trident.yaml
-  - override /logger: null
+# defaults:
+#   - override hydra/job_logging: disabled
+#   - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
+#   - override /callbacks: null
+#   - override /config_callbacks: trident.yaml
+#   - override /logger: null
+#
+# hydra:
+#   job_logging: "disabled"
+#   hydra_logging: null
+work_dir: ${hydra:runtime.cwd}
+data_dir: ${work_dir}/data/
+print_config: False
 
 seed: 42
+test_after_training: True
+callbacks: null
+
+config_callbacks:
+  datamodule.dataset_cfg:
+    # for this config
+    # do config callback as specified below
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["train", "val", "test"]
+    gen_keys: false
+
+  datamodule.dataloader_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["train", "val", "test"]
+    gen_keys: true
+
+  module.evaluation.prepare_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
+  module.evaluation.step_outputs:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
+  module.evaluation.metrics_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
 
 trainer:
+  _target_: lightning.Trainer
   max_epochs: 10
   accelerator: cpu
 
-optimized_metric: "first_5/val/mse_loss"
+optimized_metric: "off_by_one/val/mse_loss"
 
 module:
   _target_: tests.helpers.modules.ToyModule
@@ -71,21 +111,9 @@ datamodule:
           - _target_: torch.arange
             start: 1
             end: 11
-    # val:
-    #   X:
-    #     # a bit convoluted to cast arange to float in hydra config
-    #     _target_: torch.eye
-    #     _args_:
-    #       - 10
-    #   y:
-    #     # a bit convoluted to cast arange to float in hydra config
-    #     _target_: torch.Tensor.float
-    #     _args_:
-    #       - _target_: torch.arange
-    #         end: 10
     val:
       _datasets_:
-        first_5:
+        off_by_one:
           X:
             _target_: tests.helpers.modules.get_val_data
             to_: 5
@@ -94,9 +122,8 @@ datamodule:
             _target_: torch.Tensor.float
             _args_:
               - _target_: torch.arange
-                start: 1
-                end: 6
-        last_5:
+                end: 5
+        off_by_two:
           X:
             _target_: tests.helpers.modules.get_val_data
             from_: 5
@@ -105,23 +132,11 @@ datamodule:
             _target_: torch.Tensor.float
             _args_:
               - _target_: torch.arange
-                start: 6
-                end: 11
+                start: 8
+                end: 13
     test:
-      # X:
-      #   # a bit convoluted to cast arange to float in hydra config
-      #   _target_: torch.eye
-      #   _args_:
-      #     - 10
-      # y:
-      #   # a bit convoluted to cast arange to float in hydra config
-      #   _target_: torch.Tensor.float
-      #   _args_:
-      #     - _target_: torch.arange
-      #       start: 1
-      #       end: 11
       _datasets_:
-        first_5:
+        off_by_one:
           X:
             _target_: tests.helpers.modules.get_val_data
             to_: 5
@@ -130,9 +145,8 @@ datamodule:
             _target_: torch.Tensor.float
             _args_:
               - _target_: torch.arange
-                start: 1
-                end: 6
-        last_5:
+                end: 5
+        off_by_two:
           X:
             _target_: tests.helpers.modules.get_val_data
             from_: 5
@@ -141,9 +155,8 @@ datamodule:
             _target_: torch.Tensor.float
             _args_:
               - _target_: torch.arange
-                start: 6
-                end: 11
-
+                start: 8
+                end: 13
   dataloader_cfg:
     _target_: torch.utils.data.dataloader.DataLoader
     collate_fn:

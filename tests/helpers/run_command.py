@@ -1,7 +1,7 @@
+import subprocess
 from typing import List
 
 import pytest
-import sh
 
 
 def run_command(command: List[str]):

@@ -51,7 +51,7 @@ def train(cfg: DictConfig) -> Optional[float]:
 
     # Init lightning callbacks
     callbacks: List[Callback] = []
-    if "callbacks" in cfg:
+    if "callbacks" in cfg and cfg.callbacks is not None:
         for _, cb_conf in cfg.callbacks.items():
             if "_target_" in cb_conf:
                 log.info(f"Instantiating callback <{cb_conf._target_}>")

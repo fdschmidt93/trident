@@ -4,14 +4,53 @@
 # python run.py experiment=mnli
 
 defaults:
-  - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
-  - override /callbacks: null
-  - override /config_callbacks: trident.yaml
-  - override /logger: null
+  - override hydra/job_logging: disabled
+#   - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
+#   - override /callbacks: null
+#   - override /config_callbacks: trident.yaml
+#   - override /logger: null
+#
+# hydra:
+#   job_logging: "disabled"
+#   hydra_logging: null
+work_dir: ${hydra:runtime.cwd}
+data_dir: ${work_dir}/data/
+print_config: False
 
 seed: 42
+test_after_training: True
+
+config_callbacks:
+  datamodule.dataset_cfg:
+    # for this config
+    # do config callback as specified below
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["train", "val", "test"]
+    gen_keys: false
+
+  datamodule.dataloader_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["train", "val", "test"]
+    gen_keys: true
+
+  module.evaluation.prepare_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
+  module.evaluation.step_outputs:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
+  module.evaluation.metrics_cfg:
+    _target_: trident.utils.hydra.expand
+    merge_keys: ["val", "test"]
+    gen_keys: true
+
 
 trainer:
+  _target_: lightning.Trainer
   max_epochs: 10
   accelerator: cpu
 
@@ -82,7 +121,8 @@ datamodule:
         _target_: torch.Tensor.float
         _args_:
           - _target_: torch.arange
-            end: 10
+            start: 1
+            end: 11
     test:
       X:
         # a bit convoluted to cast arange to float in hydra config
