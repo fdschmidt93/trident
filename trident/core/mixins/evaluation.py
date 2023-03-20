@@ -327,7 +327,7 @@ class EvalMixin(LightningModule):
         if (
             dataset is not None
             and step_collection_dico is not None
-            and "_dataset_" in step_collection_dico
+            and "_datasets_" in step_collection_dico
         ):
             step_collection_dico = step_collection_dico._datasets_.get(dataset)
         # if multiple datasets val or test dataloaders
