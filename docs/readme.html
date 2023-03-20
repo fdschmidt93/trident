@@ -205,7 +205,7 @@
 </ul>
 <p>In particular, trident intends to abstract any boilerplate away in a highly modular fashion:</p>
 <ul class="simple">
-<li><p>Data &amp; Preprocessing pipeline powered by <a class="reference external" href="https://huggingface.co/docs/datasets/">datasets</a> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningDataModule</span></code>: user setup required</p></li>
+<li><p>Data &amp; Preprocessing pipeline powered by <a class="reference external" href="https://huggingface.co/docs/datasets/">datasets</a> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">lightning.LightningDataModule</span></code>: user setup required</p></li>
 <li><p>Training and Evaluation wrappers constitute convenience layers around <a class="reference external" href="https://pytorch-lightning.readthedocs.io/">Pytorch-Lightning</a></p></li>
 </ul>
 <p>You can opt-out of any component and replace it with your implementation with ease (see <a class="reference internal" href="customization.html#customization"><span class="std std-ref">Customization</span></a>). It is quintessential that you familiarize yourself with Hydra as it constitutes the backbone for composing experiments in trident.</p>
@@ -233,7 +233,7 @@ conda activate trident
 <p>You can find existing pipelines at <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/">experiments configs</a>. A full experiment (incl. <cite>module</cite>) is defined in the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/mnli_tinybert.yaml">MNLI-TinyBert config</a>.</p>
 <p><strong>Important Concepts</strong>:</p>
 <ul>
-<li><p><cite>module</cite> encapsulates a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/sequence_classification.yaml">sequence classification</a>) and comprises the following keys:</p>
+<li><p><cite>module</cite> encapsulates a <code class="xref py py-obj docutils literal notranslate"><span class="pre">lightning.LightningModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/sequence_classification.yaml">sequence classification</a>) and comprises the following keys:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>model: your model that returns a container with loss and required attributes</p></li>
@@ -246,7 +246,7 @@ conda activate trident
 <p>Please see more details in <span class="xref std std-ref">trident_module</span>.</p>
 </div></blockquote>
 </li>
-<li><p><cite>datamodule</cite> represents a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningDataModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/datamodule/mnli.yaml">MNLI</a>)</p></li>
+<li><p><cite>datamodule</cite> represents a <code class="xref py py-obj docutils literal notranslate"><span class="pre">lightning.LightningDataModule</span></code> in a Hydra config (example: <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/datamodule/mnli.yaml">MNLI</a>)</p></li>
 <li><p><cite>experiment</cite> constitutes a set of configuration that typically defines everything except for the <cite>model</cite></p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├── configs             &lt;- Hydra configuration files
@@ -286,7 +286,7 @@ conda activate trident
 <li><p>Embed your own model into the TridentModule</p></li>
 <li><p>Easily leverage existing frameworks like <a class="reference external" href="https://huggingface.co/transformers/">transformers</a> (see below)</p></li>
 </ul>
-<p>A <cite>TridentModule</cite> is analogous to what a <code class="xref py py-obj docutils literal notranslate"><span class="pre">pytorch_lightning.LightningDataModule</span></code> comprises (model, optimizer, scheduler, …) and commonly defined with <strong>shared and individual flags</strong>. Here’s an example for sequence classification.</p>
+<p>A <cite>TridentModule</cite> is analogous to what a <code class="xref py py-obj docutils literal notranslate"><span class="pre">lightning.LightningDataModule</span></code> comprises (model, optimizer, scheduler, …) and commonly defined with <strong>shared and individual flags</strong>. Here’s an example for sequence classification.</p>
 <p>First, the included model configurations inherit <strong>shared options</strong> from the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/base.yaml">base module config</a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_recursive_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">_target_</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">src.modules.base.TridentModule</span>

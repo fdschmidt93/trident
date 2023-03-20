@@ -11,6 +11,25 @@ Subpackages
    trident.core
    trident.utils
 
+Submodules
+----------
+
+trident.run module
+------------------
+
+.. automodule:: trident.run
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+trident.train module
+--------------------
+
+.. automodule:: trident.train
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

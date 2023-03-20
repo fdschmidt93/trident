@@ -28,6 +28,14 @@ trident.utils.logging module
    :undoc-members:
    :show-inheritance:
 
+trident.utils.runner module
+---------------------------
+
+.. automodule:: trident.utils.runner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 trident.utils.transform module
 ------------------------------
 
