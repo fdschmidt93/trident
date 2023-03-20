@@ -3,16 +3,9 @@
 # to execute this experiment run:
 # python run.py experiment=mnli
 
-# defaults:
-#   - override hydra/job_logging: disabled
-#   - override /trainer: default.yaml # choose trainer from 'configs/trainer/'
-#   - override /callbacks: null
-#   - override /config_callbacks: trident.yaml
-#   - override /logger: null
-#
-# hydra:
-#   job_logging: "disabled"
-#   hydra_logging: null
+defaults:
+  - override hydra/job_logging: disabled
+
 work_dir: ${hydra:runtime.cwd}
 data_dir: ${work_dir}/data/
 print_config: False
@@ -54,8 +47,9 @@ trainer:
   _target_: lightning.Trainer
   max_epochs: 10
   accelerator: cpu
+  enable_checkpointing: false
 
-optimized_metric: "off_by_one/val/mse_loss"
+optimized_metric: "val/mse_loss"
 
 module:
   _target_: tests.helpers.modules.ToyModule
@@ -112,51 +106,31 @@ datamodule:
             start: 1
             end: 11
     val:
-      _datasets_:
-        off_by_one:
-          X:
-            _target_: tests.helpers.modules.get_val_data
-            to_: 5
-          y:
-            # a bit convoluted to cast arange to float in hydra config
-            _target_: torch.Tensor.float
-            _args_:
-              - _target_: torch.arange
-                end: 5
-        off_by_two:
-          X:
-            _target_: tests.helpers.modules.get_val_data
-            from_: 5
-          y:
-            # a bit convoluted to cast arange to float in hydra config
-            _target_: torch.Tensor.float
-            _args_:
-              - _target_: torch.arange
-                start: 8
-                end: 13
+      X:
+        # a bit convoluted to cast arange to float in hydra config
+        _target_: torch.eye
+        _args_:
+          - 10
+      y:
+        # a bit convoluted to cast arange to float in hydra config
+        _target_: torch.Tensor.float
+        _args_:
+          - _target_: torch.arange
+            start: 1
+            end: 11
     test:
-      _datasets_:
-        off_by_one:
-          X:
-            _target_: tests.helpers.modules.get_val_data
-            to_: 5
-          y:
-            # a bit convoluted to cast arange to float in hydra config
-            _target_: torch.Tensor.float
-            _args_:
-              - _target_: torch.arange
-                end: 5
-        off_by_two:
-          X:
-            _target_: tests.helpers.modules.get_val_data
-            from_: 5
-          y:
-            # a bit convoluted to cast arange to float in hydra config
-            _target_: torch.Tensor.float
-            _args_:
-              - _target_: torch.arange
-                start: 8
-                end: 13
+      X:
+        # a bit convoluted to cast arange to float in hydra config
+        _target_: torch.eye
+        _args_:
+          - 10
+      y:
+        # a bit convoluted to cast arange to float in hydra config
+        _target_: torch.Tensor.float
+        _args_:
+          - _target_: torch.arange
+            start: 1
+            end: 11
   dataloader_cfg:
     _target_: torch.utils.data.dataloader.DataLoader
     collate_fn:

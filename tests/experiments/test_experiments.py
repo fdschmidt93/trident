@@ -11,7 +11,7 @@ from trident.train import train
 def test_single() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/experiment/",
+        config_path="../../configs/tests/",
     ):
         # config is relative to a module
         cfg = compose(config_name="test_single_val_test_dataset")
@@ -21,7 +21,7 @@ def test_single() -> None:
 def test_off_by_one() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/experiment/",
+        config_path="../../configs/tests/",
     ):
         # config is relative to a module
         cfg = compose(config_name="test_many_val_test_dataset")
@@ -31,7 +31,7 @@ def test_off_by_one() -> None:
 def test_off_by_two() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/experiment/",
+        config_path="../../configs/tests/",
     ):
         # config is relative to a module
         cfg = compose(

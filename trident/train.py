@@ -111,9 +111,9 @@ def train(cfg: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    if hasattr(trainer, "checkpoint_callback"):
+    if (ckpt_cb := getattr(trainer, "checkpoint_callback")) is not None:
         if isinstance(
-            best_model_path := getattr(trainer.checkpoint_callback, "best_model_path"),
+            best_model_path := getattr(ckpt_cb, "best_model_path"),
             str,
         ):
             log.info(f"Best checkpoint path:\n{best_model_path}")
