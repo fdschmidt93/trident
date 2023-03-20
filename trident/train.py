@@ -2,13 +2,8 @@ import sys
 from typing import List, Optional
 
 import hydra
-from lightning import (
-    Callback,
-    LightningDataModule,
-    LightningModule,
-    Trainer,
-    seed_everything,
-)
+from lightning import (Callback, LightningDataModule, LightningModule, Trainer,
+                       seed_everything)
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
@@ -116,8 +111,12 @@ def train(cfg: DictConfig) -> Optional[float]:
     )
 
     # Print path to best checkpoint
-    if best_model_path := getattr((trainer, "checkpoint_callback"), "best_model_path"):
-        log.info(f"Best checkpoint path:\n{best_model_path}")
+    if hasattr(trainer, "checkpoint_callback"):
+        if isinstance(
+            best_model_path := getattr(trainer.checkpoint_callback, "best_model_path"),
+            str,
+        ):
+            log.info(f"Best checkpoint path:\n{best_model_path}")
 
     # Return metric score for hyperparameter optimization
     return score

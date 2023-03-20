@@ -25,7 +25,7 @@ def main(cfg: DictConfig):
             exec_module(train_mod)
         train = train_mod.train
     else:
-        from trident import train
+        from trident.train import train
     from trident.utils.runner import extras, print_config
 
     # A couple of optional utilities:

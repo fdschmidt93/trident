@@ -306,7 +306,7 @@ class TridentDataModule(LightningDataModule):
                 idx2dataset: dict[str, str] = getattr(self, f"idx2dataset_{split}")
                 for idx, dataset_name_ in idx2dataset.items():
                     # `is` checks equality of memory addresses
-                    assert loaders[idx] is loaders[dataset_name_]
+                    assert dataloaders[int(idx)] is loaders[dataset_name_]
                 return dataloaders
             return loaders
 

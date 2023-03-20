@@ -349,9 +349,9 @@ class EvalMixin(LightningModule):
         try:
             eval_outputs = self._eval_outputs[dataloader_idx]
         except IndexError as _:
-            if len(self._eval_outputs) == (dataloader_idx - 1):
-                self._eval_outputs[dataloader_idx] = []
-                eval_outputs = self._eval_outputs[dataloader_idx]
+            if len(self._eval_outputs) == dataloader_idx:
+                eval_outputs = []
+                self._eval_outputs.append(eval_outputs)
             else:
                 raise IndexError(
                     f"dataloader_idx {dataloader_idx} is not subsequent index in evaluation, check warranted!"
