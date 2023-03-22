@@ -1,9 +1,9 @@
 from typing import Optional, Tuple, Union
 
 import hydra
-from datasets.arrow_dataset import Dataset
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
+from torch.utils.data import Dataset
 
 from trident.core import TridentDataModule
 from trident.utils.hydra import instantiate_and_apply

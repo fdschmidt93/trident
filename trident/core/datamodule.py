@@ -3,12 +3,10 @@ from types import MethodType
 from typing import Optional, Union
 
 import hydra
-from datasets.arrow_dataset import Dataset
 from lightning import LightningDataModule
 from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
-from torch.utils.data.dataloader import DataLoader
-from torch.utils.data.dataset import IterableDataset
+from torch.utils.data import DataLoader, Dataset, IterableDataset
 
 from trident.utils.logging import get_logger
 
@@ -170,10 +168,10 @@ class TridentDataModule(LightningDataModule):
         if self.dataset_train is None:
             return 0
         elif isinstance(self.dataset_train, dict):
-            return max([len(dataset) for dataset in self.dataset_train.values()])
+            return max([len(dataset) for dataset in self.dataset_train.values()])  # type: ignore
         else:
             if not isinstance(self.dataset_train, IterableDataset):
-                return len(self.dataset_train)
+                return len(self.dataset_train)  # type: ignore
             else:
                 return self.trainer.global_step
 

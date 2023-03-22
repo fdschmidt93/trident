@@ -28,7 +28,6 @@ dependencies = [
     "hydra-colorlog >= 1.2.0",
     "hydra-optuna-sweeper >= 1.2.0",
     "pytest",
-    "datasets >= 2.10.1",
 ]
 dynamic = ["version"]
 

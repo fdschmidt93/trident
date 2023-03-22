@@ -56,8 +56,6 @@ autodoc_mock_imports = [
     "tmp",
     "rich",
     "lightning",
-    "transformers",
-    "datasets",
     "matplotlib",
     "seaborn",
     "dotenv",
