@@ -4,6 +4,7 @@ from typing import Optional, Union
 
 import hydra
 from lightning import LightningDataModule
+from lightning.pytorch.utilities import CombinedLoader
 from omegaconf.dictconfig import DictConfig
 from omegaconf.omegaconf import OmegaConf
 from torch.utils.data import DataLoader, Dataset, IterableDataset
@@ -248,16 +249,23 @@ class TridentDataModule(LightningDataModule):
         )
         self._datamodule_hook(kind="on_after_setup")
 
+    def _init_dataloader(
+        self, dataset: Dataset, dataloader_cfg: DictConfig
+    ) -> DataLoader:
+        """Internal method to instantiate `DataLoader` with `dataset` and `dataloader_cfg`."""
+        if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
+            dataset = self._remove_unused_columns(dataset)
+        return hydra.utils.call(dataloader_cfg, dataset=dataset)
+
     # TODO(fdschmidt93): document (or refactor) _remove_unused_columns
-    def _get_dataloader(
-        self, split: str
-    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    def _get_dataloader(self, split: str) -> Union[DataLoader, CombinedLoader]:
         """Checks existence of dataset for :obj:`split` and returns :obj:`DataLoader` with cfg.
 
         The return type of this function typically depends on the scenario:
             * :obj:`DataLoader`: simple, single datasets
-            * :obj:`list[DataLoader]`: common in zero-shot cross-lingual transfer, evaluating on many varying datasets
-            * :obj:`dict[DataLoader]`: training on multiple datasets
+            * :obj:`CombinedLoader`: for modes, see CombinedLoader documentation
+                - mode = "sequential" common in zero-shot cross-lingual transfer, evaluating on many varying datasets
+                - mode = "max_size_cycle" common in zero-shot cross-lingual transfer, evaluating on many varying datasets
 
             .. seealso:: :py:meth:`trident.core.datamodule.TridentDataModule._get_dataloader`
 
@@ -267,46 +275,55 @@ class TridentDataModule(LightningDataModule):
         Returns:
             Union[DataLoader, list[DataLoader], dict[str, DataLoader]]: [TODO:description]
         """
-        dataset = getattr(self, f"dataset_{split}")
+        dataset: Union[None, Dataset, dict[str, Dataset]] = getattr(
+            self, f"dataset_{split}"
+        )
         assert dataset is not None, f"Dataset for {split} missing!"
+
+        # single dataset
         if not isinstance(dataset, dict):
-            if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
-                dataset = self._remove_unused_columns(dataset)
-            return hydra.utils.call(
-                getattr(self, "dataloader_cfg")[split], dataset=dataset
+            return self._init_dataloader(
+                dataset, getattr(self, "dataloader_cfg")[split]
             )
         else:
-            loaders = {}
+            dataloader_dict: dict[str, DataLoader] = {}
             dataloader_cfg = getattr(self, "dataloader_cfg")[split]
+
+            # dataloader configuration shared for all datasets
             if not "_datasets_" in dataloader_cfg:
                 log.info(
                     f"Sharing {split}-dataloader configuration for {list(dataset.keys())}"
                 )
-                for k, v in dataset.items():
-                    _dataset = v
-                    if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
-                        _dataset = self._remove_unused_columns(_dataset)
-                    loaders[k] = hydra.utils.call(dataloader_cfg, dataset=_dataset)
+                dl_cfg_iter: dict[str, DictConfig] = {
+                    k: dataloader_cfg.copy() for k in dataset.keys()
+                }
             else:
-                assert set(dataset.keys()) == set(
-                    dataloader_cfg._datasets_.keys()
-                ), "Keys between datasets and dataloader do not align!"
-                for dataset_name, cfg in dataloader_cfg._datasets_.items():
-                    _dataset = dataset[dataset_name]
-                    if OmegaConf.select(self.datamodule_cfg, "remove_unused_columns"):
-                        _dataset = self._remove_unused_columns(_dataset)
-                    loaders[dataset_name] = hydra.utils.call(cfg, dataset=_dataset)
-                # training split automatically wrapped
-            if split in ("val", "test", "predict"):
-                # Need to iterate over list[Dataloader] to appropriately iterate smaller datasets
-                dataloaders: list[DataLoader] = list(loaders.values())
+                dl_cfg_iter: dict[str, DictConfig] = dataloader_cfg._datasets_
+            assert set(dataset.keys()) == set(
+                dl_cfg_iter.keys()
+            ), "Keys between datasets and dataloaders configuration does not align!"
+
+            for name, cfg in dl_cfg_iter.items():
+                dataloader_dict[name] = self._init_dataloader(dataset[name], cfg)
+            # training split automatically wrapped
+            if split == "train":
+                return CombinedLoader(
+                    dataloader_dict,
+                    mode=getattr(
+                        self.datamodule_cfg,
+                        "train_multi_dataloader_mode",
+                        "max_size_cycle",
+                    ),
+                )
+            else:
+                dloaders: list[DataLoader] = list(dataloader_dict.values())  # type: ignore
                 # verify order
                 idx2dataset: dict[str, str] = getattr(self, f"idx2dataset_{split}")
                 for idx, dataset_name_ in idx2dataset.items():
                     # `is` checks equality of memory addresses
-                    assert dataloaders[int(idx)] is loaders[dataset_name_]
-                return dataloaders
-            return loaders
+                    assert dloaders[int(idx)] is dataloader_dict[dataset_name_]
+                # lightning 2.0 now supports sequential CombinedLoader
+                return CombinedLoader(dloaders, mode="sequential")
 
     def train_dataloader(
         self,
@@ -332,17 +349,16 @@ class TridentDataModule(LightningDataModule):
     def _remove_unused_columns(
         self,
         dataset: Dataset,
-    ):
+    ) -> Dataset:
         signature_columns = (
             self._signature_columns if self._signature_columns is not None else []
         )
-        column_names = getattr(dataset, "column_names")
-        if column_names is not None:
-            ignored_columns = list(set(column_names) - set(signature_columns))
-            if len(ignored_columns) > 0:
-                log.info(
-                    f"The following columns don't have a corresponding argument in "
-                    f"`{self.trainer.model.__class__.__name__}.forward` and have been ignored: {', '.join(ignored_columns)}."  # type: ignore
-                )
-            # ignoring as new_fingerprint typically not passed
-            return dataset.remove_columns(ignored_columns)  # type: ignore
+        column_names: list[str] = getattr(dataset, "column_names")
+        ignored_columns = list(set(column_names) - set(signature_columns))
+        if len(ignored_columns) > 0:
+            log.info(
+                f"The following columns don't have a corresponding argument in "
+                f"`{self.trainer.model.__class__.__name__}.forward` and have been ignored: {', '.join(ignored_columns)}."  # type: ignore
+            )
+        # ignoring as new_fingerprint typically not passed
+        return dataset.remove_columns(ignored_columns)  # type: ignore
