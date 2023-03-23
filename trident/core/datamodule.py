@@ -327,22 +327,22 @@ class TridentDataModule(LightningDataModule):
 
     def train_dataloader(
         self,
-    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, CombinedLoader]:
         return self._get_dataloader("train")
 
     def val_dataloader(
         self,
-    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, CombinedLoader]:
         return self._get_dataloader("val")
 
     def test_dataloader(
         self,
-    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, CombinedLoader]:
         return self._get_dataloader("test")
 
     def predict_dataloader(
         self,
-    ) -> Union[DataLoader, list[DataLoader], dict[str, DataLoader]]:
+    ) -> Union[DataLoader, CombinedLoader]:
         return self._get_dataloader("predict")
 
     # TODO(fdschmidt93): maybe move out-of trident-core and into trident-xtreme
