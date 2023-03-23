@@ -54,11 +54,16 @@ class ToyModule(TridentModule):
             return self.batch_forward(b)
         else:
             b = cast(dict[str, dict[str, torch.Tensor]], batch)
+            # runs only with multi train dataset
+            first_half_correct = b["first_half"]["examples"].sum(0)[:5].sum() == 5
+            second_half_correct = b["second_half"]["examples"].sum(0)[5:].sum() == 5
+            assert first_half_correct.item(), "First half has incorrect examples"
+            assert second_half_correct.item(), "Second half has incorrect examples"
             rets = {
                 dataset_name: self.batch_forward(dataset_batch)
                 for dataset_name, dataset_batch in b.items()
             }
-            loss = torch.cat([v["loss"] for v in rets.values()]).mean()
+            loss = torch.stack([v["loss"] for v in rets.values()]).mean()
             return {"loss": loss}
 
 
