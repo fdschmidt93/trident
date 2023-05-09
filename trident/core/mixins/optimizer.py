@@ -34,7 +34,6 @@ class OptimizerMixin(LightningModule):
         """Computes the number of training steps per device, accounting for gradient accumulation."""
         if self.trainer.max_steps != -1:
             return self.trainer.max_steps
-        accumulate_grad_batches = getattr(self.trainer, "accumulate_grad_batches", 1)
         if datamodule := getattr(self.trainer, "datamodule"):
             dataloader = datamodule.train_dataloader()
             if isinstance(dataloader, dict):
@@ -47,7 +46,6 @@ class OptimizerMixin(LightningModule):
             num_training_batches
             * self.trainer.max_epochs
             // max(1, self.trainer.num_devices)
-            // accumulate_grad_batches
         )
 
     def configure_scheduler(
