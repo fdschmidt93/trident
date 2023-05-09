@@ -161,7 +161,7 @@ class TridentDataModule(LightningDataModule):
             signature = inspect.signature(module.model.forward)
             _signature_columns = list(signature.parameters.keys())
             # Labels may be named label or label_ids, the default data collator handles that.
-            _signature_columns += ["label", "label_ids"]
+            _signature_columns += ["label", "label_ids", "labels", "input_ids", "attention_mask", "start_positions", "end_positions"]
             return _signature_columns
 
     def __len__(self) -> int:
