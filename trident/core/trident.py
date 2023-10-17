@@ -109,8 +109,6 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         # TODO(fdschmidt93): verify ordering
         LightningModule.__init__(self)
         super().__init__()
-        # Lightning 2.0 requires manual management of evaluation step outputs
-        self._eval_outputs = []
 
         # TODO(fschmidt93): consider removing override syntax, as typically TridentModule is sub-classed
         # forcefully override trident methods
