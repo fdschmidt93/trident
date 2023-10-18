@@ -1,6 +1,6 @@
 defaults:
   - trident
-  - /evaluation: classification
+  - /evaluation: text_classification
 
 model:
   _target_: transformers.AutoModelForSequenceClassification.from_pretrained
