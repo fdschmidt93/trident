@@ -3,15 +3,13 @@ from hydra import compose, initialize
 
 from trident.train import train
 
-# 2. The module with your configs should be importable.
-#    it needs to have a __init__.py (can be empty).
-# 3. THe config path is relative to the file calling initialize (this file)
+CONFIG_PATH = "./configs/"
 
 
 def test_single_train_dataloader() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/tests/",
+        config_path=CONFIG_PATH,
     ):
         # config is relative to a module
         cfg = compose(config_name="test_single_train_single_val_test")
@@ -21,7 +19,7 @@ def test_single_train_dataloader() -> None:
 def test_multi_train_dataloader() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/tests/",
+        config_path=CONFIG_PATH,
     ):
         # config is relative to a module
         cfg = compose(config_name="test_many_train_single_val_test")
@@ -31,7 +29,7 @@ def test_multi_train_dataloader() -> None:
 def test_off_by_one() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/tests/",
+        config_path=CONFIG_PATH,
     ):
         # config is relative to a module
         cfg = compose(config_name="test_single_train_many_val_test")
@@ -41,7 +39,7 @@ def test_off_by_one() -> None:
 def test_off_by_two() -> None:
     with initialize(
         version_base=None,
-        config_path="../../configs/tests/",
+        config_path=CONFIG_PATH,
     ):
         # config is relative to a module
         cfg = compose(
