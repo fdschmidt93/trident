@@ -1,15 +1,44 @@
 import functools
-from typing import Any, Union
+from functools import lru_cache
+from typing import Any, Mapping, Optional, Union
 
 import hydra
 from hydra.utils import get_method
 from omegaconf import DictConfig, OmegaConf
 
-_ExtraKeys = ["_method_", "_apply_"]
-
+from trident.utils.enums import Split
 from trident.utils.logging import get_logger
 
+_ExtraKeys = ["_method_", "_apply_"]
+
 log = get_logger(__name__)
+
+
+# DictConfig is hashable
+@lru_cache
+def get_dataset_cfg(
+    cfg: Optional[Any],
+    split: Optional[Split],
+    dataset_name: Optional[str],
+) -> Any:
+    """Retrieve split config or value at lowest available level in hierarchy of `cfg`."""
+
+    if not isinstance(cfg, Mapping):
+        return cfg
+
+    # Create a newly-typed reference to avoid type inference issues.
+    current_cfg: Mapping = cfg
+
+    # Retrieve split-specific configuration or default to base config.
+    current_cfg = (
+        current_cfg.get(split.value, current_cfg) if split is not None else current_cfg
+    )
+    current_cfg = current_cfg.get("_datasets_", current_cfg)
+    current_cfg = (
+        current_cfg.get(dataset_name, current_cfg) if dataset_name else current_cfg
+    )
+
+    return current_cfg
 
 
 # TODO(fdschmidt93): test when wrapped up in partial
