@@ -12,19 +12,19 @@ test_after_training: True
 callbacks: null
 
 config_callbacks:
-  datamodule.dataset_cfg:
+  datamodule.datasets:
     # for this config
     # do config callback as specified below
     _target_: trident.utils.hydra.expand
     merge_keys: ["train", "val", "test"]
     gen_keys: false
 
-  datamodule.dataloader_cfg:
+  datamodule.dataloaders:
     _target_: trident.utils.hydra.expand
     merge_keys: ["train", "val", "test"]
     gen_keys: true
 
-  module.evaluation.prepare_cfg:
+  module.evaluation.prepare:
     _target_: trident.utils.hydra.expand
     merge_keys: ["val", "test"]
     gen_keys: true
@@ -34,7 +34,7 @@ config_callbacks:
     merge_keys: ["val", "test"]
     gen_keys: true
 
-  module.evaluation.metrics_cfg:
+  module.evaluation.metrics:
     _target_: trident.utils.hydra.expand
     merge_keys: ["val", "test"]
     gen_keys: true
@@ -59,7 +59,7 @@ module:
     _target_: tests.helpers.modules.get_module
 
   evaluation:
-    prepare_cfg:
+    prepare:
       batch: null  
       outputs: null
       step_outputs: null 
@@ -75,7 +75,7 @@ module:
             - preds
           batch:
             - labels
-    metrics_cfg:
+    metrics:
       _datasets_:
         off_by_one:
           mse_loss:
@@ -99,11 +99,7 @@ module:
 datamodule:
   _target_: trident.TridentDataModule
   _recursive_: false
-  datamodule_cfg:
-    setup:
-      _target_: trident.utils.data.setup
-      _recursive_: false
-  dataset_cfg:
+  datasets:
     _target_: tests.helpers.data.IdentityDataset
     _recursive_: false
     train:
@@ -165,7 +161,7 @@ datamodule:
               - _target_: torch.arange
                 start: 8
                 end: 13
-  dataloader_cfg:
+  dataloaders:
     train:
       shuffle: false
       _target_: torch.utils.data.dataloader.DataLoader

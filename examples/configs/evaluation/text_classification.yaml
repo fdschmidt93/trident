@@ -1,4 +1,4 @@
-prepare_cfg:
+prepare:
   batch: null  # takes (module: TridentModule, batch: dict, stage: star)
   outputs:     # takes (module: TridentModule, outputs: dict, batch: dict, stage: str)                             
     _partial_: true
@@ -21,8 +21,8 @@ step_outputs:
 
 # either metrics or val_metrics and test_metrics
 # where the latter
-# metrics_cfg should be copied for each dataset by default unless _datasets_ is specified
-metrics_cfg:
+# metrics should be copied for each dataset by default unless _datasets_ is specified
+metrics:
   # name of the metric used eg for logging
   acc:
     # instructions to instantiate metric, preferrably torchmetrics.Metric

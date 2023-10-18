@@ -5,14 +5,14 @@ from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from torch.utils.data import Dataset
 
-from trident.core import TridentDataModule
+from trident.core.datamodule import TridentDataModule
 from trident.utils.hydra import instantiate_and_apply
 
 
 def load_dataset(
     cfg: Union[None, DictConfig], keep_raw_dataset: bool
 ) -> Tuple[Dataset, Union[None, Dataset]]:
-    dataset_raw = None
+    eataset_raw = None
     if cfg is not None and keep_raw_dataset:
         raw_cfg = OmegaConf.masked_copy(
             cfg,
@@ -26,10 +26,10 @@ def load_dataset(
 
 
 def setup_dataset(
-    self: TridentDataModule, cfg: Union[None, DictConfig], split: str
+    self: TridentDataModule, cfg: Union[None, DictConfig], stage: str
 ) -> None:
     keep_raw_dataset = self.datamodule_cfg.get("keep_raw_dataset", False)
-    self._datamodule_hook("on_before_dataset_setup", split=split)
+    self._datamodule_hook("on_before_dataset_setup", stage=stage)
     if cfg and "_datasets_" in cfg:
         dataset = {}
         dataset_raw = {}
@@ -39,9 +39,9 @@ def setup_dataset(
             )
     else:
         dataset, dataset_raw = load_dataset(cfg, keep_raw_dataset)
-    setattr(self, f"dataset_{split}", dataset)
-    setattr(self, f"dataset_{split}_raw", dataset_raw)
-    self._datamodule_hook("on_after_dataset_setup", split=split)
+    setattr(self, f"dataset_{stage}", dataset)
+    setattr(self, f"dataset_{stage}_raw", dataset_raw)
+    self._datamodule_hook("on_after_dataset_setup", stage=stage)
 
 
 def setup(
