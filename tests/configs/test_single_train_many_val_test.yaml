@@ -87,7 +87,7 @@ datamodule:
       _target_: trident.utils.data.setup
       _recursive_: false
   dataset_cfg:
-    _target_: tests.helpers.modules.IdentityDataset
+    _target_: tests.helpers.data.IdentityDataset
     _recursive_: false
     train:
       X:
@@ -106,7 +106,7 @@ datamodule:
       _datasets_:
         off_by_one:
           X:
-            _target_: tests.helpers.modules.get_val_data
+            _target_: tests.helpers.data.get_val_data
             to_: 5
           y:
             # a bit convoluted to cast arange to float in hydra config
@@ -116,7 +116,7 @@ datamodule:
                 end: 5
         off_by_two:
           X:
-            _target_: tests.helpers.modules.get_val_data
+            _target_: tests.helpers.data.get_val_data
             from_: 5
           y:
             # a bit convoluted to cast arange to float in hydra config
@@ -129,7 +129,7 @@ datamodule:
       _datasets_:
         off_by_one:
           X:
-            _target_: tests.helpers.modules.get_val_data
+            _target_: tests.helpers.data.get_val_data
             to_: 5
           y:
             # a bit convoluted to cast arange to float in hydra config
@@ -139,7 +139,7 @@ datamodule:
                 end: 5
         off_by_two:
           X:
-            _target_: tests.helpers.modules.get_val_data
+            _target_: tests.helpers.data.get_val_data
             from_: 5
           y:
             # a bit convoluted to cast arange to float in hydra config
@@ -151,7 +151,7 @@ datamodule:
   dataloader_cfg:
     _target_: torch.utils.data.dataloader.DataLoader
     collate_fn:
-      _target_: tests.helpers.modules.collate_fn
+      _target_: tests.helpers.data.collate_fn
       _partial_: true
     batch_size: 10
     num_workers: 0
