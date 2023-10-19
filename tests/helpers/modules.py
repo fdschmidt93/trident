@@ -21,9 +21,6 @@ def get_module() -> nn.Linear:
 class ToyModule(TridentModule):
     """A toy module for testing, inheriting from TridentModule."""
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
     def batch_forward(self, batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
         """Forward pass for a single batch."""
         ret = {}
