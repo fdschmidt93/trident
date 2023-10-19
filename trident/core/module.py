@@ -44,13 +44,12 @@ class TridentModule(OptimizerMixin, EvalMixin):
         evaluation: DictConfig,
         optimizer: DictConfig,
         scheduler: Optional[DictConfig] = None,
-        initialize_model: bool = True,
         *args: Any,
         **kwargs: Any,
     ):
         super().__init__()
         # super().__init__() calls LightningModule.save_hyperparameters() in `EvalMixin.__init__`
-        if initialize_model:
+        if self.__init__.__func__ is TridentModule.__init__:
             self.model = hydra.utils.instantiate(self.hparams.model)
 
     def forward(self, batch: dict) -> dict:
