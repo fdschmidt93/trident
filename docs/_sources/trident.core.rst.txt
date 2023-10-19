@@ -28,10 +28,10 @@ trident.core.dataset module
    :undoc-members:
    :show-inheritance:
 
-trident.core.trident module
----------------------------
+trident.core.module module
+--------------------------
 
-.. automodule:: trident.core.trident
+.. automodule:: trident.core.module
    :members:
    :undoc-members:
    :show-inheritance:
