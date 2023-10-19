@@ -1,8 +1,6 @@
 from typing import Any, Optional
 
 import hydra
-from lightning import LightningModule
-from lightning.pytorch.utilities.parsing import AttributeDict
 from omegaconf import DictConfig
 
 from trident.core.mixins.evaluation import EvalMixin
@@ -12,7 +10,7 @@ from trident.utils.logging import get_logger
 log = get_logger(__name__)
 
 
-class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
+class TridentModule(OptimizerMixin, EvalMixin):
     """Base module of Trident that wraps model, optimizer, scheduler, evaluation.
 
     Args:
@@ -40,8 +38,6 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
             .. seealso:: :py:class:`src.modules.mixin.evaluation.EvalMixin`, :repo:`Classification Evaluation config <configs/evaluation/sequence_classification.yaml>`
     """
 
-    hparams: AttributeDict
-
     def __init__(
         self,
         model: DictConfig,
@@ -51,9 +47,6 @@ class TridentModule(OptimizerMixin, EvalMixin, LightningModule):
         *args: Any,
         **kwargs: Any,
     ):
-        self.save_hyperparameters()
-        # Required since OptimizerMixin and EvalMixin are also sub-classing LightningModule
-        LightningModule.__init__(self)
         super().__init__()
         # super().__init__() calls LightningModule.save_hyperparameters() in `EvalMixin.__init__`
         if type(self) == TridentModule:

@@ -72,7 +72,10 @@ class EvalMixin(LightningModule):
     """
 
     def __init__(self) -> None:
-        # hparams used to fast-forward required attributes
+        # this line effectively initializes the `LightningModule` of `TridentModule`
+        super().__init__()
+        # self.hparams is also then accessible in `TridentModule` after super().__init__()
+        self.save_hyperparameters()
         evaluation_cfg = self.hparams.get("evaluation")
         assert (
             evaluation_cfg is not None
