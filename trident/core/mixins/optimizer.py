@@ -4,13 +4,12 @@ import hydra
 from lightning import LightningModule
 from lightning.pytorch.utilities.parsing import AttributeDict
 from omegaconf.dictconfig import DictConfig
+from torch.optim import Optimizer
+from torch.optim.lr_scheduler import LambdaLR
 
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
-
-from torch.optim import Optimizer
-from torch.optim.lr_scheduler import LambdaLR
 
 
 class OptimizerMixin(LightningModule):
