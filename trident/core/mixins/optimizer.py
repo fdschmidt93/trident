@@ -42,6 +42,9 @@ class OptimizerMixin(LightningModule):
                 num_training_batches = len(dataloader)
         else:
             num_training_batches = len(self.train_dataloader())
+        assert isinstance(
+            self.trainer.max_epochs, int
+        ), f"{self.trainer.max_epochs=} is not an int!"
         return (
             num_training_batches
             * self.trainer.max_epochs
