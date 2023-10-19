@@ -12,6 +12,14 @@ trident.utils.data module
    :undoc-members:
    :show-inheritance:
 
+trident.utils.enums module
+--------------------------
+
+.. automodule:: trident.utils.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 trident.utils.hydra module
 --------------------------
 

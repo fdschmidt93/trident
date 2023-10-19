@@ -20,6 +20,14 @@ trident.core.datamodule module
    :undoc-members:
    :show-inheritance:
 
+trident.core.dataset module
+---------------------------
+
+.. automodule:: trident.core.dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 trident.core.trident module
 ---------------------------
 
