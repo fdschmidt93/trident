@@ -1,11 +1,10 @@
 from functools import cached_property
-from typing import Mapping, Optional, Sized, Union, cast
+from typing import Optional, Sized, Union, cast
 
 import hydra
 from lightning import LightningDataModule, Trainer
 from lightning.pytorch.utilities.combined_loader import CombinedLoader
 from omegaconf.dictconfig import DictConfig
-from omegaconf.omegaconf import OmegaConf
 from torch.utils.data import DataLoader, Dataset, IterableDataset
 
 from trident.core.dataset import TridentDataset
