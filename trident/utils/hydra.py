@@ -57,66 +57,6 @@ def get_local(var):
     return objects[-1]
 
 
-def partial(*args, **kwargs):
-    """Implements functools.partial for Hydra.
-
-    :obj:`partial` is very handy for repeated function calls as :obj:`hydra.utils.call` incurs a high latency.
-
-    Example:
-
-        Code:
-
-        .. code-block:: python
-
-            # module: src.custom.functional
-            my_transform(batch: BatchEncoding) -> BatchEncoding:
-                batch["sequence_length"] = batch["attention_mask"].sum(dim=-1)
-                return batch
-
-        Config:
-
-        .. code-block:: yaml
-
-            my_key:
-                _target_: src.utils.hydra.partial
-                _partial_: src.custom.functional.my_transform
-
-        :py:func:`src.utils.hydra.partial` can also be leveraged to partially define class methods. The configuration follows the below pattern:
-
-        .. code-block:: python
-            # Hydra configuration translated to function/classmethod signature
-            # <--- _partial_ ---><-self> <args, kwargs>
-            cfg: DictConfig # your configuration
-            my_cls_obj = hydra.utils.instantiate(cfg.self) # `self` in classmethod
-            MyClass.__function__(my_cls_obj, *args, **kwargs)
-
-        Your :obj:`_target_` points to the classmethod to be partially defined, while the :obj:`self` key lays out how the corresponding class instance is instantiated. The below example configuration illustrates how to declaratively partially define a Huggingface Tokenizer.
-
-        .. code-block:: yaml
-
-            tokenizer:
-                # classmethod to call
-                _target_: src.utils.hydra.partial
-                _partial_: transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__
-                # `hydra.utils.instantiate` for self in classmethod
-                self:
-                    _target_: transformers.AutoTokenizer.from_pretrained
-                    pretrained_model_name_or_path: roberta-base
-                # other kwargs for classmethod
-                padding: true
-                truncation: true
-                max_length: 512
-
-        You might think that the above example is rather convoluted. However, the pattern allows you to flexibly combine functions and class methods alike with a transparent syntax that avoids indirection via additional wrappers that would otherwise be required to define a class and its associated method call.
-    """
-    _partial_ = kwargs.pop("_partial_")
-    method = get_method(_partial_)
-    if "self" in kwargs:
-        obj = kwargs.pop("self")
-        args = (obj, *args)
-    return functools.partial(method, *args, **kwargs)
-
-
 def expand(
     cfg: DictConfig,
     merge_keys: Union[str, list[str]] = ["train", "val", "test"],
