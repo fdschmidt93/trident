@@ -460,53 +460,8 @@ levers <a href="#id1"><span class="problematic" id="id2">:obj:`config_callback`s
 <dd><p>Initializes multi-GPU-friendly python logger.</p>
 </dd></dl>
 </div>
-<div class="section" id="module-trident.utils.runner">
-<span id="trident-utils-runner-module"></span><h2>trident.utils.runner module<a class="headerlink" href="#module-trident.utils.runner" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="trident.utils.runner.extras">
-<span class="sig-prename descclassname"><span class="pre">trident.utils.runner.</span></span><span class="sig-name descname"><span class="pre">extras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">omegaconf.DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/utils/runner.py#L15-L54"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.utils.runner.extras" title="Permalink to this definition">¶</a></dt>
-<dd><p>A couple of optional utilities, controlled by main config file:
-- disabling warnings
-- forcing debug friendly configuration
-- verifying experiment name is set when running in experiment mode</p>
-<p>Modifies DictConfig in place.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>DictConfig</em>) – Configuration composed by Hydra.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="trident.utils.runner.finish">
-<span class="sig-prename descclassname"><span class="pre">trident.utils.runner.</span></span><span class="sig-name descname"><span class="pre">finish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">omegaconf.DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datamodule</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.LightningDataModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">lightning.Callback</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">lightning.pytorch.loggers.Logger</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/utils/runner.py#L143-L158"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.utils.runner.finish" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes sure everything closed properly.</p>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="trident.utils.runner.log_hyperparameters">
-<span class="sig-prename descclassname"><span class="pre">trident.utils.runner.</span></span><span class="sig-name descname"><span class="pre">log_hyperparameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">omegaconf.DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.LightningModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datamodule</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.LightningDataModule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trainer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">lightning.Trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">lightning.Callback</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">lightning.pytorch.loggers.Logger</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/utils/runner.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.utils.runner.log_hyperparameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method controls which parameters from Hydra config are saved by Lightning loggers.</p>
-<dl class="simple">
-<dt>Additionaly saves:</dt><dd><ul class="simple">
-<li><p>number of module parameters</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="trident.utils.runner.print_config">
-<span class="sig-prename descclassname"><span class="pre">trident.utils.runner.</span></span><span class="sig-name descname"><span class="pre">print_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">omegaconf.DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">('trainer',</span> <span class="pre">'module',</span> <span class="pre">'datamodule',</span> <span class="pre">'callbacks',</span> <span class="pre">'logger',</span> <span class="pre">'seed',</span> <span class="pre">'name')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/utils/runner.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.utils.runner.print_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints content of DictConfig using Rich library and its tree structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>config</strong> (<em>DictConfig</em>) – Configuration composed by Hydra.</p></li>
-<li><p><strong>fields</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Determines which main fields from config will</p></li>
-<li><p><strong>order.</strong> (<em>be printed and in what</em>) – </p></li>
-<li><p><strong>resolve</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to resolve reference fields of DictConfig.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<div class="section" id="trident-utils-runner-module">
+<h2>trident.utils.runner module<a class="headerlink" href="#trident-utils-runner-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-trident.utils.transform">
 <span id="trident-utils-transform-module"></span><h2>trident.utils.transform module<a class="headerlink" href="#module-trident.utils.transform" title="Permalink to this headline">¶</a></h2>
@@ -586,7 +541,7 @@ an exception and instead returns <cite>fallback</cite>.</p>
 <li><a class="reference internal" href="#module-trident.utils.enums">trident.utils.enums module</a></li>
 <li><a class="reference internal" href="#module-trident.utils.hydra">trident.utils.hydra module</a></li>
 <li><a class="reference internal" href="#module-trident.utils.logging">trident.utils.logging module</a></li>
-<li><a class="reference internal" href="#module-trident.utils.runner">trident.utils.runner module</a></li>
+<li><a class="reference internal" href="#trident-utils-runner-module">trident.utils.runner module</a></li>
 <li><a class="reference internal" href="#module-trident.utils.transform">trident.utils.transform module</a></li>
 <li><a class="reference internal" href="#module-trident.utils">Module contents</a></li>
 </ul>
