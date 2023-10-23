@@ -81,42 +81,23 @@ def train(cfg: DictConfig) -> Optional[float]:
         logger=logger,
     )
 
-    # Train the model
-    if cfg.get("train", True):
-        log.info("Starting training!")
-        trainer.fit(model=module, datamodule=datamodule)
+    trainer.fit(model=module, datamodule=datamodule)
 
     score = None
-    if optimized_metric := cfg.get("optimized_metric", None):
-        score = trainer.callback_metrics[optimized_metric]
+    if optimized_metric := cfg.get("optimized_metric"):
+        score = trainer.callback_metrics.get(optimized_metric)
 
-    # Evaluate model on test set, using the best model achieved during training
-    if cfg.get("test_after_training") and not cfg.trainer.get("fast_dev_run"):
-        log.info("Starting testing!")
-        # TODO(fdschmidt93): clean up hack
-        try:
+    if cfg.trainer.get("limit_test_batches", None) == 0:
+        best_model_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
+        if isinstance(best_model_path, str):
+            log.info(f"Best checkpoint path:\n{best_model_path}")
             trainer.test(module, datamodule=datamodule, ckpt_path="best")
-        except:
+        else:
+            log.info(
+                "No checkpoint callback with optimized metric in trainer. Using final checkpoint."
+            )
             trainer.test(module, datamodule=datamodule)
 
-    # Make sure everything closed properly
-    log.info("Finalizing!")
-    finish(
-        cfg=cfg,
-        module=module,
-        datamodule=datamodule,
-        trainer=trainer,
-        callbacks=callbacks,
-        logger=logger,
-    )
+    finish(cfg, module, datamodule, trainer, callbacks, logger)
 
-    # Print path to best checkpoint
-    if (ckpt_cb := getattr(trainer, "checkpoint_callback")) is not None:
-        if isinstance(
-            best_model_path := getattr(ckpt_cb, "best_model_path"),
-            str,
-        ):
-            log.info(f"Best checkpoint path:\n{best_model_path}")
-
-    # Return metric score for hyperparameter optimization
     return score

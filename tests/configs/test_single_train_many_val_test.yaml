@@ -8,7 +8,6 @@ data_dir: ${work_dir}/data/
 print_config: False
 
 seed: 42
-test_after_training: True
 callbacks: null
 
 config_callbacks:
