@@ -30,11 +30,6 @@ datasets:
       function: ??? # ??? means inheriting config must set `function`
       batched: true
       num_proc: 1
-      remove_columns:
-        - col1
-        - col2
-        - col3
-        - col4
   # -----------------------------------
   # the individual splits inherit the content of the datasets config-level namespace
   # to avoid repeating configuration
