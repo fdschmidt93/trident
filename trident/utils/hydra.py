@@ -7,8 +7,8 @@ from omegaconf import DictConfig, OmegaConf
 from trident.utils.enums import Split
 from trident.utils.logging import get_logger
 
-_ExtraKeys = ["_method_", "_apply_"]
-_Special_Keys = {"_datasets_"}
+EXTRA_KEYS = ["_method_", "_apply_"]
+SPECIAL_KEYS = {"_datasets_"}
 
 log = get_logger(__name__)
 
@@ -151,7 +151,7 @@ def expand(
             # Avoids that top-level config within a key_cfg does not get
             # erroneously overriden by `shared_cfg`,
             # ie if it is not also defined in special key level of key_cfg
-            for k in _Special_Keys:
+            for k in SPECIAL_KEYS:
                 for sk in shared_cfg.get(k, []):
                     key_ = f"{k}.{sk}"
                     if not OmegaConf.select(key_cfg, key_):
@@ -167,14 +167,14 @@ def expand(
 def _merge_cfg(cfg: DictConfig):
     """Merges top-level of `cfg` into sub-level special keys if they exist."""
     # early return in simple scenario
-    if not any(k in cfg for k in _Special_Keys):
+    if not any(k in cfg for k in SPECIAL_KEYS):
         return cfg
 
     # merge into new `out_cfg` that joins shared config into keys of special keys
-    shared_keys = [str(k) for k in cfg.keys() if k not in _Special_Keys]
+    shared_keys = [str(k) for k in cfg.keys() if k not in SPECIAL_KEYS]
     shared_cfg = OmegaConf.masked_copy(cfg, shared_keys)
     out_cfg = OmegaConf.create({})
-    for special_key in _Special_Keys:
+    for special_key in SPECIAL_KEYS:
         assert isinstance(
             cfg[special_key], DictConfig
         ), f"{cfg.special_key=} is not a DictConfig!"
@@ -261,7 +261,7 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
 
     # instantiate top-level cfg
     cfg_keys = list(cfg.keys())  # avoid changing dictionary size in loop
-    extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in _ExtraKeys}
+    extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in EXTRA_KEYS}
     obj = hydra.utils.instantiate(cfg)
 
     if not extra_kwds:
