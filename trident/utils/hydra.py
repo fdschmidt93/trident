@@ -281,7 +281,6 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
 
     if not extra_kwds:
         return obj
-    extra_kwds = hydra.utils.instantiate(OmegaConf.create(extra_kwds))
     # kwd: {_method_, _apply_}
     # kwd_config: their respective collections of functions
     # key: name of user method or function
@@ -295,9 +294,7 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
                 key_cfg[
                     "_target_"
                 ] = f"{obj.__class__.__module__}.{obj.__class__.__name__}.{key}"
-                key_cfg["_partial_"] = True
-                fn = hydra.utils.instantiate(key_cfg)
-                val = fn(obj)
+                val = hydra.utils.instantiate(key_cfg, self=obj)
                 # `fn` might mutate ret in-place
                 if val is not None:
                     obj = val
