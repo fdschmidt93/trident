@@ -216,7 +216,7 @@ class EvalMixin(LightningModule):
         """
         fn = self._get_configured_function(f"prepare.{split.value}.batch", dataset)
         if fn:
-            return fn(self, batch=batch, split=split.value)
+            return fn(trident_module=self, batch=batch, split=split.value)
         return batch
 
     def prepare_outputs(
@@ -245,7 +245,9 @@ class EvalMixin(LightningModule):
         """
         fn = self._get_configured_function(f"prepare.{split.value}.outputs", dataset)
         if fn:
-            return fn(self, outputs=outputs, batch=batch, split=split.value)
+            return fn(
+                trident_module=self, outputs=outputs, batch=batch, split=split.value
+            )
         return outputs
 
     def prepare_step_outputs(
@@ -277,7 +279,12 @@ class EvalMixin(LightningModule):
             f"prepare.{split.value}.step_outputs", dataset
         )
         if fn:
-            return fn(self, outputs=step_outputs, split=split.value, dataset=dataset)
+            return fn(
+                trident_module=self,
+                outputs=step_outputs,
+                split=split.value,
+                dataset=dataset,
+            )
         return step_outputs
 
     def _prepare_metric_input(
@@ -322,7 +329,12 @@ class EvalMixin(LightningModule):
             ValueError: If the required key is not found in the provided data.
         """
         ret = {}
-        data_sources = {"self": self, "outputs": outputs, "batch": batch, "cfg": cfg}
+        data_sources = {
+            "trident_module": self,
+            "outputs": outputs,
+            "batch": batch,
+            "cfg": cfg,
+        }
         for k, v in cfg.items():
             source_name, key = v.split(":")
             source_data = data_sources.get(source_name)
