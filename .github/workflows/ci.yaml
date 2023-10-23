@@ -1,21 +1,33 @@
-name: Python package
+name: pytest
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.10"]  # Testing on both Python 3.9 and 3.10
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4.5.0
+
+      # Leverage GitHub's hosted tool cache for setting up Python
+      # If the specified Python version is in the tool cache, it will be used.
+      # Otherwise, the action will download and set up the required version.
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4.5.0
         with:
-          python-version: '3.10'
+          python-version: ${{ matrix.python-version }}
           cache: 'pip' # caching pip dependencies
           cache-dependency-path: pyproject.toml
+      
       - run: pip install -e .
       - run: pytest
+
