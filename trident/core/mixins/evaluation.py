@@ -496,7 +496,7 @@ class EvalMixin(LightningModule):
         for metric, metric_cfg in metrics_cfg.items():
             if getattr(metric_cfg, "compute_on", False) == "eval_step":
                 input_ = metric_cfg["metric"]
-            elif getattr(metric_cfg, "compute_on", False) == "epoch_end":
+            elif getattr(metric_cfg, "compute_on", "epoch_end") == "epoch_end":
                 kwargs = self._prepare_metric_input(metric_cfg.kwargs, prepared_outputs)
                 input_ = metric_cfg["metric"](**kwargs)
             else:
