@@ -121,7 +121,7 @@ class EvalMixin(LightningModule):
 
     @lru_cache
     def _get_configured_function(
-        self, cfg_path: str, dataset: Optional[str] = None
+        self, cfg_path: str, dataset_name: Optional[str] = None
     ) -> Union[None, Callable]:
         """
         Retrieve the configured function from evaluation config based on the provided path and dataset.
@@ -134,7 +134,7 @@ class EvalMixin(LightningModule):
         Args:
             cfg_path (str):
                 The path in the OmegaConf configuration where the function or dataset-specific configurations are stored.
-            dataset (Optional[str], optional):
+            dataset_name (Optional[str], optional):
                 The dataset for which the function needs to be fetched. If not provided, the method assumes
                 a direct function configuration. Defaults to None.
 
@@ -164,7 +164,7 @@ class EvalMixin(LightningModule):
         return None
 
     def prepare_batch(
-        self, split: Split, batch: dict, dataset: Optional[str] = None
+        self, split: Split, batch: dict, dataset_name: Optional[str] = None
     ) -> dict:
         """
         Prepares the batch data for a given evaluation split, and, optionally, for a specific dataset.
@@ -174,7 +174,7 @@ class EvalMixin(LightningModule):
                 Evaluation split, such as 'train', 'validation', or 'test'.
             batch (:obj:`dict`):
                 Batch data to be prepared.
-            dataset (:obj:`Optional[str]`, `optional`):
+            dataset_name (:obj:`Optional[str]`, `optional`):
                 Name of the dataset, if specified. Default is None.
 
         Returns:
@@ -214,13 +214,13 @@ class EvalMixin(LightningModule):
                         _target_: src.tasks.text_classification.eval.get_preds
                   step_outputs: null  # specification not required
         """
-        fn = self._get_configured_function(f"prepare.{split.value}.batch", dataset)
+        fn = self._get_configured_function(f"prepare.{split.value}.batch", dataset_name)
         if fn:
             return fn(trident_module=self, batch=batch, split=split.value)
         return batch
 
     def prepare_outputs(
-        self, split: Split, outputs: dict, batch: dict, dataset: Optional[str] = None
+        self, split: Split, outputs: dict, batch: dict, dataset_name: Optional[str] = None
     ) -> dict:
         """
         Prepares the output data for a given evaluation split, and, optionally, for a specific dataset.
@@ -232,7 +232,7 @@ class EvalMixin(LightningModule):
                 Output data to be prepared.
             batch (:obj:`dict`):
                 Batch data.
-            dataset (:obj:`Optional[str]`, `optional`):
+            dataset_name (:obj:`Optional[str]`, `optional`):
                 Name of the dataset, if specified. Default is None.
 
         Returns:
@@ -243,7 +243,7 @@ class EvalMixin(LightningModule):
             working with a single dataset, many homogeneous datasets, or many heterogeneous datasets.
             Refer to the provided examples.
         """
-        fn = self._get_configured_function(f"prepare.{split.value}.outputs", dataset)
+        fn = self._get_configured_function(f"prepare.{split.value}.outputs", dataset_name)
         if fn:
             return fn(
                 trident_module=self, outputs=outputs, batch=batch, split=split.value
@@ -251,7 +251,7 @@ class EvalMixin(LightningModule):
         return outputs
 
     def prepare_step_outputs(
-        self, split: Split, step_outputs: dict, dataset: Optional[str] = None
+        self, split: Split, step_outputs: dict, dataset_name: Optional[str] = None
     ) -> dict:
         """
         Prepares the step outputs for a given evaluation split, and, optionally, for a specific dataset.
@@ -261,7 +261,7 @@ class EvalMixin(LightningModule):
                 Evaluation split, such as 'train', 'validation', or 'test'.
             step_outputs (:obj:`dict`):
                 Step outputs data to be prepared.
-            dataset (:obj:`Optional[str]`, `optional`):
+            dataset_name (:obj:`Optional[str]`, `optional`):
                 Name of the dataset, if specified. Default is None.
 
         Returns:
@@ -276,14 +276,14 @@ class EvalMixin(LightningModule):
 
         """
         fn = self._get_configured_function(
-            f"prepare.{split.value}.step_outputs", dataset
+            f"prepare.{split.value}.step_outputs", dataset_name
         )
         if fn:
             return fn(
                 trident_module=self,
                 outputs=step_outputs,
                 split=split.value,
-                dataset=dataset,
+                dataset=dataset_name,
             )
         return step_outputs
 
@@ -443,8 +443,8 @@ class EvalMixin(LightningModule):
         )
 
         # Prepare batch and outputs
-        batch = self.prepare_batch(split=split, batch=batch, dataset=dataset_name)
-        outputs = self.prepare_outputs(split, self(batch), batch, dataset=dataset_name)
+        batch = self.prepare_batch(split=split, batch=batch, dataset_name=dataset_name)
+        outputs = self.prepare_outputs(split, self(batch), batch, dataset_name=dataset_name)
 
         # Compute metrics
         if isinstance(metrics_cfg, Mapping):
