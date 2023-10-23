@@ -63,7 +63,6 @@ def print_config(
         "datamodule",
         "callbacks",
         "logger",
-        "test_after_training",
         "seed",
         "name",
     ),
