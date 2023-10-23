@@ -50,7 +50,7 @@ def train(cfg: DictConfig) -> Optional[torch.Tensor]:
 
     apply_config_callbacks(cfg)
 
-    seed_everything(cfg.seed, workers=True)
+    seed_everything(cfg.get("seed"), workers=True)
 
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
     module: LightningModule = hydra.utils.instantiate(cfg.module)
