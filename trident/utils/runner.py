@@ -4,7 +4,9 @@ from typing import List, Sequence
 import lightning as L
 import rich.syntax
 import rich.tree
-from lightning.pytorch.utilities import rank_zero_only
+from lightning.pytorch.loggers import Logger
+from lightning.pytorch.loggers.wandb import WandbLogger
+from lightning_utilities.core.rank_zero import rank_zero_only
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
 from trident.utils.logging import get_logger
@@ -100,10 +102,7 @@ def print_config(
 def log_hyperparameters(
     cfg: DictConfig,
     module: L.LightningModule,
-    datamodule: L.LightningDataModule,
     trainer: L.Trainer,
-    callbacks: List[L.Callback],
-    logger: List[L.pytorch.loggers.Logger],
 ) -> None:
     """This method controls which parameters from Hydra config are saved by Lightning loggers.
 
@@ -137,7 +136,8 @@ def log_hyperparameters(
     )
 
     # send hparams to all loggers
-    trainer.logger.log_hyperparams(hparams)
+    for logger in trainer.loggers:
+        logger.log_hyperparams(hparams)
 
 
 def finish(
@@ -146,13 +146,13 @@ def finish(
     datamodule: L.LightningDataModule,
     trainer: L.Trainer,
     callbacks: List[L.Callback],
-    logger: List[L.pytorch.loggers.Logger],
+    logger: List[Logger],
 ) -> None:
     """Makes sure everything closed properly."""
 
     # without this sweeps with wandb logger might crash!
     for lg in logger:
-        if isinstance(lg, L.pytorch.loggers.wandb.WandbLogger):
+        if isinstance(lg, WandbLogger):
             import wandb
 
             wandb.finish()
