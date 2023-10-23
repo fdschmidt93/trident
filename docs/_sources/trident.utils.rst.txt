@@ -4,14 +4,6 @@ trident.utils package
 Submodules
 ----------
 
-trident.utils.data module
--------------------------
-
-.. automodule:: trident.utils.data
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 trident.utils.enums module
 --------------------------
 
