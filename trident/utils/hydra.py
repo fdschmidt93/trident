@@ -363,6 +363,7 @@ def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     """
     for key in cb_cfg:
         if to_process_cfg := OmegaConf.select(cfg, key):
+            OmegaConf.resolve(to_process_cfg)
             processed_cfg = hydra.utils.call(cb_cfg.get(key), to_process_cfg)
             OmegaConf.update(cfg, key, processed_cfg)
         else:
