@@ -1,15 +1,14 @@
-import functools
 from functools import lru_cache
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Mapping, Optional, Union, cast
 
 import hydra
-from hydra.utils import get_method
 from omegaconf import DictConfig, OmegaConf
 
 from trident.utils.enums import Split
 from trident.utils.logging import get_logger
 
 _ExtraKeys = ["_method_", "_apply_"]
+_Special_Keys = {"_datasets_"}
 
 log = get_logger(__name__)
 
@@ -58,89 +57,135 @@ def get_local(var):
 
 
 def expand(
-    cfg: DictConfig,
-    merge_keys: Union[str, list[str]] = ["train", "val", "test"],
-    gen_keys: bool = False,
+    cfg: DictConfig, merge_keys: Union[str, list[str]], gen_keys: bool = False
 ) -> DictConfig:
     """Expands partial configuration of `keys` in `cfg` with the residual configuration.
 
     Most useful when configuring modules that have a substantial shared component.
 
-    Applied by default on :obj:`dataset_cfg` (with :code:`create_keys=False`) and :obj:`dataloader_cfg` (with :code:`create_keys=True`) of :obj:`DataModule` config.
+    Applied by default on :obj:`datasets` (with :code:`gen_keys=False`) and :obj:`dataloaders` (with :code:`gen_keys=True`) of :obj:`DataModule` config.
 
     Notes:
         - Shared config reflects all configuration excluding set :obj:`keys`.
 
     Args:
-        keys (:obj:`Union[str, list[str])`):
+        merge_keys (:obj:`Union[str, list[str])`):
             Keys that comprise dedicated configuration for which shared config will be merged.
 
         gen_keys (:obj:`bool`):
             Whether (:code:`True`) or not (:code:`False) to create :code:`keys` in :code:`cfg: with shared configuration if :code:`keys` do not exist yet.
 
     Example:
-        :code:`expand(cfg, keys=["train", "val", "test"], create_keys=True)` with the following config
+        :code:`expand(cfg.dataloaders, keys=["train", "val", "test"], gen_keys=True)` with the following config
 
         .. code-block:: yaml
 
-            dataloader_cfg:
-                batch_size: 4
-                num_workers: 8
-                train:
+            dataloaders:
+              collate_fn:
+                _target_: val_test_collator
+              num_workers: 8
+              shuffle: False
+              train:
+                collate_fn:
+                  _target_: train_collator
+                shuffle: true
+                _datasets_:
+                  source:
                     batch_size: 8
-                    shuffle: True
-                test:
-                    shuffle: False
+                  target:
+                    batch_size: 16
+              val:
+                num_workers: 4
+              test:
+                num_workers: 2
 
         resolves to
 
         .. code-block:: yaml
 
-            dataloader_cfg:
-                train:
-                    shuffle: True
+            dataloaders:
+              train:
+                _datasets_:
+                  source:
+                    collate_fn:
+                      _target_: train_collator
+                    num_workers: 8
+                    shuffle: true
                     batch_size: 8
+                  target:
+                    collate_fn:
+                      _target_: train_collator
                     num_workers: 8
-                val:
-                    batch_size: 4
-                    num_workers: 8
-                test:
-                    shuffle: False
-                    batch_size: 4
-                    num_workers: 8
+                    shuffle: true
+                    batch_size: 16
+              val:
+                collate_fn:
+                  _target_: val_test_collator
+                num_workers: 4
+                shuffle: false
+              test:
+                collate_fn:
+                  _target_: val_test_collator
+                num_workers: 2
+                shuffle: false
 
         while only the original config is the one being logged.
     """
-    special_keys = ["_datasets_"]
-    if cfg is not None:
-        if isinstance(merge_keys, str):
-            merge_keys = [merge_keys]
-        shared_keys = [key for key in cfg.keys() if key not in merge_keys]
-        cfg_excl_keys = OmegaConf.masked_copy(cfg, shared_keys)
-        for key in merge_keys:  # train, val, test
-            if key_cfg := cfg.get(key, None):  # cfg
-                # if special key for multiple datasets/dataloaders
-                if any(
-                    # TODO(fdschmidt93): declare more "globally"
-                    # TODO(fdschmidt93): recursion to make this nicer?
-                    c in key_cfg
-                    for c in special_keys
-                ):  # if _datasets_ in cfg
-                    for sub_key in special_keys:  # for each special in cfg
-                        if sub_key_cfg := key_cfg.get(sub_key, None):  # "_datasets_"
-                            for name in sub_key_cfg:  # source: ... target: ...
-                                # merge True by default
-                                cfg[key][sub_key][name] = OmegaConf.merge(
-                                    cfg_excl_keys, cfg[key][sub_key][name]
-                                )
-                else:
-                    cfg[key] = OmegaConf.merge(cfg_excl_keys, cfg[key])
-            else:
-                if gen_keys:
-                    cfg[key] = cfg_excl_keys
-        for key in shared_keys:
-            cfg.pop(key)
+
+    if cfg is None:
+        raise ValueError("Provided configuration (cfg) should not be None.")
+
+    # Ensure merge_keys is a list
+    merge_keys = [merge_keys] if isinstance(merge_keys, str) else merge_keys
+
+    # Get the shared configuration keys
+    shared_keys = [str(key) for key in cfg.keys() if key not in merge_keys]
+    shared_cfg = OmegaConf.masked_copy(cfg, shared_keys)
+    shared_cfg = cast(DictConfig, _merge_cfg(shared_cfg))
+
+    # for merge keys ensure that all shared config is in special sub configs, merged top-down
+    out_cfg = OmegaConf.create({})
+    for key in merge_keys:
+        key_cfg = cfg.get(key, OmegaConf.create({}) if gen_keys is True else None)
+        if key_cfg is not None:
+            # Avoids that top-level config within a key_cfg does not get
+            # erroneously overriden by `shared_cfg`,
+            # ie if it is not also defined in special key level of key_cfg
+            for k in _Special_Keys:
+                for sk in shared_cfg.get(k, []):
+                    key_ = f"{k}.{sk}"
+                    if not OmegaConf.select(key_cfg, key_):
+                        OmegaConf.update(key_cfg, key_, OmegaConf.create({}))
+            # we have to do an outer `_merge_cfg` since `shared_cfg` most likely
+            # does not comprise `_Special_Keys`
+            out_cfg[key] = _merge_cfg(
+                cast(DictConfig, OmegaConf.merge(shared_cfg, _merge_cfg(key_cfg)))
+            )
+    return out_cfg
+
+
+def _merge_cfg(cfg: DictConfig):
+    """Merges top-level of `cfg` into sub-level special keys if they exist."""
+    # early return in simple scenario
+    if not any(k in cfg for k in _Special_Keys):
         return cfg
+
+    # merge into new `out_cfg` that joins shared config into keys of special keys
+    shared_keys = [str(k) for k in cfg.keys() if k not in _Special_Keys]
+    shared_cfg = OmegaConf.masked_copy(cfg, shared_keys)
+    out_cfg = OmegaConf.create({})
+    for special_key in _Special_Keys:
+        assert isinstance(
+            cfg[special_key], DictConfig
+        ), f"{cfg.special_key=} is not a DictConfig!"
+        for sub_key in cfg[special_key].keys():
+            if special_key not in out_cfg:
+                out_cfg[special_key] = OmegaConf.create({})
+            out_cfg[special_key][sub_key] = cast(
+                DictConfig,
+                OmegaConf.merge(shared_cfg, cfg[special_key][sub_key]),
+            )
+    return out_cfg
 
 
 # TODO(fdschmidt93): update documentation once preprocessing routines are set
@@ -299,10 +344,10 @@ def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
     .. seealso:: :py:func:`src.utils.hydra.expand`, :py:func:`src.utils.hydra.instantiate_and_apply`, :py:func:`src.datamodule.utils.load_dataset`
     """
     for key in cb_cfg:
-        if to_process_cfg := OmegaConf.select(cfg, key):
+        if to_process_cfg := OmegaConf.select(cfg, str(key)):
             OmegaConf.resolve(to_process_cfg)
             processed_cfg = hydra.utils.call(cb_cfg.get(key), to_process_cfg)
-            OmegaConf.update(cfg, key, processed_cfg)
+            OmegaConf.update(cfg, str(key), processed_cfg)
         else:
             log.info(f"Attempted to mutate non-existing {key} configuration.")
     return cfg
