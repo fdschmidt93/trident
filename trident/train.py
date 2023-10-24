@@ -12,7 +12,7 @@ from lightning import (
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
 
-from trident.utils.hydra import config_callbacks, harmonize_datasets
+from trident.utils.hydra import config_callbacks
 from trident.utils.logging import get_logger
 from trident.utils.runner import finish, log_hyperparameters
 
@@ -47,7 +47,6 @@ def train(cfg: DictConfig) -> Optional[torch.Tensor]:
     Returns:
         Optional[float]: Metric score for hyperparameter optimization.
     """
-    harmonize_datasets(cfg) 
     apply_config_callbacks(cfg)
 
     seed_everything(cfg.get("seed"), workers=True)

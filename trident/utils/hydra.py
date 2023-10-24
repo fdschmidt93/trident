@@ -161,6 +161,7 @@ def expand(
             out_cfg[key] = _merge_cfg(
                 cast(DictConfig, OmegaConf.merge(shared_cfg, _merge_cfg(key_cfg)))
             )
+    out_cfg = cast(DictConfig, OmegaConf.merge(shared_cfg, out_cfg))
     return out_cfg
 
 
@@ -185,6 +186,7 @@ def _merge_cfg(cfg: DictConfig):
                 DictConfig,
                 OmegaConf.merge(shared_cfg, cfg[special_key][sub_key]),
             )
+    out_cfg = OmegaConf.merge(out_cfg, shared_cfg)
     return out_cfg
 
 
@@ -286,131 +288,6 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
             else:
                 obj = key_cfg(obj)
     return obj
-
-
-def harmonize_datasets(cfg: DictConfig) -> DictConfig:
-    """
-    Harmonizes the dataset configurations ensuring consistent presence of dataset splits
-    (`train`, `val`, `test`) and their respective `_datasets_` attributes across the key sections
-    of the given configuration (`dataloaders`, `prepare`, `step_outputs`, and `metrics`).
-
-    This process preconditions the configuration for subsequent expansion, ensuring that top-level
-    configuration attributes are consistently merged into all sub-configurations.
-
-    For instance, a given configuration:
-
-    .. code-block:: yaml
-
-        collate_fn:
-            _target_: val_test_collator
-        num_workers: 8
-        shuffle: False
-        train:
-            collate_fn:
-                _target_: train_collator
-            shuffle: true
-            _datasets_:
-                source:
-                    batch_size: 8
-                target:
-                    batch_size: 16
-        val:
-            num_workers: 4
-        test:
-            num_workers: 2
-
-    will be harmonized and prepared for an expansion to look similar to:
-
-    .. code-block:: yaml
-
-        train:
-            _datasets_:
-                source:
-                    collate_fn:
-                        _target_: train_collator
-                    num_workers: 8
-                    shuffle: true
-                    batch_size: 8
-                target:
-                    collate_fn:
-                        _target_: train_collator
-                    num_workers: 8
-                    shuffle: true
-                    batch_size: 16
-        val:
-            collate_fn:
-                _target_: val_test_collator
-            num_workers: 4
-            shuffle: false
-        test:
-            collate_fn:
-                _target_: val_test_collator
-            num_workers: 2
-            shuffle: false
-
-    Args:
-        cfg (DictConfig): The input configuration to harmonize.
-
-    Returns:
-        DictConfig: The harmonized configuration.
-    """
-    OmegaConf.set_struct(cfg, False)
-    datasets = OmegaConf.select(cfg, "datamodule.datasets")
-    harmonized_details = set()
-
-    for split in ("train", "val", "test"):
-        dataset_split_cfg = datasets.get(split)
-        if dataset_split_cfg is None:
-            continue
-
-        for path in [
-            "datamodule.dataloaders",
-            "module.evaluation.prepare",
-            "module.evaluation.step_outputs",
-            "module.evaluation.metrics",
-        ]:
-            if split == "train" and not path == "datamodule.dataloaders":
-                continue
-
-            # must be copy
-            section = cast(
-                DictConfig, OmegaConf.merge(OmegaConf.select(cfg, path), DictConfig({}))
-            )
-            if section is None:
-                continue
-            if split not in section:
-                section[split] = DictConfig({})
-
-            for special_key in SPECIAL_KEYS:
-                if special_key in dataset_split_cfg:
-                    section_special_key = section[split].get(
-                        special_key, DictConfig({})
-                    )
-                    for sk in dataset_split_cfg[special_key]:
-                        if sk not in section_special_key:
-                            section_special_key[sk] = DictConfig({})
-                            harmonized_details.add((path, split, special_key, sk))
-                    section[split][special_key] = section_special_key
-
-            OmegaConf.update(cfg, path, section)
-
-    # Group harmonized details by path
-    grouped_details = {}
-    for path, split, special_key, sk in harmonized_details:
-        key = f"{path}.{split}.{special_key}"
-        if key not in grouped_details:
-            grouped_details[key] = []
-        grouped_details[key].append(sk)
-
-    # Construct and log the compressed message
-    messages = []
-    for key, sks in grouped_details.items():
-        sks_str = ", ".join(sorted(sks))
-        messages.append(f"{key}: {sks_str}")
-
-    log.info("Harmonized keys: " + "; ".join(messages))
-    OmegaConf.set_struct(cfg, True)
-    return cfg
 
 
 def config_callbacks(cfg: DictConfig, cb_cfg: DictConfig) -> DictConfig:
