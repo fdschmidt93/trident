@@ -4,7 +4,6 @@ from typing import Any, Callable, Mapping, NamedTuple, Optional, Sequence, Union
 import hydra
 from lightning import LightningModule
 from lightning.pytorch.utilities.parsing import AttributeDict
-from omegaconf import OmegaConf
 from omegaconf.base import DictKeyType
 from omegaconf.dictconfig import DictConfig
 
@@ -121,7 +120,10 @@ class EvalMixin(LightningModule):
 
     @lru_cache
     def _get_configured_function(
-        self, cfg_path: str, dataset_name: Optional[str] = None
+        self,
+        key: str,
+        split: Split,
+        dataset_name: Optional[str] = None,
     ) -> Union[None, Callable]:
         """
         Retrieve the configured function from evaluation config based on the provided path and dataset.
@@ -143,25 +145,11 @@ class EvalMixin(LightningModule):
                 The configured function if resolved; otherwise, None.
         """
         # Select the function or dataset-specific configuration from the OmegaConf configuration using the provided path.
-        function_or_config: Union[None, Callable, DictConfig] = OmegaConf.select(
-            self.evaluation_cfg, cfg_path
+        function_or_config: DictConfig = get_dataset_cfg(
+            self.evaluation_cfg.prepare, split=split, dataset_name=dataset_name
         )
-
-        # If dataset is provided and the selected configuration is a DictConfig,
-        # retrieve the function specific to that dataset.
-        if (
-            function_or_config
-            and isinstance(function_or_config, DictConfig)
-            and dataset is not None
-        ):
-            function_or_config = function_or_config._datasets_.get(dataset)
-
-        # If the final selected configuration is callable (i.e., a function), return it.
-        if isinstance(function_or_config, Callable):
-            return function_or_config
-
-        # If no function is found, return None.
-        return None
+        fn: None | Callable = function_or_config.get(key)
+        return fn
 
     def prepare_batch(
         self, split: Split, batch: dict, dataset_name: Optional[str] = None
@@ -214,13 +202,19 @@ class EvalMixin(LightningModule):
                         _target_: src.tasks.text_classification.eval.get_preds
                   step_outputs: null  # specification not required
         """
-        fn = self._get_configured_function(f"prepare.{split.value}.batch", dataset_name)
+        fn = self._get_configured_function(
+            key="batch", split=split, dataset_name=dataset_name
+        )
         if fn:
             return fn(trident_module=self, batch=batch, split=split.value)
         return batch
 
     def prepare_outputs(
-        self, split: Split, outputs: dict, batch: dict, dataset_name: Optional[str] = None
+        self,
+        split: Split,
+        outputs: dict,
+        batch: dict,
+        dataset_name: Optional[str] = None,
     ) -> dict:
         """
         Prepares the output data for a given evaluation split, and, optionally, for a specific dataset.
@@ -243,7 +237,9 @@ class EvalMixin(LightningModule):
             working with a single dataset, many homogeneous datasets, or many heterogeneous datasets.
             Refer to the provided examples.
         """
-        fn = self._get_configured_function(f"prepare.{split.value}.outputs", dataset_name)
+        fn = self._get_configured_function(
+            split=split, dataset_name=dataset_name, key="outputs"
+        )
         if fn:
             return fn(
                 trident_module=self, outputs=outputs, batch=batch, split=split.value
@@ -276,7 +272,7 @@ class EvalMixin(LightningModule):
 
         """
         fn = self._get_configured_function(
-            f"prepare.{split.value}.step_outputs", dataset_name
+            split=split, dataset_name=dataset_name, key="step_outputs"
         )
         if fn:
             return fn(
@@ -444,7 +440,9 @@ class EvalMixin(LightningModule):
 
         # Prepare batch and outputs
         batch = self.prepare_batch(split=split, batch=batch, dataset_name=dataset_name)
-        outputs = self.prepare_outputs(split, self(batch), batch, dataset_name=dataset_name)
+        outputs = self.prepare_outputs(
+            split, self(batch), batch, dataset_name=dataset_name
+        )
 
         # Compute metrics
         if isinstance(metrics_cfg, Mapping):
