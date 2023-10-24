@@ -206,7 +206,12 @@ class EvalMixin(LightningModule):
             key="batch", split=split, dataset_name=dataset_name
         )
         if fn:
-            return fn(trident_module=self, batch=batch, split=split.value)
+            return fn(
+                trident_module=self,
+                batch=batch,
+                split=split.value,
+                dataset_name=dataset_name,
+            )
         return batch
 
     def prepare_outputs(
@@ -242,7 +247,11 @@ class EvalMixin(LightningModule):
         )
         if fn:
             return fn(
-                trident_module=self, outputs=outputs, batch=batch, split=split.value
+                trident_module=self,
+                outputs=outputs,
+                batch=batch,
+                split=split.value,
+                dataset_name=dataset_name,
             )
         return outputs
 
@@ -279,7 +288,7 @@ class EvalMixin(LightningModule):
                 trident_module=self,
                 outputs=step_outputs,
                 split=split.value,
-                dataset=dataset_name,
+                dataset_name=dataset_name,
             )
         return step_outputs
 
