@@ -209,7 +209,7 @@ class EvalMixin(LightningModule):
             return fn(
                 trident_module=self,
                 batch=batch,
-                split=split.value,
+                split=split,
                 dataset_name=dataset_name,
             )
         return batch
@@ -250,7 +250,7 @@ class EvalMixin(LightningModule):
                 trident_module=self,
                 outputs=outputs,
                 batch=batch,
-                split=split.value,
+                split=split,
                 dataset_name=dataset_name,
             )
         return outputs
@@ -287,7 +287,7 @@ class EvalMixin(LightningModule):
             return fn(
                 trident_module=self,
                 outputs=step_outputs,
-                split=split.value,
+                split=split,
                 dataset_name=dataset_name,
             )
         return step_outputs
