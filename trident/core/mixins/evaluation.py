@@ -536,6 +536,7 @@ class EvalMixin(LightningModule):
         ), "datamodule must be `TridentDataModule`!"
         datasets: None | TridentDataset = datamodule.datasets[split]
         if datasets is not None:
+            # idx aligns with dataloader_idx (i.e., sequential order of eval datasets) of lightning
             for idx, dataset_name in enumerate(datasets.keys()):
                 if dataset_metrics := get_dataset_cfg(
                     self.evaluation_cfg.get("metrics"), split, dataset_name
