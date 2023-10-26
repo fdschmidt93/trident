@@ -81,6 +81,15 @@ class TridentDataset:
         self._keys_list = list(self._data.keys())
 
     def _resolve_key(self, key: Union[None, int, str]) -> Union[None, str]:
+        """
+        Resolve the provided key to a dataset name.
+
+        Args:
+        - key (Union[None, int, str]): Can be None, an integer (for index-based access), or a string (dataset name).
+
+        Returns:
+        - Union[None, str]: The resolved dataset name.
+        """
         if isinstance(key, int):
             return self._keys_list[key]
         elif key is None or isinstance(key, str):
@@ -90,31 +99,49 @@ class TridentDataset:
                 "`key` must be either int or one of dataset_name[`str`], `None` for many or single dataset(s), respectively!"
             )
 
-    def get(self, key: Union[None, int, str]) -> Dataset:
+    def _get_raw_dataset(self, key: Union[None, str]) -> Dataset:
+        """
+        Retrieve a raw dataset for the provided key. Raw datasets remove any preprocessing
+        logic captured by `_apply_` and `_method_` yaml configuration in `hydra`.
+
+        Args:
+        - key (Union[None, str]): The dataset name or None.
+
+        Returns:
+        - Dataset: The raw dataset associated with the key.
+        """
+        if not (raw_data := self._raw_data.get(key)):
+            cfg = self.cfg[key] if isinstance(key, str) else self.cfg
+            raw_cfg = OmegaConf.masked_copy(
+                cfg, [str(k) for k in cfg if k not in ["_method_", "_apply_"]]
+            )
+            raw_data = hydra.utils.instantiate(raw_cfg)
+            self._raw_data[key] = raw_data
+        return raw_data
+
+    def get(self, key: Union[None, int, str], raw: bool = False) -> Dataset:
+        """
+        Retrieve a dataset for the provided key.
+
+        Args:
+        - key (Union[None, int, str]): Can be None, an integer (for index-based access), or a string (dataset name).
+        - raw (bool, optional): Whether to retrieve the raw dataset. Defaults to False.
+
+        Returns:
+        - Dataset: The dataset (either processed or raw) associated with the key.
+        """
         key = self._resolve_key(key)
-        return self._data[key]
 
-    def get_raw(self, key: Union[None, int, str]) -> Dataset:
-        """
-        Retrieve a dataset by key.
-
-        If key is an integer, retrieve dataset by index.
-        If key is a string, retrieve dataset by name.
-        """
-        if isinstance(key, int):
-            key_name = self._keys_list[key]
-            return self.get_raw(key_name)
-        elif key is None or isinstance(key, str):
-            if not (raw_data := self._raw_data.get(key)):
-                cfg = self.cfg[key] if isinstance(key, str) else self.cfg
-                raw_cfg = OmegaConf.masked_copy(
-                    cfg, [str(key) for key in cfg if key not in ["_method_", "_apply_"]]
-                )
-                raw_data = hydra.utils.instantiate(raw_cfg)
-                self._raw_data[key] = raw_data
-            return raw_data
+        if raw:
+            if isinstance(key, int):
+                key_name = self._keys_list[key]
+                return self._get_raw_dataset(key_name)
+            elif key is None or isinstance(key, str):
+                return self._get_raw_dataset(key)
+            else:
+                raise TypeError("Key must be either int or str")
         else:
-            raise TypeError("Key must be either int or str")
+            return self._data[key]
 
     def __getitem__(self, key: Union[int, str]) -> Dataset:
         """Allows indexing the wrapper directly with either int or str."""
