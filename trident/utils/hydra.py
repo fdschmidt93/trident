@@ -1,3 +1,4 @@
+from copy import deepcopy
 from functools import lru_cache
 from typing import Any, Mapping, Optional, Union, cast
 
@@ -260,11 +261,13 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
     """
     if cfg is None:
         return None
-
+    
+    # do not mutate in-place
+    cfg_ = deepcopy(cfg)
     # instantiate top-level cfg
-    cfg_keys = list(cfg.keys())  # avoid changing dictionary size in loop
-    extra_kwds = {key: cfg.pop(key) for key in cfg_keys if key in EXTRA_KEYS}
-    obj = hydra.utils.instantiate(cfg)
+    cfg_keys = list(cfg_.keys())  # avoid changing dictionary size in loop
+    extra_kwds = {key: cfg_.pop(key) for key in cfg_keys if key in EXTRA_KEYS}
+    obj = hydra.utils.instantiate(cfg_)
 
     if not extra_kwds:
         return obj
@@ -281,12 +284,11 @@ def instantiate_and_apply(cfg: Union[None, DictConfig]) -> Any:
                 key_cfg[
                     "_target_"
                 ] = f"{obj.__class__.__module__}.{obj.__class__.__name__}.{key}"
-                val = hydra.utils.instantiate(key_cfg, self=obj)
-                # `fn` might mutate ret in-place
-                if val is not None:
-                    obj = val
-            else:
-                obj = key_cfg(obj)
+            # methods and functions should take obj as first positional argument
+            val = hydra.utils.instantiate(key_cfg, obj)
+            # `fn` might mutate ret in-place
+            if val is not None:
+                obj = val
     return obj
 
 
