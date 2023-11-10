@@ -1,42 +1,96 @@
-import importlib.util
-import sys
 from pathlib import Path
+from typing import List, Optional, Union, cast
 
 import hydra
-from omegaconf import DictConfig
+import torch
+from lightning import (
+    Callback,
+    LightningDataModule,
+    LightningModule,
+    Trainer,
+    seed_everything,
+)
+from lightning.pytorch.loggers import Logger
+from lightning.pytorch.loggers.wandb import WandbLogger
+from omegaconf import DictConfig, OmegaConf
 
-cwd = Path.cwd()
+from trident.utils.logging import get_logger
+from trident.utils.runner import log_hyperparameters
+
+log = get_logger(__name__)
 
 
-def get_train_module_path(cwd: Path) -> None | Path:
-    """Return the path to train.py if it exists in either $CWD or $CWD/src, otherwise return None."""
-    possible_paths = [cwd.joinpath("train.py"), cwd.joinpath("src", "train.py")]
-    for path in possible_paths:
-        if path.exists():
-            return path
-    return None
+def instantiate_objects(cfg: DictConfig, key: str) -> List[Union[Callback, Logger]]:
+    objects = []
+    if key in cfg and cfg[key]:
+        for conf in cfg[key].values():
+            if "_target_" in conf:
+                log.info(f"Instantiating {key[:-1]} <{conf._target_}>")
+                objects.append(hydra.utils.instantiate(conf))
+    return objects
+
+
+def run(cfg: DictConfig) -> Optional[torch.Tensor]:
+    """Contains training pipeline.
+    Instantiates all PyTorch Lightning objects from config.
+
+    Args:
+        cfg (DictConfig): Configuration composed by Hydra.
+
+    Returns:
+        Optional[float]: Metric score for hyperparameter optimization.
+    """
+
+    seed_everything(OmegaConf.select(cfg, "experiment.seed"), workers=True)
+
+    log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
+    datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
+    log.info(f"Instantiating module <{cfg.module._target_}>")
+    module: LightningModule = hydra.utils.instantiate(cfg.module)
+
+    callbacks = cast(list[Callback], instantiate_objects(cfg, "callbacks"))
+    logger = cast(list[Logger], instantiate_objects(cfg, "logger"))
+
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
+    trainer: Trainer = hydra.utils.instantiate(
+        cfg.trainer, callbacks=callbacks, logger=logger, _convert_="partial"
+    )
+
+    log_hyperparameters(cfg, module, trainer)
+
+    trainer.fit(model=module, datamodule=datamodule)
+
+    score = None
+    if optimized_metric := cfg.get("optimized_metric"):
+        score = trainer.callback_metrics.get(optimized_metric)
+
+    if cfg.trainer.get("limit_test_batches", None) == 0:
+        best_model_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
+        if isinstance(best_model_path, str):
+            log.info(f"Best checkpoint path:\n{best_model_path}")
+            trainer.test(module, datamodule=datamodule, ckpt_path="best")
+        else:
+            log.info(
+                "No checkpoint callback with optimized metric in trainer. Using final checkpoint."
+            )
+            trainer.test(module, datamodule=datamodule)
+
+    # without this sweeps with wandb logger might crash!
+    for lg in logger:
+        if isinstance(lg, WandbLogger):
+            import wandb
+
+            wandb.finish()
+    return score
 
 
 @hydra.main(
     version_base="1.3",
-    config_path=str(cwd.joinpath("configs/")),
+    config_path=str(Path.cwd() / "configs"),
     config_name="config.yaml",
 )
 def main(cfg: DictConfig):
     # Imports should be nested inside @hydra.main to optimize tab completion
-    train_module_path = get_train_module_path(cwd)
-    if train_module_path:
-        # Create a unique module name based on the train_module_path
-        module_name = train_module_path.stem + "." + train_module_path.parent.name
-        spec = importlib.util.spec_from_file_location(module_name, train_module_path)
-        assert spec is not None
-        train_mod = importlib.util.module_from_spec(spec)
-        sys.modules[module_name] = train_mod
-        if exec_module := getattr(spec.loader, "exec_module"):
-            exec_module(train_mod)
-        train = train_mod.train
-    else:
-        from trident.train import train
     from trident.utils.runner import extras, print_config
 
     # A couple of optional utilities:
@@ -52,7 +106,7 @@ def main(cfg: DictConfig):
         print_config(cfg, resolve=True)
 
     # Train model
-    return train(cfg)
+    return run(cfg)
 
 
 if __name__ == "__main__":

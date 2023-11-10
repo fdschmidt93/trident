@@ -1,15 +1,14 @@
 from functools import cached_property
-from typing import Optional, Sized, Union, cast
+from typing import Any, Optional, Sized, Union, cast
 
-import hydra
 from lightning import LightningDataModule, Trainer
 from lightning.pytorch.utilities.combined_loader import CombinedLoader
 from omegaconf.dictconfig import DictConfig
-from torch.utils.data import DataLoader, Dataset, IterableDataset
+from torch.utils.data import DataLoader, IterableDataset
 
-from trident.core.dataset import TridentDataset
+from trident.core.dataspec import TridentDataspec
+from trident.utils.dictlist import DictList
 from trident.utils.enums import Split
-from trident.utils.hydra import get_dataset_cfg
 from trident.utils.logging import get_logger
 
 log = get_logger(__name__)
@@ -84,23 +83,33 @@ class TridentDataModule(LightningDataModule):
 
     def __init__(
         self,
-        datasets: DictConfig,
-        dataloaders: DictConfig,
-        cfg: Optional[DictConfig] = None,
+        train: Optional[DictConfig] = None,
+        val: Optional[DictConfig] = None,
+        test: Optional[DictConfig] = None,
     ):
         super().__init__()
 
-        # variables
-        self.datasets_cfg = datasets
-        self.dataloaders_cfg = dataloaders
-        self.datamodule_cfg = cfg
+        self.split_cfg = DictConfig(
+            {Split.TRAIN: train, Split.VAL: val, Split.TEST: test}
+        )
 
-        self.datasets: dict[Split, None | TridentDataset] = {
+        self._dataspecs: dict[Split, None | DictList[TridentDataspec]] = {
             Split.TRAIN: None,
             Split.VAL: None,
             Split.TEST: None,
             Split.PREDICT: None,
         }
+
+    def __getitem__(self, split: Split) -> DictList[TridentDataspec]:
+        ret = self._dataspecs[split]
+        if ret is None:
+            raise KeyError(f"{split}")
+        return ret
+
+    def get(
+        self, split: Split, default: None | Any = None
+    ) -> None | Any | DictList[TridentDataspec]:
+        return self._dataspecs.get(split, default)
 
     def setup(self, stage: Optional[str] = None) -> None:
         stage_to_splits: dict[None | str, list[Split]] = {
@@ -111,8 +120,12 @@ class TridentDataModule(LightningDataModule):
             "predict": [Split.PREDICT],
         }
         for split in stage_to_splits.get(stage, []):
-            if split_cfg := self.datasets_cfg.get(split.value):
-                self.datasets[split] = TridentDataset(split_cfg)
+            if split_cfg := self.split_cfg.get(split):
+                data = {
+                    name: TridentDataspec(spec, name)
+                    for name, spec in split_cfg.items()
+                }
+                self._dataspecs[split] = DictList(data)
 
     @cached_property
     def _signature_columns(self) -> Optional[list[str]]:
@@ -140,19 +153,22 @@ class TridentDataModule(LightningDataModule):
 
     def __len__(self) -> int:
         """Returns the number of instances in :obj:`dataset_train`."""
-        dataset_train = self.datasets[Split.TRAIN]
+        dataspecs_train = self._dataspecs[Split.TRAIN]
 
-        if dataset_train is None:
+        if dataspecs_train is None:
             return 0
-        elif isinstance(dataset_train, TridentDataset):
-            if len(dataset_train) == 1:
-                dataset = cast(Sized, dataset_train[0])
+        elif isinstance(dataspecs_train, TridentDataspec):
+            if len(dataspecs_train) == 1:
+                dataset = dataspecs_train[0].dataset
+                dataset = cast(Sized, dataset)
                 if isinstance(dataset, IterableDataset):
                     return self.trainer.global_step
                 else:
                     return len(dataset)
             else:
-                return max([len(cast(Sized, d)) for _, d in dataset_train.items()])
+                return max(
+                    [len(cast(Sized, d.dataset)) for _, d in dataspecs_train.items()]
+                )
         else:
             raise ValueError("Unexpected type for dataset_train")
 
@@ -173,42 +189,23 @@ class TridentDataModule(LightningDataModule):
         Returns:
             Union[DataLoader, list[DataLoader], dict[str, DataLoader]]: [TODO:description]
         """
-        datasets = self.datasets[split]
-        if datasets is None:
-            raise ValueError(f"Dataset for {split.value} missing!")
+        dataspecs = self._dataspecs[split]
+        if dataspecs is None:
+            raise ValueError(f"Dataspec for {split.value} missing!")
 
-        dataloaders: dict[None | str, DataLoader] = {}
-        for dataset_name, dataset in datasets.items():
-            if self.datamodule_cfg:
-                # First, check for dataset-specific config, then fall back to top-level
-                remove_unused_columns = get_dataset_cfg(
-                    self.datamodule_cfg.get("remove_unused_columns"),
-                    split,
-                    dataset_name,
-                )
-                if remove_unused_columns:
-                    dataset = self._remove_unused_columns(dataset, dataset_name)
-            dataloader_cfg = get_dataset_cfg(self.dataloaders_cfg, split, dataset_name)
-            dataloaders[dataset_name] = hydra.utils.call(
-                dataloader_cfg, dataset=dataset
-            )
-        if None in dataloaders:
-            assert len(dataloaders) == 1, "No. of dataloaders cannot exceed 1!"
-            return dataloaders[None]
+        dataloaders: dict[str, DataLoader] = {
+            name: dataspec.get_dataloader(signature_columns=self._signature_columns)
+            for name, dataspec in dataspecs.items()
+        }
 
+        # TODO mode setting
         if split == Split.TRAIN:
-            mode = (
-                self.datamodule_cfg.get(
-                    "train_dataloader_combined_mode", "max_size_cycle"
-                )
-                if self.datamodule_cfg
-                else "max_size_cycle"
-            )
+            if len(dataloaders) == 1:
+                return next(iter(dataloaders.values()))
             return CombinedLoader(
                 dataloaders,
-                mode=mode,
+                mode="max_size_cycle",
             )
-
         return CombinedLoader(dataloaders, mode="sequential")
 
     def train_dataloader(self) -> Union[DataLoader, CombinedLoader]:
@@ -222,28 +219,3 @@ class TridentDataModule(LightningDataModule):
 
     def predict_dataloader(self) -> Union[DataLoader, CombinedLoader]:
         return self._get_dataloader(Split.PREDICT)
-
-    # TODO(fdschmidt93): maybe move out-of trident-core and into trident-xtreme
-    # TODO(fdschmidt93): remove entirely? should most likely be done explicitly in configuration
-    def _remove_unused_columns(
-        self, dataset: Dataset, dataset_name: None | str
-    ) -> Dataset:
-        column_names: None | list[str] = getattr(dataset, "column_names", None)
-        if column_names is not None:
-            signature_columns = (
-                self._signature_columns if self._signature_columns is not None else []
-            )
-            ignored_columns = list(set(column_names) - set(signature_columns))
-            if len(ignored_columns) > 0:
-                log.info(
-                    f"The following columns don't have a corresponding argument in "
-                    f"`{self.trainer.model.__class__.__name__}.forward` and have been ignored: {', '.join(ignored_columns)}."  # type: ignore
-                )
-            # ignoring as new_fingerprint typically not passed
-            return dataset.remove_columns(ignored_columns)  # type: ignore
-        else:
-            dataset_name_ = dataset_name if isinstance(dataset_name, str) else "unnamed"
-            log.warning(
-                f"Attempting to remove unused columns for unsupported dataset {dataset_name_}!"
-            )
-            return dataset
