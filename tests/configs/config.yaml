@@ -1,0 +1,28 @@
+defaults:
+  - experiment: null
+  - callbacks: null
+  - override hydra/job_logging: disabled
+
+print_config: False
+seed: 42
+optimized_metric: ???
+
+trainer:
+  _target_: lightning.Trainer
+  max_epochs: 10
+  accelerator: cpu
+  enable_checkpointing: false
+
+module:
+  _target_: tests.helpers.modules.ToyModule
+  _recursive_: false
+  optimizer:
+    _target_: torch.optim.SGD
+    lr: 5
+  scheduler: null
+  model:
+    _target_: tests.helpers.modules.get_module
+
+datamodule:
+  _target_: trident.TridentDataModule
+  _recursive_: false

@@ -1,27 +1,52 @@
 from functools import lru_cache
-from typing import Any, Callable, Mapping, NamedTuple, Optional, Sequence, Union
+from typing import (
+    Any,
+    Callable,
+    Mapping,
+    NamedTuple,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 
-import hydra
 from lightning import LightningModule
 from lightning.pytorch.utilities.parsing import AttributeDict
+from numpy import ndarray
 from omegaconf.base import DictKeyType
-from omegaconf.dictconfig import DictConfig
+from omegaconf import DictConfig
+import torch
 
 from trident.core.datamodule import TridentDataModule
-from trident.core.dataset import TridentDataset
+from trident.core.dataspec import TridentDataspec
 from trident.utils import deepgetitem
+from trident.utils.dictlist import DictList
 from trident.utils.enums import Split
-from trident.utils.hydra import get_dataset_cfg
 from trident.utils.logging import get_logger
 from trident.utils.transform import flatten_dict
+from trident.utils.types.dataspec import EvaluationDict, StepOutputsDict
 
 log = get_logger(__name__)
+
+StepOutputs = list[
+    dict[
+        str,
+        Union[
+            int,
+            float,
+            ndarray,
+            torch.Tensor,
+        ],
+    ]
+]
 
 
 class EvalMixin(LightningModule):
     hparams: AttributeDict
     log: Callable
     r"""Mixin for base model to define evaluation loop largely via hydra.
+
+    See also LightningModule_.
 
     The evaluation mixin enables writing evaluation via yaml files, here is an
     example for sequence classification, borrowed from configs/evaluation/classification.yaml.
@@ -75,19 +100,14 @@ class EvalMixin(LightningModule):
         super().__init__()
         # self.hparams is also then accessible in `TridentModule` after super().__init__()
         self.save_hyperparameters()
-        evaluation_cfg = self.hparams.get("evaluation")
-        assert (
-            evaluation_cfg is not None
-        ), "Experiment requires appropiate evaluation configuration"
-        self.evaluation_cfg = hydra.utils.instantiate(evaluation_cfg)
         # Lightning 2.0 requires manual management of evaluation step outputs
-        self._eval_outputs = []
+        self._eval_outputs: list[StepOutputs] = []
 
     def log_metric(
         self,
         split: Split,
         metric_key: Union[str, DictKeyType],
-        input: Union[int, float, dict],
+        input: Union[int, float, dict, torch.Tensor],
         log_kwargs: Optional[dict[str, Any]] = None,
         dataset_name: Optional[str] = None,
     ):
@@ -95,11 +115,11 @@ class EvalMixin(LightningModule):
         Log a metric for a given split with optional transformation.
 
         Parameters:
-        - split (str): The evaluation split (e.g., "train", "val", "test").
-        - metric_key (Union[str, DictKeyType]): Key identifying the metric.
-        - input (Union[int, float, dict]): Metric value or dictionary of metric values.
-        - log_kwargs (Optional[dict[str, Any]]): Additional keyword arguments for logging.
-        - dataset_name (Optional[str]): Name of the dataset if available.
+            split: The evaluation split.
+            metric_key: Key identifying the metric.
+            input: Metric value or dictionary of metric values.
+            log_kwargs: Additional keyword arguments for logging.
+            dataset_name: Name of the dataset if available.
 
         Notes:
         - This method assumes the existence of `self.evaluation.metrics`.
@@ -118,180 +138,6 @@ class EvalMixin(LightningModule):
             log_key = f"{prefix}/{metric_key}"
             self.log(name=log_key, value=input, **log_kwargs)
 
-    @lru_cache
-    def _get_configured_function(
-        self,
-        key: str,
-        split: Split,
-        dataset_name: Optional[str] = None,
-    ) -> Union[None, Callable]:
-        """
-        Retrieve the configured function from evaluation config based on the provided path and dataset.
-
-        This internal method abstracts away the logic of extracting a function from
-        the OmegaConf configuration. It handles both scenarios:
-        1. When the function is directly configured.
-        2. When the function is configured per dataset.
-
-        Args:
-            cfg_path (str):
-                The path in the OmegaConf configuration where the function or dataset-specific configurations are stored.
-            dataset_name (Optional[str], optional):
-                The dataset for which the function needs to be fetched. If not provided, the method assumes
-                a direct function configuration. Defaults to None.
-
-        Returns:
-            Union[None, Callable]:
-                The configured function if resolved; otherwise, None.
-        """
-        # Select the function or dataset-specific configuration from the OmegaConf configuration using the provided path.
-        function_or_config: DictConfig = get_dataset_cfg(
-            self.evaluation_cfg.prepare, split=split, dataset_name=dataset_name
-        )
-        fn: None | Callable = function_or_config.get(key)
-        return fn
-
-    def prepare_batch(
-        self, split: Split, batch: dict, dataset_name: Optional[str] = None
-    ) -> dict:
-        """
-        Prepares the batch data for a given evaluation split, and, optionally, for a specific dataset.
-
-        Args:
-            split (:obj:`str`):
-                Evaluation split, such as 'train', 'validation', or 'test'.
-            batch (:obj:`dict`):
-                Batch data to be prepared.
-            dataset_name (:obj:`Optional[str]`, `optional`):
-                Name of the dataset, if specified. Default is None.
-
-        Returns:
-            :obj:`dict`: Prepared batch data.
-
-        Notes:
-            Configuration for this function can be specified in Hydra. If working with a single
-            dataset or all datasets have the same configuration, the :obj:`yaml` would look like:
-
-            .. code-block:: yaml
-
-                prepare:
-                  batch: null  # takes (module: TridentModule, batch: dict, split: star)
-                  outputs:     # takes (module: TridentModule, outputs: dict, batch: dict, split: str)
-                    _partial_: true
-                    _target_: src.tasks.text_classification.eval.get_preds
-                    # takes (module: TridentModule, flattened_step_outputs: dict, split: str)
-                    # where list of step_outputs are flattened
-                  step_outputs: null
-
-            For many heterogeneous datasets, configuration varies. Each dataset may now require separate configuration!
-
-            .. code-block:: yaml
-
-                prepare:
-                  batch: null  # specification not required
-                  outputs:
-                    _datasets_:
-                      validation_ppl:
-                        _partial_: true
-                        _target_: src.tasks.language_modeling.eval.get_num_tokens
-                      validation_nli:
-                        _partial_: true
-                        _target_: src.tasks.text_classification.eval.get_preds
-                      test_nli:
-                        _partial_: true
-                        _target_: src.tasks.text_classification.eval.get_preds
-                  step_outputs: null  # specification not required
-        """
-        fn = self._get_configured_function(
-            key="batch", split=split, dataset_name=dataset_name
-        )
-        if fn:
-            return fn(
-                trident_module=self,
-                batch=batch,
-                split=split,
-                dataset_name=dataset_name,
-            )
-        return batch
-
-    def prepare_outputs(
-        self,
-        split: Split,
-        outputs: dict,
-        batch: dict,
-        dataset_name: Optional[str] = None,
-    ) -> dict:
-        """
-        Prepares the output data for a given evaluation split, and, optionally, for a specific dataset.
-
-        Args:
-            split (:obj:`str`):
-                Evaluation split, such as 'train', 'validation', or 'test'.
-            outputs (:obj:`dict`):
-                Output data to be prepared.
-            batch (:obj:`dict`):
-                Batch data.
-            dataset_name (:obj:`Optional[str]`, `optional`):
-                Name of the dataset, if specified. Default is None.
-
-        Returns:
-            :obj:`dict`: Prepared outputs data.
-
-        Notes:
-            Configuration for this function can be specified in Hydra. Format depends on whether
-            working with a single dataset, many homogeneous datasets, or many heterogeneous datasets.
-            Refer to the provided examples.
-        """
-        fn = self._get_configured_function(
-            split=split, dataset_name=dataset_name, key="outputs"
-        )
-        if fn:
-            return fn(
-                trident_module=self,
-                outputs=outputs,
-                batch=batch,
-                split=split,
-                dataset_name=dataset_name,
-            )
-        return outputs
-
-    def prepare_step_outputs(
-        self, split: Split, step_outputs: dict, dataset_name: Optional[str] = None
-    ) -> dict:
-        """
-        Prepares the step outputs for a given evaluation split, and, optionally, for a specific dataset.
-
-        Args:
-            split (:obj:`str`):
-                Evaluation split, such as 'train', 'validation', or 'test'.
-            step_outputs (:obj:`dict`):
-                Step outputs data to be prepared.
-            dataset_name (:obj:`Optional[str]`, `optional`):
-                Name of the dataset, if specified. Default is None.
-
-        Returns:
-            :obj:`dict`: Prepared step outputs data.
-
-        Notes:
-            Configuration for this function can be specified in Hydra. Format depends on whether
-            working with a single dataset, many homogeneous datasets, or many heterogeneous datasets.
-            Refer to the provided examples.
-
-            .. seealso:: :py:meth:`trident.core.mixins.evaluation.EvalMixin.prepare_batch`
-
-        """
-        fn = self._get_configured_function(
-            split=split, dataset_name=dataset_name, key="step_outputs"
-        )
-        if fn:
-            return fn(
-                trident_module=self,
-                outputs=step_outputs,
-                split=split,
-                dataset_name=dataset_name,
-            )
-        return step_outputs
-
     def _prepare_metric_input(
         self,
         cfg: Union[dict, DictConfig],
@@ -301,7 +147,7 @@ class EvalMixin(LightningModule):
         """
         Collects user-defined attributes of outputs & batch to compute a metric.
 
-        The function extracts required variables from `self`, `cfg`, `outputs` and `batch`
+        The function extracts required variables from self, cfg, outputs and batch
         prior to calling the metric.
 
         .. code-block:: yaml
@@ -322,7 +168,7 @@ class EvalMixin(LightningModule):
               preds: "outputs:preds"
               target: "outputs:labels"
 
-        Args:
+        Parameters:
             cfg (Union[dict, DictConfig]): Configuration dictionary for metric computation.
             outputs (Union[dict, NamedTuple]): Outputs data.
             batch (Optional[Union[dict, NamedTuple]]): Batch data.
@@ -359,7 +205,7 @@ class EvalMixin(LightningModule):
     def _collect_step_output(
         outputs: dict,
         batch: dict,
-        split_dico: Optional[Mapping[str, Union[str, Sequence[str]]]] = None,
+        split_dico: None | StepOutputsDict = None,
     ) -> dict:
         """
         Collect user-defined attributes from outputs and batch at the end of `eval_step` into a dictionary.
@@ -372,10 +218,10 @@ class EvalMixin(LightningModule):
             :py:meth:`trident.core.mixins.evaluation.EvalMixin.eval_step`
             :py:meth:`trident.core.mixins.evaluation.EvalMixin.prepare_step_outputs`
 
-        Args:
-            outputs (Dict[str, Any]): Dictionary containing output data.
-            batch (Dict[str, Any]): Dictionary containing batch data.
-            split_dico (Optional[Union[Dict[str, Union[str, list]], DictConfig]]):
+        Parameters:
+            outputs: Dictionary containing output data.
+            batch: Dictionary containing batch data.
+            split_dico:
                 Dictionary specifying attributes to extract from `outputs` and `batch`.
 
         Returns:
@@ -387,7 +233,6 @@ class EvalMixin(LightningModule):
             return {"outputs": outputs, "batch": batch}
 
         ret = {}
-        source_mapping = {"outputs": outputs, "batch": batch}
         source_mapping: dict[str, dict[str, Any]] = {"outputs": outputs, "batch": batch}
 
         for source_key, attribute_keys in split_dico.items():
@@ -409,6 +254,8 @@ class EvalMixin(LightningModule):
 
             # Extract values from the source data
             if source_data is not None:
+                # fix typing
+                attribute_keys = cast(list[str], attribute_keys)
                 for attr_key in attribute_keys:
                     attr_value = source_data.get(attr_key)
                     if attr_value is not None:
@@ -418,46 +265,67 @@ class EvalMixin(LightningModule):
         return ret
 
     @lru_cache
-    def _get_dataset_name(
-        self, split: Split, dataloader_idx: Optional[int]
-    ) -> Optional[str]:
+    def _get_datasetspec(
+        self, split: Split, dataloader_idx: int
+    ) -> Tuple[str, TridentDataspec]:
         # Handle multiple datasets.
-        dataset_name: None | str = None
-        if dataloader_idx is not None:
-            datamodule: None | TridentDataModule = getattr(self.trainer, "datamodule")
-            assert isinstance(
-                datamodule, TridentDataModule
-            ), "self.trainer.datamodule not a TridentDataModule! Unsupported operation."
-            dataset = datamodule.datasets[split]
-            assert (
-                dataset is not None
-            ), f"dataset for {split} must be incorrectly set up!"
-            dataset_name = dataset.key_at_index(dataloader_idx)
-        return dataset_name
+        datamodule: None | TridentDataModule = getattr(self.trainer, "datamodule")
+        assert isinstance(
+            datamodule, TridentDataModule
+        ), "self.trainer.datamodule not a TridentDataModule! Unsupported operation."
+        dataspecs: None | DictList[TridentDataspec] = datamodule.get(split)
+        assert (
+            dataspecs is not None
+        ), f"dataspecs for {split} must be incorrectly set up!"
+        dataspec_name = dataspecs._keys[dataloader_idx]
+        dataspec = dataspecs[dataloader_idx]
+        return dataspec_name, dataspec
 
-    def eval_step(
-        self, split: Split, batch: dict, dataloader_idx: Optional[int] = None
-    ) -> None:
-        """Performs model forward & user batch transformation in an eval step.
+    def eval_step(self, split: Split, batch: dict, dataloader_idx: int) -> None:
+        r"""Performs model forward & user batch transformation in an eval step.
 
-        This function is called in `validation_step` and `test_step` of the LightningModule.
+        Parameters:
+            split: The evaluation split.
+            batch: The batch of the evaluation (i.e. 'val' or 'test') step.
+            dataloader_idx: The index of the current evaluation dataloader, :obj:`None` if single dataloader.
+
+        Notes:
+            - This function is called in `validation_step` and `test_step` of the LightningModule.
+
+        .. seealso::
+            `LightningModule.validation_step <https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#validation-step>`_
+
         """
-        dataset_name = self._get_dataset_name(split, dataloader_idx)
-        metrics_cfg = get_dataset_cfg(
-            self.evaluation_cfg.get("metrics"), split, dataset_name
-        )
+        dataspec_name, dataspec = self._get_datasetspec(split, dataloader_idx)
+        evaluation_cfg: EvaluationDict = dataspec.evaluation
+        metrics_cfg = evaluation_cfg["metrics"]
 
         # Prepare batch and outputs
-        batch = self.prepare_batch(split=split, batch=batch, dataset_name=dataset_name)
-        outputs = self.prepare_outputs(
-            split, self(batch), batch, dataset_name=dataset_name
-        )
+        if callable(prepare_batch := deepgetitem(evaluation_cfg, "prepare.batch")):
+            batch = prepare_batch(
+                trident_module=self,
+                batch=batch,
+                split=split,
+                dataset_name=dataspec_name,
+            )
+        outputs = self(batch)
+
+        if callable(
+            (prepare_outputs := deepgetitem(evaluation_cfg, "prepare.outputs"))
+        ):
+            outputs = prepare_outputs(
+                trident_module=self,
+                outputs=outputs,
+                batch=batch,
+                split=split,
+                dataset_name=dataspec_name,
+            )
 
         # Compute metrics
         if isinstance(metrics_cfg, Mapping):
             for v in metrics_cfg.values():
                 if getattr(v, "compute_on", False) == "eval_step":
-                    kwargs = self._prepare_metric_input(v.kwargs, outputs, batch)
+                    kwargs = self._prepare_metric_input(v["kwargs"], outputs, batch)
                     v["metric"](**kwargs)
 
         # Handle step outputs collection
@@ -473,38 +341,48 @@ class EvalMixin(LightningModule):
                     f"dataloader_idx {dataloader_idx} is not subsequent index in evaluation, check warranted!"
                 )
 
-        step_collection_cfg = get_dataset_cfg(
-            self.evaluation_cfg.get("step_outputs"), split, dataset_name
-        )
-        if step_collection_cfg is None or isinstance(step_collection_cfg, Mapping):
-            eval_outputs.append(
-                self._collect_step_output(outputs, batch, step_collection_cfg)
+        eval_outputs.append(
+            self._collect_step_output(
+                outputs, batch, evaluation_cfg.get("step_outputs")
             )
+        )
 
     def _evaluate_metrics_for_dataset(
         self,
         split: Split,
         step_outputs: list[dict],
-        metrics_cfg: DictConfig,
+        evaluation_cfg: EvaluationDict,
         dataset_name: Optional[str] = None,
     ) -> None:
         """Compute and log metrics at the epoch's end for a specified dataset.
 
-        Args:
-            split (str): Evaluation split, e.g., "val" or "test".
-            step_outputs (List[Dict]): Aggregated step outputs for the dataset.
-            metrics_cfg (DictConfig): Metric configurations for the dataset.
-            dataset_name (Optional[str]): Name of the dataset.
+        Parameters:
+            split: Evaluation split, i.e., "val" or "test".
+            step_outputs: Aggregated step outputs for the dataset.
+            metrics_cfg: Metric configurations for the dataset.
+            dataset_name: Name of the dataset.
         """
-        flattened_step_outputs = flatten_dict(step_outputs)
-        prepared_outputs = self.prepare_step_outputs(
-            split, flattened_step_outputs, dataset_name
-        )
-        for metric, metric_cfg in metrics_cfg.items():
+        prepared_outputs = flatten_dict(step_outputs)
+        if callable(
+            (
+                prepare_step_outputs := deepgetitem(
+                    evaluation_cfg, "prepare.step_outputs"
+                )
+            )
+        ):
+            prepared_outputs = prepare_step_outputs(
+                trident_module=self,
+                step_outputs=prepared_outputs,
+                split=split,
+                dataset_name=dataset_name,
+            )
+        for metric, metric_cfg in evaluation_cfg["metrics"].items():
             if getattr(metric_cfg, "compute_on", False) == "eval_step":
                 input_ = metric_cfg["metric"]
             elif getattr(metric_cfg, "compute_on", "epoch_end") == "epoch_end":
-                kwargs = self._prepare_metric_input(metric_cfg.kwargs, prepared_outputs)
+                kwargs = self._prepare_metric_input(
+                    metric_cfg["kwargs"], prepared_outputs
+                )
                 input_ = metric_cfg["metric"](**kwargs)
             else:
                 raise ValueError(
@@ -513,7 +391,7 @@ class EvalMixin(LightningModule):
             self.log_metric(
                 split=split,
                 metric_key=metric,
-                input=input_,
+                input=cast(Union[int, float, dict, torch.Tensor], input_),
                 dataset_name=dataset_name,
             )
 
@@ -525,8 +403,8 @@ class EvalMixin(LightningModule):
         This method determines if multiple datasets exist for the evaluation split and
         appropriately logs the metrics for each.
 
-        Args:
-            split (str): Evaluation split, e.g., "val" or "test".
+        Parameters:
+            split: Evaluation split, i.e., "val" or "test".
         """
         # `metrics_cfg` is always the fallback, means lower level of hydra config does not exist
         step_outputs: list[list[dict]] = self._eval_outputs
@@ -534,25 +412,22 @@ class EvalMixin(LightningModule):
         assert isinstance(
             datamodule, TridentDataModule
         ), "datamodule must be `TridentDataModule`!"
-        datasets: None | TridentDataset = datamodule.datasets[split]
-        if datasets is not None:
+        dataspecs: None | DictList[TridentDataspec] = datamodule.get(split)
+        if dataspecs is not None:
             # idx aligns with dataloader_idx (i.e., sequential order of eval datasets) of lightning
-            for idx, dataset_name in enumerate(datasets.keys()):
-                if dataset_metrics := get_dataset_cfg(
-                    self.evaluation_cfg.get("metrics"), split, dataset_name
-                ):
-                    self._evaluate_metrics_for_dataset(
-                        split=split,
-                        step_outputs=step_outputs[idx],
-                        metrics_cfg=dataset_metrics,
-                        dataset_name=dataset_name,
-                    )
+            for idx, (dataspec_name, dataspec) in enumerate(dataspecs.items()):
+                self._evaluate_metrics_for_dataset(
+                    split=split,
+                    step_outputs=step_outputs[idx],
+                    evaluation_cfg=dataspec.evaluation,
+                    dataset_name=dataspec_name,
+                )
         self._eval_outputs.clear()
 
     def validation_step(
         self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
     ) -> None:
-        return self.eval_step(Split.VAL, batch, dataloader_idx)
+        return self.eval_step(Split.VAL, batch, dataloader_idx or 0)
 
     def on_validation_epoch_end(self):
         return self.on_eval_epoch_end(Split.VAL)
@@ -560,7 +435,7 @@ class EvalMixin(LightningModule):
     def test_step(
         self, batch: dict, batch_idx: int, dataloader_idx: Optional[int] = None
     ) -> None:
-        return self.eval_step(Split.TEST, batch, dataloader_idx)
+        return self.eval_step(Split.TEST, batch, dataloader_idx or 0)
 
     def on_test_epoch_end(self):
         return self.on_eval_epoch_end(Split.TEST)

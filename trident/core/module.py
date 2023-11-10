@@ -41,7 +41,6 @@ class TridentModule(OptimizerMixin, EvalMixin):
     def __init__(
         self,
         model: DictConfig,
-        evaluation: DictConfig,
         optimizer: DictConfig,
         scheduler: Optional[DictConfig] = None,
         initialize_model: bool = True,

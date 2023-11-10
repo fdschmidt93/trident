@@ -1,11 +1,12 @@
 import warnings
+from pathlib import Path
 from typing import List, Sequence
 
+import hydra
 import lightning as L
 import rich.syntax
 import rich.tree
 from lightning.pytorch.loggers import Logger
-from lightning.pytorch.loggers.wandb import WandbLogger
 from lightning_utilities.core.rank_zero import rank_zero_only
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
@@ -14,7 +15,7 @@ from trident.utils.logging import get_logger
 log = get_logger(__name__)
 
 
-def extras(config: DictConfig) -> None:
+def extras(cfg: DictConfig) -> None:
     """A couple of optional utilities, controlled by main config file:
     - disabling warnings
     - forcing debug friendly configuration
@@ -29,44 +30,40 @@ def extras(config: DictConfig) -> None:
     log = get_logger(__name__)
 
     # disable python warnings if <config.ignore_warnings=True>
-    if config.get("ignore_warnings"):
+    if cfg.get("ignore_warnings"):
         log.info("Disabling python warnings! <config.ignore_warnings=True>")
         warnings.filterwarnings("ignore")
 
-    # verify experiment name is set when running in experiment mode
-    if config.get("experiment_mode") and not config.get("name"):
-        log.info(
-            "Running in experiment mode without the experiment name specified! "
-            "Use `python run.py mode=exp name=experiment_name`"
-        )
-        log.info("Exiting...")
-        exit()
-
     # force debugger friendly configuration if <config.trainer.fast_dev_run=True>
     # debuggers don't like GPUs and multiprocessing
-    if config.trainer.get("fast_dev_run"):
+    if cfg.trainer.get("fast_dev_run"):
         log.info(
             "Forcing debugger friendly configuration! <config.trainer.fast_dev_run=True>"
         )
-        if config.trainer.get("gpus"):
-            config.trainer.gpus = 0
-        if config.datamodule.get("pin_memory"):
-            config.datamodule.pin_memory = False
-        if config.datamodule.get("num_workers"):
-            config.datamodule.num_workers = 0
+        for split in ("train", "val", "test"):
+            if split_cfg := cfg.datamodule.get(split):
+                for dataspec_cfg in split_cfg.values():
+                    if dataloader_cfg := dataspec_cfg.get("dataloader"):
+                        dataloader_cfg.num_workers = 0
+                        dataloader_cfg.pin_memory = False
+
+    # convert ckpt path to absolute path
+    ckpt_path = cfg.get("ckpt_path")
+    if ckpt_path and not Path(ckpt_path).is_absolute():
+        log.info("Converting ckpt path to absolute path! <config.ckpt_path=...>")
+        cfg.ckpt_path = str(Path(hydra.utils.get_original_cwd()) / ckpt_path)
 
 
 @rank_zero_only
 def print_config(
     config: DictConfig,
     fields: Sequence[str] = (
+        "experiment",
         "trainer",
         "module",
         "datamodule",
         "callbacks",
         "logger",
-        "seed",
-        "name",
     ),
     resolve: bool = True,
 ) -> None:
@@ -117,7 +114,7 @@ def log_hyperparameters(
     log.info("Logging hyperparameters!")
 
     # choose which parts of hydra config will be saved to loggers
-    for key in ["trainer", "module", "datamodule", "seed", "callbacks"]:
+    for key in ["experiment", "trainer", "module", "datamodule", "seed", "callbacks"]:
         if key in cfg:
             cfg_ = cfg[key]
             hparams[key] = (
@@ -149,10 +146,3 @@ def finish(
     logger: List[Logger],
 ) -> None:
     """Makes sure everything closed properly."""
-
-    # without this sweeps with wandb logger might crash!
-    for lg in logger:
-        if isinstance(lg, WandbLogger):
-            import wandb
-
-            wandb.finish()

@@ -1,26 +1,16 @@
+from typing import Any
 import numpy as np
 import torch
 
-# from torch.nn.utils.rnn import pad_sequence
 
-# N = 30
-# L = 8
-# tensors = [
-#     torch.randn((N, torch.randint(low=10, high=20, size=(1,)), L)) for x in range(10)
-# ]
-# for t in tensors:
-#     print(t.shape)
-# pad_sequence(tensors)
-
-
-def stack_or_pad_2d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
+def stack_or_pad_2d(tensors: list[torch.Tensor], pad_id: int = -100) -> torch.Tensor:
     """
     Stack along first axis of latter axis is homogenous in length else pad and stack.
     """
     N, D = zip(*[tuple(x.shape) for x in tensors])
     if len(set(D)) != 1:
         out = torch.full_like(
-            torch.Tensor(sum(N), max(D)), fill_value=-100, device=tensors[0].device
+            torch.Tensor(sum(N), max(D)), fill_value=pad_id, device=tensors[0].device
         )
         start = 0
         for t in tensors:
@@ -31,11 +21,13 @@ def stack_or_pad_2d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
     return torch.vstack(tensors)
 
 
-def concatenate_3d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
+def concatenate_3d(tensors: list[torch.Tensor], pad_id: int = -100) -> torch.Tensor:
     # (N sequences, L individual sequence length, C num classes -- typically)
     N, L, C = zip(*[tuple(x.shape) for x in tensors])
     out = torch.full_like(
-        torch.Tensor(sum(N), max(L), max(C)), fill_value=-100, device=tensors[0].device
+        torch.Tensor(sum(N), max(L), max(C)),
+        fill_value=pad_id,
+        device=tensors[0].device,
     )
     start = 0
     for t in tensors:
@@ -45,9 +37,9 @@ def concatenate_3d(tensors: list[torch.Tensor], pad_id=-100) -> torch.Tensor:
     return out
 
 
-def flatten_dict(inputs: list[dict]) -> dict:
+def flatten_dict(inputs: list[dict]) -> dict[str, Any]:
     """Conflates keys of list[dict] and stacks np arrays & tensors along 0-dim."""
-    ret = {}
+    ret: dict[str, Any] = {}
     for input_ in inputs:
         for k, v in input_.items():
             if k not in ret:
