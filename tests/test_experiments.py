@@ -77,7 +77,7 @@ def test_off_by_two_test_single_train_many_val_test_single_eval_config() -> None
             config_name="config",
             overrides=[
                 "experiment=test_single_train_many_val_test",
-                "optimized_metric='off_by_two/val/mse_loss'",
+                "run.optimized_metric='off_by_two/val/mse_loss'",
             ],
         )
         is_ = torch.Tensor(run(cfg))

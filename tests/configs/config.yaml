@@ -4,8 +4,10 @@ defaults:
   - override hydra/job_logging: disabled
 
 print_config: False
-seed: 42
-optimized_metric: ???
+
+run:
+  seed: 42
+  optimized_metric: ???
 
 trainer:
   _target_: lightning.Trainer

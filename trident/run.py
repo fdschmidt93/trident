@@ -41,7 +41,7 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
         Optional[float]: Metric score for hyperparameter optimization.
     """
 
-    seed_everything(OmegaConf.select(cfg, "experiment.seed"), workers=True)
+    seed_everything(OmegaConf.select(cfg, "run.seed"), workers=True)
 
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
@@ -61,7 +61,7 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
     trainer.fit(model=module, datamodule=datamodule)
 
     score = None
-    if optimized_metric := cfg.get("optimized_metric"):
+    if optimized_metric := OmegaConf.select(cfg, "run.optimized_metric"):
         score = trainer.callback_metrics.get(optimized_metric)
 
     if cfg.trainer.get("limit_test_batches", None) == 0:
