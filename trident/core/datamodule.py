@@ -157,7 +157,7 @@ class TridentDataModule(LightningDataModule):
 
         if dataspecs_train is None:
             return 0
-        elif isinstance(dataspecs_train, TridentDataspec):
+        elif isinstance(dataspecs_train, DictList):
             if len(dataspecs_train) == 1:
                 dataset = dataspecs_train[0].dataset
                 dataset = cast(Sized, dataset)
