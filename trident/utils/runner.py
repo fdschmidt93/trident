@@ -114,7 +114,7 @@ def log_hyperparameters(
     log.info("Logging hyperparameters!")
 
     # choose which parts of hydra config will be saved to loggers
-    for key in ["experiment", "trainer", "module", "datamodule", "seed", "callbacks"]:
+    for key in ["run", "trainer", "module", "datamodule", "callbacks"]:
         if key in cfg:
             cfg_ = cfg[key]
             hparams[key] = (
