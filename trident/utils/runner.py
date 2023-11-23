@@ -120,7 +120,7 @@ def log_hyperparameters(
             hparams[key] = (
                 cfg_
                 if not isinstance(cfg_, (ListConfig, DictConfig))
-                else OmegaConf.to_container(cfg[key])
+                else OmegaConf.to_container(cfg[key], resolve=True)
             )
 
     # save number of module parameters
