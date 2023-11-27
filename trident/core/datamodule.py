@@ -108,7 +108,20 @@ class TridentDataModule(LightningDataModule):
 
     def get(
         self, split: Split, default: None | Any = None
-    ) -> None | Any | DictList[TridentDataspec]:
+    ) -> None | DictList[TridentDataspec]:
+        r"""
+        Retrieve the TridentDataspecs for the given split.
+
+        This method attempts to fetch a dataspec associated with a specific split. If the 
+        split is not found, it returns a default value.
+        
+        Parameters:
+            split: The ``Split`` used to retrieve the dataspec.
+            default: The default value to return if the split is not found.
+
+        Returns:
+            The ``DictList`` of ``TridentDataspec`` for the given split or None.
+        """
         return self._dataspecs.get(split, default)
 
     def setup(self, stage: Optional[str] = None) -> None:

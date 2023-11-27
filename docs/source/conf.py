@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath("../../"))
 # -- Project information -----------------------------------------------------
 
 project = "trident"
-copyright = "2021, Fabian David Schmidt"
+copyright = "2023, Fabian David Schmidt"
 author = "Fabian David Schmidt"
 
 
@@ -34,8 +34,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.extlinks",
     "sphinx.ext.githubpages",
-    # "sphinx.ext.viewcode",
     "sphinx.ext.linkcode",
+    "sphinx_autodoc_typehints",
 ]
 
 repo = "https://github.com/fdschmidt93/trident/"
@@ -56,6 +56,7 @@ autodoc_mock_imports = [
     "tmp",
     "rich",
     "lightning",
+    "lightning_utilities",
     "matplotlib",
     "seaborn",
     "dotenv",
@@ -63,6 +64,10 @@ autodoc_mock_imports = [
     "wandb",
 ]
 
+rst_prolog = """
+.. |project| replace:: trident
+.. include:: globals.rst
+"""
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
