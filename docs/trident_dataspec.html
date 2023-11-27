@@ -1,0 +1,518 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="TridentDataModule" href="trident_datamodule.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>TridentDataspec - trident documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">trident  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">trident  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Using trident</a></li>
+<li class="toctree-l1"><a class="reference internal" href="walkthrough.html">trident in 20 minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qa.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="trident_module.html">TridentModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trident_datamodule.html">TridentDataModule</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">TridentDataspec</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="tridentdataspec">
+<h1>TridentDataspec<a class="headerlink" href="#tridentdataspec" title="Link to this heading">#</a></h1>
+<section id="configuration">
+<span id="dataspec-configuration"></span><h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p>A <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a> class encapsulates the configuration for data handling in a machine learning workflow. It manages various aspects of data processing including dataset instantiation, preprocessing, dataloading, and evaluation.</p>
+<p><strong>Configuration Keys</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Specifies how the dataset should be instantiated.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataloader</span></code>: Defines the instantiation of the <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> (optional): Details the methods or function calls for dataset preprocessing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> (optional): Outlines any post-processing steps and metrics for dataset evaluation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">misc</span></code> (optional): Reserved for miscellaneous settings that do not fit under other keys.</p></li>
+</ul>
+<section id="dataset">
+<h3>dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">dataset</span></code> instantiates a <a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset">Dataset</a> that is compatible with a PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/data.html#dataloader">DataLoader</a>. Any preprocessing should be defined in the corresponding <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> configuration of the <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mnli_train</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="c1"># required, config on how to instantiate dataset</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datasets.load_dataset</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glue</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">train</span>
+</pre></div>
+</div>
+</section>
+<section id="preprocessing">
+<span id="id1"></span><h3>preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> key in the configuration details the steps for preparing the dataset. It includes two special keys, <code class="docutils literal notranslate"><span class="pre">method</span></code> and <code class="docutils literal notranslate"><span class="pre">apply</span></code>, each holding dictionaries for specific preprocessing actions.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Contains dictionaries of class methods along with their keyword arguments. These are typically methods of the dataset class.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply</span></code>: Comprises dictionaries of user-defined functions, along with their keyword arguments, to be applied to the dataset. Be mindful that functions of <code class="docutils literal notranslate"><span class="pre">apply</span></code>, unlike most other keys, typically does not take <code class="docutils literal notranslate"><span class="pre">_partial_:</span> <span class="pre">true</span></code></p></li>
+</ul>
+<p>The preprocessing fucntions take the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> as the first positional argument. The functions are called in order of the configuration. Note that <code class="docutils literal notranslate"><span class="pre">&quot;method&quot;</span></code> is a convenience keyword which can also be achieved by pointing to the classmethod in <code class="docutils literal notranslate"><span class="pre">&quot;_target_&quot;</span></code> of an <code class="docutils literal notranslate"><span class="pre">&quot;apply&quot;</span></code> function.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">preprocessing</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">method</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">map</span><span class="p">:</span><span class="w"> </span><span class="c1"># dataset.map of huggingface `datasets.arrow_dataset.Dataset`</span>
+<span class="w">      </span><span class="nt">function</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.tasks.text_classification.processing.preprocess_fn</span>
+<span class="w">        </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">column_names</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">premise</span>
+<span class="w">          </span><span class="nt">text_pair</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hypothesis</span>
+<span class="w">        </span><span class="nt">tokenizer</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__</span>
+<span class="w">          </span><span class="nt">self</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.AutoTokenizer.from_pretrained</span>
+<span class="w">              </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.model.pretrained_model_name_or_path}</span>
+<span class="w">          </span><span class="nt">padding</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">          </span><span class="nt">truncation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">    </span><span class="c1"># unify output format of MNLI and XNLI</span>
+<span class="w">    </span><span class="nt">set_format</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;input_ids&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;attention_mask&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;label&quot;</span>
+<span class="w">  </span><span class="nt">apply</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">example_function</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mod.package.example_function</span>
+<span class="w">      </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="dataloader">
+<h3>dataloader<a class="headerlink" href="#dataloader" title="Link to this heading">#</a></h3>
+<p>The DataLoader configuration (<cite>configs/dataspec/dataloader/default.yaml</cite>) is preset with reasonable defaults, accommodating typical use cases.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.dataloader.DataLoader</span>
+<span class="nt">collate_fn</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.data.data_collator.DataCollatorWithPadding</span>
+<span class="w">  </span><span class="nt">tokenizer</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.AutoTokenizer.from_pretrained</span>
+<span class="w">    </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.model.pretrained_model_name_or_path}</span>
+<span class="w">  </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="nt">pin_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">shuffle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+</section>
+<section id="evaluation">
+<h3>evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h3>
+<p>The logic of evaluation is defined in <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/evaluation/text_classification.yaml</span></code>. It is common to define evaluation per type of task.</p>
+<p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> configuration segments into the fields <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">metrics</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.EvaluationDict</span></code></p>
+</div>
+<section id="prepare">
+<h4>prepare<a class="headerlink" href="#prepare" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">prepare</span></code> defines functions called on the <code class="docutils literal notranslate"><span class="pre">batch</span></code>, the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code>, or the collected <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>.</p>
+<p>The <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> hands the below keywords to facilitate evaluation. Since the <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the LightningModule, useful attributes like <code class="docutils literal notranslate"><span class="pre">trainer</span></code> and <code class="docutils literal notranslate"><span class="pre">trainer.datamodule</span></code> are available at runtime.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">prepare</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.tasks.text_classification.evaluation.get_preds</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, step_outputs: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">step_outputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">get_preds</span></code> is defined as follows and merely adds</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_preds</span><span class="p">(</span><span class="n">outputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;preds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.enums.Split</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.PrepareDict</span></code></p>
+</div>
+</section>
+<section id="step-outputs">
+<h4>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> defines what keys are collected from a <code class="docutils literal notranslate"><span class="pre">batch</span></code> or <code class="docutils literal notranslate"><span class="pre">outputs</span></code> dictionary, per step, into the flattened outputs <code class="docutils literal notranslate"><span class="pre">dict</span></code> per evaluation dataloader. The flattened dictionary then holds the corresponding key-value pairs as input to the <code class="docutils literal notranslate"><span class="pre">prepare_step_outputs</span></code> function, which ultimately serves at input to metrics computed at the end of an evaluation loop.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>trident ensures that after each evaluation loop, lists of <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>s <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>s are correctly stacked to single array with appropriate dimensions.</p>
+</div>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Which keys/attributes are supposed to be collected from `outputs` and `batch`</span>
+<span class="nt">step_outputs</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># can be a str</span>
+<span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">labels</span>
+<span class="w">  </span><span class="c1"># or a list[str]</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;preds&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;logits&quot;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">trident.utils.flatten_dict()</span></code></p>
+</div>
+</section>
+<section id="metrics">
+<h4>metrics<a class="headerlink" href="#metrics" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> denotes a dictionary for all evaluated metrics. For instance, a metric such as <code class="docutils literal notranslate"><span class="pre">acc</span></code> may contain:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code>: how to instantiate the metric; typically a <code class="docutils literal notranslate"><span class="pre">partial</span></code> function; must return a <code class="docutils literal notranslate"><span class="pre">Callable</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_on</span></code>: Either <code class="docutils literal notranslate"><span class="pre">eval_step</span></code> or <code class="docutils literal notranslate"><span class="pre">epoch_end</span></code>, with the latter being the default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kwargs</span></code>: A custom syntax to fetch <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> of <code class="docutils literal notranslate"><span class="pre">metric</span></code> from one of the following: <code class="docutils literal notranslate"><span class="pre">[trident_module,</span> <span class="pre">outputs,</span> <span class="pre">batch,</span> <span class="pre">cfg]</span></code>.
+- <code class="docutils literal notranslate"><span class="pre">outputs</span></code> refers to the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code> when <code class="docutils literal notranslate"><span class="pre">compute_on</span></code> is set to <code class="docutils literal notranslate"><span class="pre">eval_step</span></code> and to <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> when <code class="docutils literal notranslate"><span class="pre">compute_on</span></code> is set to <code class="docutils literal notranslate"><span class="pre">epoch_end</span></code>.</p></li>
+</ul>
+<dl class="simple">
+<dt>In the NLI example:</dt><dd><ul class="simple">
+<li><p>The keyword <code class="docutils literal notranslate"><span class="pre">preds</span></code> for <code class="docutils literal notranslate"><span class="pre">torchmetrics.functional.accuracy</span></code> is sourced from <code class="docutils literal notranslate"><span class="pre">outputs[&quot;preds&quot;]</span></code>.</p></li>
+<li><p>The keyword <code class="docutils literal notranslate"><span class="pre">target</span></code> for <code class="docutils literal notranslate"><span class="pre">torchmetrics.functional.accuracy</span></code> is sourced from <code class="docutils literal notranslate"><span class="pre">outputs[&quot;labels&quot;]</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># name of the metric used eg for logging</span>
+<span class="w">  </span><span class="nt">acc</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># instructions to instantiate metric, preferrably torchmetrics.Metric</span>
+<span class="w">    </span><span class="nt">metric</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.functional.accuracy</span>
+<span class="w">    </span><span class="c1"># either &quot;eval_step&quot; or &quot;epoch_end&quot;, defaults to &quot;epoch_end&quot;</span>
+<span class="w">    </span><span class="nt">compute_on</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epoch_end&quot;</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">preds</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs:preds&quot;</span>
+<span class="w">      </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs:labels&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
+<section id="properties">
+<h3>Properties<a class="headerlink" href="#properties" title="Link to this heading">#</a></h3>
+<section id="cfg">
+<h4>cfg<a class="headerlink" href="#cfg" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">cfg:</span> <span class="pre">omegaconf.DictConfig</span></code> holds the dataspec configuration.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#dataspec-configuration"><span class="std std-ref">TridentDatapsec.Configuration</span></a></p>
+</div>
+</section>
+<section id="id2">
+<h4>dataset<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>The dataset as declared in  <code class="docutils literal notranslate"><span class="pre">cfg.dataset</span></code> and preprocssed by <code class="docutils literal notranslate"><span class="pre">cfg.preprocessing</span></code>.</p>
+</section>
+<section id="id3">
+<h4>evaluation<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<p>The evaluation as declared in  <code class="docutils literal notranslate"><span class="pre">cfg.evaluation</span></code>.</p>
+</section>
+</section>
+<section id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">#</a></h3>
+<section id="get-dataloader">
+<h4>get_dataloader<a class="headerlink" href="#get-dataloader" title="Link to this heading">#</a></h4>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">TridentDataspec.</span></span><span class="sig-name descname"><span class="pre">get_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signature_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/dataspec.py#L91-L112"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Creates a DataLoader for the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signature_columns</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Columns to be used in the dataloader. Defaults to None.</p></li>
+<li><p><strong>passed</strong> (<em>If</em>) – </p></li>
+<li><p><strong>misc.</strong> (<em>removes unused columns if configured in</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DataLoader configured as per the specified settings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataLoader</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="trident_datamodule.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">TridentDataModule</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Fabian David Schmidt
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">TridentDataspec</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#dataset">dataset</a></li>
+<li><a class="reference internal" href="#preprocessing">preprocessing</a></li>
+<li><a class="reference internal" href="#dataloader">dataloader</a></li>
+<li><a class="reference internal" href="#evaluation">evaluation</a><ul>
+<li><a class="reference internal" href="#prepare">prepare</a></li>
+<li><a class="reference internal" href="#step-outputs">step_outputs</a></li>
+<li><a class="reference internal" href="#metrics">metrics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api">API</a><ul>
+<li><a class="reference internal" href="#properties">Properties</a><ul>
+<li><a class="reference internal" href="#cfg">cfg</a></li>
+<li><a class="reference internal" href="#id2">dataset</a></li>
+<li><a class="reference internal" href="#id3">evaluation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#get-dataloader">get_dataloader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

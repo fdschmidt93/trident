@@ -8,10 +8,17 @@
    :caption: Contents:
     
    readme
-   customization
-   Contributing <CONTRIBUTING>
-   trident.core
+   walkthrough
+   qa
+   contributing
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Modules:
+
+   trident_module
+   trident_datamodule
+   trident_dataspec
 
 Indices and tables
 ==================

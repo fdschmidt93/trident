@@ -1,0 +1,866 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Frequently Asked Questions" href="qa.html" /><link rel="prev" title="Using trident" href="readme.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>trident in 20 minutes - trident documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">trident  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">trident  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Using trident</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">trident in 20 minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qa.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trident_module.html">TridentModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trident_datamodule.html">TridentDataModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trident_dataspec.html">TridentDataspec</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="project-in-20-minutes">
+<span id="walkthrough"></span><h1>trident in 20 minutes<a class="headerlink" href="#project-in-20-minutes" title="Link to this heading">#</a></h1>
+<p>The walkthrough first introduces common concepts of <a class="reference external" href="https://hydra.cc">hydra</a> and then walks through an exemplary text-classification pipeline for sequence-pair classification (NLI).</p>
+<section id="hydra-primer">
+<h2>hydra primer<a class="headerlink" href="#hydra-primer" title="Link to this heading">#</a></h2>
+<p>It is important to have basic familiarity with <a class="reference external" href="https://hydra.cc">hydra</a>, which shines at bottom-up hierarchical yaml configuration. A key feature of <a class="reference external" href="https://hydra.cc">hydra</a> for trident is the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a> . Below is a brief primer of <a class="reference external" href="https://hydra.cc">hydra</a> for its use in trident.</p>
+<section id="general">
+<h3>General<a class="headerlink" href="#general" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_target_:</span> <span class="pre">transformers.AutoModel.from_pretrained</span></code>: the <code class="docutils literal notranslate"><span class="pre">_target_</span></code> points to the Python function / method that initializes the object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_recursive_:</span> <span class="pre">false</span></code> ensures that objects are not instantiated eagerly, but only when instantiated explicitly. trident takes care of instantiating your objects at the right time to bypass <a class="reference external" href="https://hydra.cc">hydra</a> limitations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_partial_:</span> <span class="pre">true</span></code> is common to instantiate functions with pre-set arguments and keywords</p></li>
+</ul>
+</section>
+<section id="bottom-up-hierarchical-configuration">
+<h3>Bottom-Up Hierarchical Configuration<a class="headerlink" href="#bottom-up-hierarchical-configuration" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>By directory, <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> defines defaults or required attributes (<code class="docutils literal notranslate"><span class="pre">???</span></code>) for the corresponding component (e.g., <code class="docutils literal notranslate"><span class="pre">module</span></code>, <code class="docutils literal notranslate"><span class="pre">datamodule</span></code>)</p></li>
+<li><p>Sub-directories <em>can</em> define the corresponding sub-configuration, like <code class="docutils literal notranslate"><span class="pre">configs/datamodule/dataloaders.yaml</span></code> is inherited in the <code class="docutils literal notranslate"><span class="pre">defaults</span></code> list of <code class="docutils literal notranslate"><span class="pre">datamodule</span></code> in <code class="docutils literal notranslate"><span class="pre">configs/datamodule/default.yaml</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/datamodule/default.yaml</span>
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># pull in configs/datamodule/dataloaders/default.yaml</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataloaders</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">datasets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="project-structure">
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading">#</a></h2>
+<p>An exemplary structure for a user project is shown below:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs">configs</a> holds the entire <a class="reference external" href="https://hydra.cc">hydra</a> yaml configuration</p></li>
+<li><p><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/src">src</a> comprises required code, typically for processing and evaluation, as referred to in the config</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># yaml configuration</span>
+your-project
+├──<span class="w"> </span>configs
+│<span class="w">   </span>├──<span class="w"> </span>config.yaml<span class="w"> </span><span class="c1"># inherits all `default.yaml`</span>
+│<span class="w">   </span>├──<span class="w"> </span>experiment<span class="w"> </span><span class="c1"># typical entry point, 2nd-level `config.yaml` for your experiment</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>nli.yaml
+│<span class="w">   </span>├──<span class="w"> </span>module
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>optimizer<span class="w"> </span><span class="c1"># torch.optim</span>
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>adam.yaml
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>adamw.yaml
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>scheduler<span class="w"> </span><span class="c1"># learning-rate scheduler</span>
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>linear_warm_up.yaml
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>text_classification.yaml
+│<span class="w">   </span>├──<span class="w"> </span>datamodule
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>mnli_train.yal
+│<span class="w">   </span>├──<span class="w"> </span>dataspec<span class="w"> </span><span class="c1"># defines [dataset, preprocessing, dataloader, evaluation]</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>dataloader
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>evaluation
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>text_classification.yaml
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># inherits dataloader/default.yaml</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># task-specific dataspecs</span>
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># inherits default.yaml and evaluation/text_classification.yaml</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>text_classification.yaml
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># dataset-group specific dataspecs</span>
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># inherits text_classification.yaml</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>nli.yaml
+│<span class="w">   </span>│<span class="w">   </span>│<span class="w"> </span><span class="c1"># dataset-specific dataspecs</span>
+│<span class="w">   </span>├──<span class="w"> </span>dataspecs<span class="w"> </span><span class="c1"># defines groups of dataspec</span>
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>mnli_train.yaml
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>xnli_val_test.yaml
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>amnli_val_test.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>indicxnli_val_test.yaml
+│<span class="w">   </span>├──<span class="w"> </span>hydra
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>default.yaml
+│<span class="w">   </span>├──<span class="w"> </span>logger
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>csv.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>wandb.yaml
+│<span class="w">   </span>├──<span class="w"> </span>callbacks<span class="w"> </span><span class="c1"># defines callbacks like lightning.pytorch.ModelCheckpoint</span>
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>default.yaml
+│<span class="w">   </span>└──<span class="w"> </span>trainer<span class="w"> </span><span class="c1"># defines lightning.pytorch.Trainer</span>
+│<span class="w">       </span>├──<span class="w"> </span>debug.yaml
+│<span class="w">       </span>└──<span class="w"> </span>default.yaml
+└──<span class="w"> </span>src<span class="w"> </span><span class="c1"># typical code folder structure</span>
+<span class="w">    </span>└──<span class="w"> </span>tasks
+<span class="w">        </span>└──<span class="w"> </span>text_classification
+<span class="w">            </span>├──<span class="w"> </span>evaluation.py
+<span class="w">            </span>└──<span class="w"> </span>processing.py
+</pre></div>
+</div>
+</section>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Link to this heading">#</a></h2>
+<section id="tridentmodule">
+<h3>TridentModule<a class="headerlink" href="#tridentmodule" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a>. The configuration defines all required components for a <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a>:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">model</span></code>: <code class="docutils literal notranslate"><span class="pre">_target_</span></code> to your model constructor for which <code class="docutils literal notranslate"><span class="pre">TridentModule.model</span></code> will be initialized</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">optimizer</span></code>: the optimizer for all <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scheduler</span></code>: the learning-rate scheduler for the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code></p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> by default sets up AdamW optimizer and linear learning rate scheduler.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># _target_ is hydra-lingo to point to the object (class, function) to instantiate</span>
+<span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trident.TridentModule</span>
+<span class="c1"># _recursive_: true would mean all keyword arguments are /already/ instantiated</span>
+<span class="c1"># when passed to `TridentModule`</span>
+<span class="nt">_recursive_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="c1"># interleaved with setup so instantiated later (recursive false)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">optimizer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">adamw.yaml</span><span class="w">  </span><span class="c1"># see config/module/optimizer/adamw.yaml for default</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">scheduler</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linear_warm_up</span><span class="w">  </span><span class="c1"># see config/module/scheduler/linear_warm_up.yaml for default</span>
+
+<span class="c1"># required to be defined by user</span>
+<span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+</pre></div>
+</div>
+<p>A common pattern is that users create a <code class="docutils literal notranslate"><span class="pre">configs/module/task.yaml</span></code> that predefines shared <code class="docutils literal notranslate"><span class="pre">model</span></code> and <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> logic for a particular task.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">evaluation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+<span class="nt">model</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.AutoModelForSequenceClassification.from_pretrained</span>
+<span class="w">  </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="w">  </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">model</span></code> constructor points to <code class="docutils literal notranslate"><span class="pre">transformers.AutoModelForSequenceClassification.from_pretrained</span></code>.
+The actual model and number of labels will be defined in either the experiment configuration or in the CLI (cf. <code class="docutils literal notranslate"><span class="pre">???</span></code>).</p></li>
+</ul>
+</section>
+<section id="tridentdataspec">
+<h3>TridentDataspec<a class="headerlink" href="#tridentdataspec" title="Link to this heading">#</a></h3>
+<p>A <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a> class encapsulates the configuration for data handling in a machine learning workflow. It manages various aspects of data processing including dataset instantiation, preprocessing, dataloading, and evaluation.</p>
+<p><strong>Configuration Keys</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dataset</span></code>: Specifies how the dataset should be instantiated.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dataloader</span></code>: Defines the instantiation of the <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> (optional): Details the methods or function calls for dataset preprocessing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> (optional): Outlines any post-processing steps and metrics for dataset evaluation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">misc</span></code> (optional): Reserved for miscellaneous settings that do not fit under other keys.</p></li>
+</ul>
+<section id="dataset">
+<h4>dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">dataset</span></code> instantiates a <a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset">Dataset</a> that is compatible with a PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/data.html#dataloader">DataLoader</a>. Any preprocessing should be defined in the corresponding <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> configuration of the <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mnli_train</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="c1"># required, config on how to instantiate dataset</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datasets.load_dataset</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glue</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">train</span>
+</pre></div>
+</div>
+</section>
+<section id="preprocessing">
+<h4>preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> key in the configuration details the steps for preparing the dataset. It includes two special keys, <code class="docutils literal notranslate"><span class="pre">method</span></code> and <code class="docutils literal notranslate"><span class="pre">apply</span></code>, each holding dictionaries for specific preprocessing actions.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Contains dictionaries of class methods along with their keyword arguments. These are typically methods of the dataset class.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">apply</span></code>: Comprises dictionaries of user-defined functions, along with their keyword arguments, to be applied to the dataset. Be mindful that functions of <code class="docutils literal notranslate"><span class="pre">apply</span></code>, unlike most other keys, typically does not take <code class="docutils literal notranslate"><span class="pre">_partial_:</span> <span class="pre">true</span></code></p></li>
+</ul>
+<p>The preprocessing fucntions take the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> as the first positional argument. The functions are called in order of the configuration. Note that <code class="docutils literal notranslate"><span class="pre">&quot;method&quot;</span></code> is a convenience keyword which can also be achieved by pointing to the classmethod in <code class="docutils literal notranslate"><span class="pre">&quot;_target_&quot;</span></code> of an <code class="docutils literal notranslate"><span class="pre">&quot;apply&quot;</span></code> function.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">preprocessing</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">method</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">map</span><span class="p">:</span><span class="w"> </span><span class="c1"># dataset.map of huggingface `datasets.arrow_dataset.Dataset`</span>
+<span class="w">      </span><span class="nt">function</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.tasks.text_classification.processing.preprocess_fn</span>
+<span class="w">        </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">        </span><span class="nt">column_names</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">premise</span>
+<span class="w">          </span><span class="nt">text_pair</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hypothesis</span>
+<span class="w">        </span><span class="nt">tokenizer</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__</span>
+<span class="w">          </span><span class="nt">self</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.AutoTokenizer.from_pretrained</span>
+<span class="w">              </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.model.pretrained_model_name_or_path}</span>
+<span class="w">          </span><span class="nt">padding</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">          </span><span class="nt">truncation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">          </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
+<span class="w">    </span><span class="c1"># unify output format of MNLI and XNLI</span>
+<span class="w">    </span><span class="nt">set_format</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;input_ids&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;attention_mask&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;label&quot;</span>
+<span class="w">  </span><span class="nt">apply</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">example_function</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mod.package.example_function</span>
+<span class="w">      </span><span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="dataloader">
+<h4>dataloader<a class="headerlink" href="#dataloader" title="Link to this heading">#</a></h4>
+<p>The DataLoader configuration (<cite>configs/dataspec/dataloader/default.yaml</cite>) is preset with reasonable defaults, accommodating typical use cases.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.dataloader.DataLoader</span>
+<span class="nt">collate_fn</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.data.data_collator.DataCollatorWithPadding</span>
+<span class="w">  </span><span class="nt">tokenizer</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformers.AutoTokenizer.from_pretrained</span>
+<span class="w">    </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${module.model.pretrained_model_name_or_path}</span>
+<span class="w">  </span><span class="nt">max_length</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+<span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+<span class="nt">pin_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">shuffle</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+</section>
+<section id="evaluation">
+<span id="id1"></span><h4>evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h4>
+<p>The logic of evaluation is defined in <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/evaluation/text_classification.yaml</span></code>. It is common to define evaluation per type of task.</p>
+<p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> configuration segments into the fields <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">metrics</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.EvaluationDict</span></code></p>
+</div>
+<section id="prepare">
+<h5>prepare<a class="headerlink" href="#prepare" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">prepare</span></code> defines functions called on the <code class="docutils literal notranslate"><span class="pre">batch</span></code>, the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code>, or the collected <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>.</p>
+<p>The <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> hands the below keywords to facilitate evaluation. Since the <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the LightningModule, useful attributes like <code class="docutils literal notranslate"><span class="pre">trainer</span></code> and <code class="docutils literal notranslate"><span class="pre">trainer.datamodule</span></code> are available at runtime.</p>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">prepare</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.tasks.text_classification.evaluation.get_preds</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, step_outputs: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="nt">step_outputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">get_preds</span></code> is defined as follows and merely adds</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_preds</span><span class="p">(</span><span class="n">outputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;preds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;logits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.enums.Split</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.PrepareDict</span></code></p>
+</div>
+</section>
+<section id="step-outputs">
+<h5>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> defines what keys are collected from a <code class="docutils literal notranslate"><span class="pre">batch</span></code> or <code class="docutils literal notranslate"><span class="pre">outputs</span></code> dictionary, per step, into the flattened outputs <code class="docutils literal notranslate"><span class="pre">dict</span></code> per evaluation dataloader. The flattened dictionary then holds the corresponding key-value pairs as input to the <code class="docutils literal notranslate"><span class="pre">prepare_step_outputs</span></code> function, which ultimately serves at input to metrics computed at the end of an evaluation loop.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>trident ensures that after each evaluation loop, lists of <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>s <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>s are correctly stacked to single array with appropriate dimensions.</p>
+</div>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Which keys/attributes are supposed to be collected from `outputs` and `batch`</span>
+<span class="nt">step_outputs</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># can be a str</span>
+<span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">labels</span>
+<span class="w">  </span><span class="c1"># or a list[str]</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;preds&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;logits&quot;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">trident.utils.flatten_dict()</span></code></p>
+</div>
+</section>
+<section id="metrics">
+<h5>metrics<a class="headerlink" href="#metrics" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> denotes a dictionary for all evaluated metrics. For instance, a metric such as <code class="docutils literal notranslate"><span class="pre">acc</span></code> may contain:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code>: how to instantiate the metric; typically a <code class="docutils literal notranslate"><span class="pre">partial</span></code> function; must return a <code class="docutils literal notranslate"><span class="pre">Callable</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compute_on</span></code>: Either <code class="docutils literal notranslate"><span class="pre">eval_step</span></code> or <code class="docutils literal notranslate"><span class="pre">epoch_end</span></code>, with the latter being the default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kwargs</span></code>: A custom syntax to fetch <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> of <code class="docutils literal notranslate"><span class="pre">metric</span></code> from one of the following: <code class="docutils literal notranslate"><span class="pre">[trident_module,</span> <span class="pre">outputs,</span> <span class="pre">batch,</span> <span class="pre">cfg]</span></code>.
+- <code class="docutils literal notranslate"><span class="pre">outputs</span></code> refers to the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code> when <code class="docutils literal notranslate"><span class="pre">compute_on</span></code> is set to <code class="docutils literal notranslate"><span class="pre">eval_step</span></code> and to <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> when <code class="docutils literal notranslate"><span class="pre">compute_on</span></code> is set to <code class="docutils literal notranslate"><span class="pre">epoch_end</span></code>.</p></li>
+</ul>
+<dl class="simple">
+<dt>In the NLI example:</dt><dd><ul class="simple">
+<li><p>The keyword <code class="docutils literal notranslate"><span class="pre">preds</span></code> for <code class="docutils literal notranslate"><span class="pre">torchmetrics.functional.accuracy</span></code> is sourced from <code class="docutils literal notranslate"><span class="pre">outputs[&quot;preds&quot;]</span></code>.</p></li>
+<li><p>The keyword <code class="docutils literal notranslate"><span class="pre">target</span></code> for <code class="docutils literal notranslate"><span class="pre">torchmetrics.functional.accuracy</span></code> is sourced from <code class="docutils literal notranslate"><span class="pre">outputs[&quot;labels&quot;]</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Configuration</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># name of the metric used eg for logging</span>
+<span class="w">  </span><span class="nt">acc</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># instructions to instantiate metric, preferrably torchmetrics.Metric</span>
+<span class="w">    </span><span class="nt">metric</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torchmetrics.functional.accuracy</span>
+<span class="w">    </span><span class="c1"># either &quot;eval_step&quot; or &quot;epoch_end&quot;, defaults to &quot;epoch_end&quot;</span>
+<span class="w">    </span><span class="nt">compute_on</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epoch_end&quot;</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">preds</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs:preds&quot;</span>
+<span class="w">      </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs:labels&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="tridentdatamodule">
+<h3>TridentDataModule<a class="headerlink" href="#tridentdatamodule" title="Link to this heading">#</a></h3>
+<p>The default configuration (<code class="docutils literal notranslate"><span class="pre">configs/datamodule/default.yaml</span></code>) for a <code class="xref py py-class docutils literal notranslate"><span class="pre">tridentdatamodule</span></code> defines how training and evaluation datasets are instantiated.
+Each split is a dictionary of <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trident.TridentDataModule</span>
+<span class="nt">_recursive_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="nt">misc</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># reserved key for general TridentDataModule configuration</span>
+<span class="nt">train</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># DictConfig of TridentDataspec</span>
+<span class="nt">val</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># DictConfig of TridentDataspec</span>
+<span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># DictConfig of TridentDataspec</span>
+</pre></div>
+</div>
+<section id="config-composition">
+<h4>Config Composition<a class="headerlink" href="#config-composition" title="Link to this heading">#</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Hierarchical config composition heavily relies on <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">default lists</a> .</p>
+</div>
+<p>The below file tree is a common structure for a hierarchical <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code> configuration in our NLI example.</p>
+<p>We will hierarchically</p>
+<ol class="arabic simple">
+<li><p>Compose a general <code class="docutils literal notranslate"><span class="pre">dataspec</span></code></p></li>
+<li><p>Compose a tast-specific text classification <code class="docutils literal notranslate"><span class="pre">dataspec</span></code></p></li>
+<li><p>Compose a NLI <code class="docutils literal notranslate"><span class="pre">dataspec</span></code></p></li>
+<li><p>Compose a train, val, or test split via <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code></p></li>
+<li><p>Compose a datamodule</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>configs
+├──<span class="w"> </span>config.yaml
+├──<span class="w"> </span>datamodule
+│<span class="w">   </span>└──<span class="w"> </span>default.yaml
+├──<span class="w"> </span>dataspec
+│<span class="w">   </span>├──<span class="w"> </span>dataloader
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>default.yaml
+│<span class="w">   </span>├──<span class="w"> </span>evaluation
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>text_classification.yaml
+│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>├──<span class="w"> </span>nli.yaml
+│<span class="w">   </span>└──<span class="w"> </span>text_classification.yaml
+└──<span class="w"> </span>dataspecs
+<span class="w">    </span>├──<span class="w"> </span>mnli_train.yaml
+<span class="w">    </span>├──<span class="w"> </span>xnli_val_test.yaml
+<span class="w">    </span>└──<span class="w"> </span>amnli_val_test.yaml
+</pre></div>
+</div>
+<section id="default">
+<h5>Default<a class="headerlink" href="#default" title="Link to this heading">#</a></h5>
+<p>The general <code class="docutils literal notranslate"><span class="pre">dataspec</span></code> simply defines the default (<code class="docutils literal notranslate"><span class="pre">./configs/dataspec/default.yaml</span></code>) configuration.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="c1"># pull in the default dataloader</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataloader</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+
+<span class="nt">dataset</span><span class="p">:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datasets.load.load_dataset</span>
+</pre></div>
+</div>
+</section>
+<section id="text-classification">
+<h5>Text Classification<a class="headerlink" href="#text-classification" title="Link to this heading">#</a></h5>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">evaluation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span><span class="w"> </span><span class="c1"># see TridentDataspec evaluation</span>
+
+<span class="c1"># task specific preprocessing</span>
+<span class="nt">preprocessing</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span><span class="w"> </span><span class="c1"># see TridentDataspec preprocessing</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trident_dataspec.html#preprocessing"><span class="std std-ref">TridentDataspec.preprocessing</span></a>, <a class="reference internal" href="trident_dataspec.html#preprocessing"><span class="std std-ref">TridentDataspec.preprocessing</span></a></p>
+</div>
+</section>
+<section id="nli">
+<h5>NLI<a class="headerlink" href="#nli" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">configs/dataspec/nli.yaml</span></code> simply extends the task-specific <code class="docutils literal notranslate"><span class="pre">text_classification.yaml</span></code> by specifying columns for the tokenizer in preprocessing.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="nt">preprocessing</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">map</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">function</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># column_names denotes input to the tokenizer during preprocessing</span>
+<span class="w">      </span><span class="nt">column_names</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">premise</span>
+<span class="w">        </span><span class="nt">text_pair</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hypothesis</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trident_dataspec.html#preprocessing"><span class="std std-ref">TridentDataspec.preprocessing</span></a>, <a class="reference internal" href="trident_dataspec.html#preprocessing"><span class="std std-ref">TridentDataspec.preprocessing</span></a></p>
+</div>
+</section>
+<section id="dataspecs">
+<h5>Dataspecs<a class="headerlink" href="#dataspecs" title="Link to this heading">#</a></h5>
+<p>We can now compose <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> which group <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec`</span></code> for entire datasets.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code> levers <code class="docutils literal notranslate"><span class="pre">hydra</span></code> <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> to put the <code class="docutils literal notranslate"><span class="pre">nli</span></code> configuration into the corresponding dataspec keys.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># package `nli` of configs/dataspec into @{...}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspec@validation_xnli_en</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspec@validation_xnli_es</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+<span class="w">  </span><span class="c1"># ... can extend this to the entire XNLI benchmark for val and test splits</span>
+<span class="nt">validation_xnli_en</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validation</span>
+<span class="nt">validation_xnli_es</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">es</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validation</span>
+<span class="c1"># ... can extend this to the entire XNLI benchmark for val and test splits</span>
+</pre></div>
+</div>
+</section>
+<section id="nli-datamodules">
+<h5>NLI Datamodules<a class="headerlink" href="#nli-datamodules" title="Link to this heading">#</a></h5>
+<section id="datamodule-configurations">
+<h6>Datamodule Configurations<a class="headerlink" href="#datamodule-configurations" title="Link to this heading">#</a></h6>
+<p>We can now use <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> to include the configuration from the <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code> file into the <code class="docutils literal notranslate"><span class="pre">val</span></code> and <code class="docutils literal notranslate"><span class="pre">test</span></code> keys of the <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using packaging, make sure to provide a list of <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> configurations to allow for the merging of multiple <code class="docutils literal notranslate"><span class="pre">datamodule</span></code> configurations in the <code class="docutils literal notranslate"><span class="pre">experiment</span></code> configuration.</p>
+</div>
+<dl class="simple">
+<dt><strong>Imporant</strong>:</dt><dd><ul class="simple">
+<li><p>A single <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec`</span></code> in <code class="docutils literal notranslate"><span class="pre">train</span></code> of the <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code> will return a  <code class="docutils literal notranslate"><span class="pre">batch</span></code> of <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">Any]</span></code> at runtime</p></li>
+<li><p>Multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec`</span></code> in <code class="docutils literal notranslate"><span class="pre">train</span></code> of the <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code> will return a  <code class="docutils literal notranslate"><span class="pre">batch</span></code> of <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">dict[str,</span> <span class="pre">Any]]</span></code> for multi-dataset training at runtime</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Configuration</strong></p>
+<p>We now <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package</a> the <code class="docutils literal notranslate"><span class="pre">config/dataspec/xnli_val_test.yaml</span></code> into a list configuration in <code class="docutils literal notranslate"><span class="pre">datamodule.val</span></code> of our experiment. We can thereby easily in- and exclude various datasets for training, validation, or testing.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># variant A: training on a single dataset</span>
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.val</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indicxnli_val_test</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.test</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indicxnli_val_test</span>
+<span class="c1"># variant B: training on multiple datasets</span>
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_train</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="experiment">
+<h3>Experiment<a class="headerlink" href="#experiment" title="Link to this heading">#</a></h3>
+<p>The experiment configurations also segments into a general <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> and a task-specific <code class="docutils literal notranslate"><span class="pre">nli.yaml</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> key is, next to <code class="docutils literal notranslate"><span class="pre">module</span></code>, <code class="docutils literal notranslate"><span class="pre">datamodule</span></code>, and <code class="docutils literal notranslate"><span class="pre">trainer</span></code> a special key reserved for user configuration. The configuration of this key also gets saved in your <code class="docutils literal notranslate"><span class="pre">logger</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">wandb</span></code>).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /trainer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /callbacks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /logger</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wandb</span>
+
+<span class="c1"># `run` namespace should hold your individual configuration</span>
+<span class="nt">run</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
+
+<span class="nt">trainer</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">max_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">  </span><span class="nt">devices</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">precision</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;16-mixed&quot;</span>
+<span class="w">  </span><span class="nt">deterministic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">inference_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="c1"># log vars infers first training dataset</span>
+<span class="c1"># for logging batch size</span>
+<span class="nt">_log_vars</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># needed because hydra cannot index list in interpolation</span>
+<span class="w">  </span><span class="nt">train_datasets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${oc.dict.keys:datamodule.train}</span>
+<span class="w">  </span><span class="nt">train_dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${_log_vars.train_datasets[0]}</span>
+<span class="w">  </span><span class="nt">train_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${datamodule.train.${_log_vars.train_dataset}.dataloader.batch_size}</span>
+
+<span class="nt">logger</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">wandb</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;model=${module.model.pretrained_model_name_or_path}_epochs=${trainer.max_epochs}_bs=${_log_vars.train_batch_size}_lr=${module.optimizer.lr}_scheduler=${module.scheduler.num_warmup_steps}_seed=${run.seed}&quot;</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;${module.model.pretrained_model_name_or_path}&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bs=${_log_vars.train_batch_size}&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;lr=${module.optimizer.lr}&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;scheduler=${module.scheduler.num_warmup_steps}&quot;</span>
+<span class="w">    </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${run.task}</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
+<span class="c1"># The above line is important! It sets the namespace of the config</span>
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="c1"># We can now combine `dataspecs` for training, validation, and testing</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.val</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indicxnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amnli_val_test</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="nt">run</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+
+<span class="nt">module</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;xlm-roberta-base&quot;</span>
+<span class="w">    </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="commandline-interface">
+<h2>Commandline Interface<a class="headerlink" href="#commandline-interface" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://hydra.cc">hydra</a> allows to simply set configuration items on the commandline. See more information</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># change the learning rate</span>
+python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span>module.optimizer.lr<span class="o">=</span><span class="m">0</span>.0001
+<span class="c1"># set a different optimizer</span>
+python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span>module.optimizer<span class="o">=</span>adam
+<span class="c1"># no lr scheduler</span>
+python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span>module.scheduler<span class="o">=</span>null
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The commandline interface only supports absolute paths. For instance, overriding defaults at runtime from the CLI is not possible.</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="qa.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Frequently Asked Questions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="readme.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Using trident</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Fabian David Schmidt
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">trident in 20 minutes</a><ul>
+<li><a class="reference internal" href="#hydra-primer">hydra primer</a><ul>
+<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#bottom-up-hierarchical-configuration">Bottom-Up Hierarchical Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#project-structure">Project Structure</a></li>
+<li><a class="reference internal" href="#components">Components</a><ul>
+<li><a class="reference internal" href="#tridentmodule">TridentModule</a></li>
+<li><a class="reference internal" href="#tridentdataspec">TridentDataspec</a><ul>
+<li><a class="reference internal" href="#dataset">dataset</a></li>
+<li><a class="reference internal" href="#preprocessing">preprocessing</a></li>
+<li><a class="reference internal" href="#dataloader">dataloader</a></li>
+<li><a class="reference internal" href="#evaluation">evaluation</a><ul>
+<li><a class="reference internal" href="#prepare">prepare</a></li>
+<li><a class="reference internal" href="#step-outputs">step_outputs</a></li>
+<li><a class="reference internal" href="#metrics">metrics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tridentdatamodule">TridentDataModule</a><ul>
+<li><a class="reference internal" href="#config-composition">Config Composition</a><ul>
+<li><a class="reference internal" href="#default">Default</a></li>
+<li><a class="reference internal" href="#text-classification">Text Classification</a></li>
+<li><a class="reference internal" href="#nli">NLI</a></li>
+<li><a class="reference internal" href="#dataspecs">Dataspecs</a></li>
+<li><a class="reference internal" href="#nli-datamodules">NLI Datamodules</a><ul>
+<li><a class="reference internal" href="#datamodule-configurations">Datamodule Configurations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#experiment">Experiment</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commandline-interface">Commandline Interface</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   trident.callbacks
    trident.core
    trident.utils
 
@@ -18,14 +17,6 @@ trident.run module
 ------------------
 
 .. automodule:: trident.run
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-trident.train module
---------------------
-
-.. automodule:: trident.train
    :members:
    :undoc-members:
    :show-inheritance:

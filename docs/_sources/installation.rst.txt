@@ -1,7 +1,7 @@
 Installation
 ------------
 
-All necessary packages for a base installation of trident can be installed with the `conda package manager <https://docs.conda.io/en/latest/miniconda.html>`_.
+All necessary packages for a base installation of trident can be installed with `conda <https://github.com/conda-forge/miniforge>`_ (or `mamba`)
 
 .. code-block:: bash
 

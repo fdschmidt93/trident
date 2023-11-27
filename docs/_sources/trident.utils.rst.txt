@@ -4,18 +4,18 @@ trident.utils package
 Submodules
 ----------
 
-trident.utils.enums module
---------------------------
+trident.utils.dictlist module
+-----------------------------
 
-.. automodule:: trident.utils.enums
+.. automodule:: trident.utils.dictlist
    :members:
    :undoc-members:
    :show-inheritance:
 
-trident.utils.hydra module
+trident.utils.enums module
 --------------------------
 
-.. automodule:: trident.utils.hydra
+.. automodule:: trident.utils.enums
    :members:
    :undoc-members:
    :show-inheritance:

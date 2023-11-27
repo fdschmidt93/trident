@@ -1,14 +1,15 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <meta name="generator" content="sphinx-4.2.0, furo 2021.10.09"/>
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
         <title>trident package - trident documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=0254c309f5cadf746f1a613e7677379ac9c8cdcd" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -19,38 +20,38 @@
   --color-code-foreground: black;
   
   }
-  body[data-theme="dark"] {
-    --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
-  
-  }
-  @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+  @media not print {
+    body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
   
     }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
   }
 </style></head>
   <body>
+    
     <script>
       document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
     
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -59,14 +60,14 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -81,7 +82,7 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -89,7 +90,7 @@
   </symbol>
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
@@ -148,25 +149,28 @@
   <span class="sidebar-brand-text">trident  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="readme.html">Notices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#quick-start">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="customization.html">Customization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="trident.core.html">trident.core package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="trident.core.mixins.html">trident.core.mixins package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Using trident</a></li>
+<li class="toctree-l1"><a class="reference internal" href="walkthrough.html">trident in 20 minutes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qa.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trident_module.html">TridentModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trident_datamodule.html">TridentDataModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trident_dataspec.html">TridentDataspec</a></li>
 </ul>
 
 </div>
 </div>
+
       </div>
       
     </div>
@@ -174,8 +178,15 @@
   <div class="main">
     <div class="content">
       <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
@@ -189,62 +200,405 @@
           </label>
         </div>
         <article role="main">
-          <div class="section" id="trident-package">
-<h1>trident package<a class="headerlink" href="#trident-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+          <section id="trident-package">
+<h1>trident package<a class="headerlink" href="#trident-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="trident.callbacks.html">trident.callbacks package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="trident.callbacks.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.callbacks.html#trident-callbacks-wandb-callbacks-module">trident.callbacks.wandb_callbacks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.callbacks.html#module-contents">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="trident.core.html">trident.core package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="trident.core.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="trident.core.mixins.html">trident.core.mixins package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#trident-core-mixins-evaluation-module">trident.core.mixins.evaluation module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#trident-core-mixins-optimizer-module">trident.core.mixins.optimizer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#module-contents">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#module-trident.core.mixins.evaluation">trident.core.mixins.evaluation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#module-trident.core.mixins.optimizer">trident.core.mixins.optimizer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.mixins.html#module-trident.core.mixins">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="trident.core.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.core.html#trident-core-datamodule-module">trident.core.datamodule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-trident.core.dataset">trident.core.dataset module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.core.html#trident-core-module-module">trident.core.module module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-trident.core.datamodule">trident.core.datamodule module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule"><code class="docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.get"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.predict_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.predict_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.setup"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.test_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.test_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.train_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.train_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.trainer"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.trainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.datamodule.TridentDataModule.val_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.val_dataloader()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-trident.core.dataspec">trident.core.dataspec module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec"><code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec.name"><code class="docutils literal notranslate"><span class="pre">TridentDataspec.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec.cfg"><code class="docutils literal notranslate"><span class="pre">TridentDataspec.cfg</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec.get_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataspec.get_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec.preprocess"><code class="docutils literal notranslate"><span class="pre">TridentDataspec.preprocess()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-trident.core.module">trident.core.module module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule"><code class="docutils literal notranslate"><span class="pre">TridentModule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule.forward"><code class="docutils literal notranslate"><span class="pre">TridentModule.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule.training_step"><code class="docutils literal notranslate"><span class="pre">TridentModule.training_step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.core.html#module-trident.core">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule"><code class="docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.get"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.predict_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.predict_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.setup"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.test_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.test_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.train_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.train_dataloader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.trainer"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.trainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentDataModule.val_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.val_dataloader()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="trident.core.html#trident.core.TridentModule"><code class="docutils literal notranslate"><span class="pre">TridentModule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentModule.forward"><code class="docutils literal notranslate"><span class="pre">TridentModule.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.core.html#trident.core.TridentModule.training_step"><code class="docutils literal notranslate"><span class="pre">TridentModule.training_step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="trident.utils.html">trident.utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="trident.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.enums">trident.utils.enums module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.hydra">trident.utils.hydra module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.logging">trident.utils.logging module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#trident-utils-runner-module">trident.utils.runner module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.transform">trident.utils.transform module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.dictlist">trident.utils.dictlist module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList"><code class="docutils literal notranslate"><span class="pre">DictList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList._data"><code class="docutils literal notranslate"><span class="pre">DictList._data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList._keys"><code class="docutils literal notranslate"><span class="pre">DictList._keys</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.__iter__"><code class="docutils literal notranslate"><span class="pre">DictList.__iter__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.keys"><code class="docutils literal notranslate"><span class="pre">DictList.keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.values"><code class="docutils literal notranslate"><span class="pre">DictList.values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.items"><code class="docutils literal notranslate"><span class="pre">DictList.items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.__len__"><code class="docutils literal notranslate"><span class="pre">DictList.__len__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.__str__"><code class="docutils literal notranslate"><span class="pre">DictList.__str__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.__repr__"><code class="docutils literal notranslate"><span class="pre">DictList.__repr__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList.get"><code class="docutils literal notranslate"><span class="pre">DictList.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#id0"><code class="docutils literal notranslate"><span class="pre">DictList.items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#id1"><code class="docutils literal notranslate"><span class="pre">DictList.keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#id2"><code class="docutils literal notranslate"><span class="pre">DictList.values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.enums">trident.utils.enums module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split"><code class="docutils literal notranslate"><span class="pre">Split</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split.PREDICT"><code class="docutils literal notranslate"><span class="pre">Split.PREDICT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split.TEST"><code class="docutils literal notranslate"><span class="pre">Split.TEST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split.TRAIN"><code class="docutils literal notranslate"><span class="pre">Split.TRAIN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split.VAL"><code class="docutils literal notranslate"><span class="pre">Split.VAL</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.logging">trident.utils.logging module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.logging.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.runner">trident.utils.runner module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.runner.extras"><code class="docutils literal notranslate"><span class="pre">extras()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.runner.finish"><code class="docutils literal notranslate"><span class="pre">finish()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.runner.log_hyperparameters"><code class="docutils literal notranslate"><span class="pre">log_hyperparameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.runner.print_config"><code class="docutils literal notranslate"><span class="pre">print_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils.transform">trident.utils.transform module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.transform.concatenate_3d"><code class="docutils literal notranslate"><span class="pre">concatenate_3d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.transform.flatten_dict"><code class="docutils literal notranslate"><span class="pre">flatten_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.transform.stack_or_pad_2d"><code class="docutils literal notranslate"><span class="pre">stack_or_pad_2d()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="trident.utils.html#module-trident.utils">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="trident.utils.html#trident.utils.deepgetitem"><code class="docutils literal notranslate"><span class="pre">deepgetitem()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-trident.run">
+<span id="trident-run-module"></span><h2>trident.run module<a class="headerlink" href="#module-trident.run" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="trident.run.instantiate_objects">
+<span class="sig-prename descclassname"><span class="pre">trident.run.</span></span><span class="sig-name descname"><span class="pre">instantiate_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/run.py#L23-L30"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.run.instantiate_objects" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="trident.run.main">
+<span class="sig-prename descclassname"><span class="pre">trident.run.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/run.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.run.main" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="trident.run.run">
+<span class="sig-prename descclassname"><span class="pre">trident.run.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/run.py#L33-L89"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.run.run" title="Link to this definition">#</a></dt>
+<dd><p>Contains training pipeline.
+Instantiates all PyTorch Lightning objects from config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<em>DictConfig</em>) – Configuration composed by Hydra.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Metric score for hyperparameter optimization.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-trident">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-trident" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="trident.TridentDataModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.</span></span><span class="sig-name descname"><span class="pre">TridentDataModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L17-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LightningDataModule</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L109-L125"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.get" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the TridentDataspecs for the given split.</p>
+<p>This method attempts to fetch a dataspec associated with a specific split. If the
+split is not found, it returns a default value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – The default value to return if the split is not found.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList" title="trident.utils.dictlist.DictList"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictList</span></code></a>[<a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>]]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DictList</span></code> of <code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code> for the given split or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.predict_dataloader">
+<span class="sig-name descname"><span class="pre">predict_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L233-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.predict_dataloader" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L127-L141"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.setup" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.test_dataloader">
+<span class="sig-name descname"><span class="pre">test_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L230-L231"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.test_dataloader" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.train_dataloader">
+<span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L224-L225"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.train_dataloader" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="trident.TridentDataModule.trainer">
+<span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.trainer" title="Link to this definition">#</a></dt>
+<dd><p>The base class for all datamodules.</p>
+<p>The <a class="reference internal" href="#trident.TridentDataModule" title="trident.TridentDataModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a> facilitates writing a <code class="xref py py-obj docutils literal notranslate"><span class="pre">LightningDataModule</span></code> with little to no boilerplate via Hydra configuration. It splits into</p>
+<ul class="simple">
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset</span></code>:</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataloader</span></code>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>) – <p>A hierarchical <code class="xref py py-obj docutils literal notranslate"><span class="pre">DictConfig</span></code> that instantiates or returns the dataset for <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.dataset_{train,</span> <span class="pre">val,</span> <span class="pre">test}</span></code>, respectively.</p>
+<p>Typical configurations follow the below pattern:</p>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">src.utils.hydra.instantiate_and_apply()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">src.utils.hydra.expand()</span></code>
+dataloader (<code class="xref py py-obj docutils literal notranslate"><span class="pre">omegaconf.dictconfig.DictConfig</span></code>):</p>
+<blockquote>
+<div><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">src.utils.hydra.expand()</span></code></p>
 </div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div></blockquote>
 </div>
-<div class="section" id="trident-run-module">
-<h2>trident.run module<a class="headerlink" href="#trident-run-module" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The <cite>train</cite>, <cite>val</cite>, and <cite>test</cite> keys of <code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">dataloader</span></code> join remaining configurations with priority to existing config</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataloader</span></code> automatically generates <cite>train</cite>, <cite>val</cite>, and <cite>test</cite> keys for convenience as the config is evaluated lazily (i.e. when a <code class="xref py py-obj docutils literal notranslate"><span class="pre">DataLoader</span></code> is requested)</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.datamodules.base.TridentDataModule</span>
+<span class="nt">_recursive_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="nt">dataset</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datasets.load.load_dataset</span>
+<span class="w">  </span><span class="c1"># access methods of the instantiated object</span>
+<span class="w">  </span><span class="nt">_method_</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">map</span><span class="p">:</span><span class="w"> </span><span class="c1"># dataset.map for e.g. tokenization</span>
+<span class="w">      </span><span class="c1"># kwargs for dataset.map</span>
+<span class="w">      </span><span class="nt">function</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">_target_</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">num_proc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">glue</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli</span>
+<span class="w">  </span><span class="nt">train</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;train&quot;</span>
+<span class="w">  </span><span class="nt">val</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># inherits `path`, `name`, etc.</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;validation_mismatched+validation_matched&quot;</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># set `path`, `name`, `lang` specifically, remainder inherited</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xtreme</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli</span>
+<span class="w">    </span><span class="nt">lang</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">de</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;test&quot;</span>
+<span class="nt">dataloader</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.dataloader.DataLoader</span>
+<span class="w">  </span><span class="nt">batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">num_workers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">pin_memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="c1"># linked against global cfg</span>
+</pre></div>
 </div>
-<div class="section" id="trident-train-module">
-<h2>trident.train module<a class="headerlink" href="#trident-train-module" title="Permalink to this headline">¶</a></h2>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentDataModule.val_dataloader">
+<span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentDataModule.val_dataloader" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="trident.TridentModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.</span></span><span class="sig-name descname"><span class="pre">TridentModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/module.py#L13-L82"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentModule" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="trident.core.mixins.html#trident.core.mixins.optimizer.OptimizerMixin" title="trident.core.mixins.optimizer.OptimizerMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">OptimizerMixin</span></code></a>, <a class="reference internal" href="trident.core.mixins.html#trident.core.mixins.evaluation.EvalMixin" title="trident.core.mixins.evaluation.EvalMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvalMixin</span></code></a></p>
+<p>Base module of Trident that wraps model, optimizer, scheduler, evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
+<ul>
+<li><p>Takes the batch unpacked</p></li>
+<li><p>Returns a container with “loss” and other required attrs</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.forward()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.training_step()</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/tiny_bert.yaml">tiny bert example</a></p>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</p></li>
+<li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Configuration for the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">core.trident.TridentModule</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/optimizer/adamw.yaml">AdamW config</a></p>
 </div>
+</p></li>
+<li><p><strong>scheduler</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code>]</span>) – <p>Configuration for the scheduler of the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/scheduler/linear_warm_up.yaml">Linear Warm-Up config</a></p>
 </div>
+</p></li>
+<li><p><strong>evaluation</strong> – <p>Please refer to <a class="reference internal" href="walkthrough.html#evaluation"><span class="std std-ref">evaluation</span></a></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.evaluation.EvalMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/evaluation/sequence_classification.yaml">Classification Evaluation config</a></p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/module.py#L55-L64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentModule.forward" title="Link to this definition">#</a></dt>
+<dd><p>Plain forward pass of your model for which the batch is unpacked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – input to your model</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>container with attributes required for evaluation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ModelOutput</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="trident.TridentModule.training_step">
+<span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/module.py#L66-L82"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.TridentModule.training_step" title="Link to this definition">#</a></dt>
+<dd><p>Comprises training step of your model which takes a forward pass.</p>
+<dl class="simple">
+<dt><strong>Notes:</strong></dt><dd><p>If you want to extend <cite>training_step</cite>, add a <cite>on_train_batch_end</cite> method via overrides.
+See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-lightning.readthedocs.io/en/latest/common/lightning_module.html#on-train-batch-end">on_train_batch_end</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
+<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – variable used internally by pytorch-lightning</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>model output that must have ‘loss’ as attr or key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[dict[str, Any], ModelOutput]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
 
         </article>
       </div>
@@ -254,17 +608,19 @@
           
           
         </div>
-
-        <div class="related-information">
-              Copyright &#169; 2021, Fabian David Schmidt |
-            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
-              and
-              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
-              <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
-            <a class="muted-link" href="_sources/trident.rst.txt"
-               rel="nofollow">
-              Show Source
-            </a>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Fabian David Schmidt
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
         </div>
         
       </footer>
@@ -275,7 +631,7 @@
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Contents
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -284,9 +640,30 @@
 <li><a class="reference internal" href="#">trident package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#trident-run-module">trident.run module</a></li>
-<li><a class="reference internal" href="#trident-train-module">trident.train module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-trident.run">trident.run module</a><ul>
+<li><a class="reference internal" href="#trident.run.instantiate_objects"><code class="docutils literal notranslate"><span class="pre">instantiate_objects()</span></code></a></li>
+<li><a class="reference internal" href="#trident.run.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#trident.run.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-trident">Module contents</a><ul>
+<li><a class="reference internal" href="#trident.TridentDataModule"><code class="docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a><ul>
+<li><a class="reference internal" href="#trident.TridentDataModule.get"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.get()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.predict_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.predict_dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.setup"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.setup()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.test_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.test_dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.train_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.train_dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.trainer"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.trainer</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentDataModule.val_dataloader"><code class="docutils literal notranslate"><span class="pre">TridentDataModule.val_dataloader()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#trident.TridentModule"><code class="docutils literal notranslate"><span class="pre">TridentModule</span></code></a><ul>
+<li><a class="reference internal" href="#trident.TridentModule.forward"><code class="docutils literal notranslate"><span class="pre">TridentModule.forward()</span></code></a></li>
+<li><a class="reference internal" href="#trident.TridentModule.training_step"><code class="docutils literal notranslate"><span class="pre">TridentModule.training_step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -298,10 +675,9 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/scripts/main.js"></script>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>
