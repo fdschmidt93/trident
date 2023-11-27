@@ -253,7 +253,7 @@ to ``dict[str, dict[str, torch.Tensor]]``, embedding the original batch now by d
 
 **Important**: this is not applicable for evaluation, as ``dict[str, DataLoader]`` up- or downsample to the largest or smallest dataset in the dictionary. During evaluation, the ``DataLoader`` for multiple validation or test datasets consequently are of ``list[DataLoader]`` in order of declaration in the ``yaml`` configuration.
 
-How to subsample a dataset?
+How do I subsample a dataset?
 ---------------------------
 
 .. code:: yaml
@@ -287,6 +287,6 @@ or pass
 
 .. code-block:: bash
     
-    python -m trident.run ... trainer.limit_train_batches=0.o
+    python -m trident.run ... trainer.limit_train_batches=0.0
 
 to the CLI.
