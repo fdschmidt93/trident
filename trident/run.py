@@ -58,7 +58,7 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
 
     log_hyperparameters(cfg, module, trainer)
 
-    if cfg.trainer.get("limit_train_batches") != 0:
+    if cfg.trainer.get("limit_train_batches", 1.0) > 0:
         trainer.fit(model=module, datamodule=datamodule)
 
     score = None
@@ -67,7 +67,7 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
 
     if (
         cfg.datamodule.get("test") is not None
-        and cfg.trainer.get("limit_test_batches", None) > 0
+        and cfg.trainer.get("limit_test_batches", 1.0) > 0
     ):
         best_model_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
         if isinstance(best_model_path, str):
