@@ -69,8 +69,9 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
         cfg.datamodule.get("test") is not None
         and cfg.trainer.get("limit_test_batches", 1.0) > 0
     ):
-        best_model_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
-        if isinstance(best_model_path, str):
+        if best_model_path := getattr(
+            trainer.checkpoint_callback, "best_model_path", ""
+        ):
             log.info(f"Best checkpoint path:\n{best_model_path}")
             trainer.test(module, datamodule=datamodule, ckpt_path="best")
         else:
