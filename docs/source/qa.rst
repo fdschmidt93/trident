@@ -272,3 +272,21 @@ How to subsample a dataset?
                  - 0
                  # must be set by user
                  - ${run.num_shots}
+
+How do I only run testing?
+--------------------------
+
+Bypassing training is implemented with the corresponding Lightning Trainer_ flag. You can write the following in your ``experiment.yaml`` 
+
+.. code-block:: yaml
+
+   trainer:
+    limit_train_batches: 0.0
+
+or pass
+
+.. code-block:: bash
+    
+    python -m trident.run ... trainer.limit_train_batches=0.o
+
+to the CLI.
