@@ -287,6 +287,6 @@ or pass
 
 .. code-block:: bash
     
-    python -m trident.run ... trainer.limit_train_batches=0.o
+    python -m trident.run ... trainer.limit_train_batches=0.0
 
 to the CLI.
