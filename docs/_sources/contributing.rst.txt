@@ -33,30 +33,6 @@ At last, you can open either :obj:`docs/build/` the entire documentation at once
     chromium ./build
     chromium ./build/readme.html
 
-What to Contribute?
--------------------
-
-**Preface: General Conventions**:
-
-* If a framework of our stack has an existing convention for naming variables in place, stick to it
-* Implementations of established frameworks are largely preferred over own implementations
-
-Right now, |project| primarily benefits from:
-
-1. Write the DataModule for your task, which should too largest degree possible align with Huggingface: 
-
-    * Pre-Tokenize input with :code:`datasets.map` at :obj:`LightningDataModule.setup`
-    * Re-use `collators <https://github.com/huggingface/transformers/blob/master/src/transformers/data/data_collator.py>`_ of `transformers` (padding, etc.)
-    * As an example, see :code:`train_dataset.map` in `example <https://github.com/huggingface/transformers/blob/d5b82bb70c2e8c4b184a6f2a7d1c91d7fd156956/examples/pytorch/token-classification/run_ner.py#L402>`_ (which are then padded in the trainer)
-
-2. Define the evalation, if your task is not yet covered:
-    
-    * Write relevant helper functions to `src.evaluation.TASK.py`
-    * Submit a config for your task at `configs/evaluation/TASK.yaml`
-    * **Warning:** the format for evaluation is under revision, s.t. their will be more sharing across tasks
-
-3. Provide a preset :obj:`experiment` config for your dataset that links to global defaults (example :repo:`MNLI <configs/experiment/mnli.yaml>`)
-
 Opening a PR
 ------------
 

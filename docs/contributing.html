@@ -227,36 +227,6 @@ chromium<span class="w"> </span>./build/readme.html
 </pre></div>
 </div>
 </section>
-<section id="what-to-contribute">
-<h2>What to Contribute?<a class="headerlink" href="#what-to-contribute" title="Link to this heading">#</a></h2>
-<p><strong>Preface: General Conventions</strong>:</p>
-<ul class="simple">
-<li><p>If a framework of our stack has an existing convention for naming variables in place, stick to it</p></li>
-<li><p>Implementations of established frameworks are largely preferred over own implementations</p></li>
-</ul>
-<p>Right now, trident primarily benefits from:</p>
-<ol class="arabic">
-<li><p>Write the DataModule for your task, which should too largest degree possible align with Huggingface:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Pre-Tokenize input with <code class="code docutils literal notranslate"><span class="pre">datasets.map</span></code> at <code class="xref py py-obj docutils literal notranslate"><span class="pre">LightningDataModule.setup</span></code></p></li>
-<li><p>Re-use <a class="reference external" href="https://github.com/huggingface/transformers/blob/master/src/transformers/data/data_collator.py">collators</a> of <cite>transformers</cite> (padding, etc.)</p></li>
-<li><p>As an example, see <code class="code docutils literal notranslate"><span class="pre">train_dataset.map</span></code> in <a class="reference external" href="https://github.com/huggingface/transformers/blob/d5b82bb70c2e8c4b184a6f2a7d1c91d7fd156956/examples/pytorch/token-classification/run_ner.py#L402">example</a> (which are then padded in the trainer)</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>Define the evalation, if your task is not yet covered:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Write relevant helper functions to <cite>src.evaluation.TASK.py</cite></p></li>
-<li><p>Submit a config for your task at <cite>configs/evaluation/TASK.yaml</cite></p></li>
-<li><p><strong>Warning:</strong> the format for evaluation is under revision, s.t. their will be more sharing across tasks</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>Provide a preset <code class="xref py py-obj docutils literal notranslate"><span class="pre">experiment</span></code> config for your dataset that links to global defaults (example <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/mnli.yaml">MNLI</a>)</p></li>
-</ol>
-</section>
 <section id="opening-a-pr">
 <h2>Opening a PR<a class="headerlink" href="#opening-a-pr" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
@@ -327,7 +297,6 @@ chromium<span class="w"> </span>./build/readme.html
             <ul>
 <li><a class="reference internal" href="#">Contributing</a><ul>
 <li><a class="reference internal" href="#writing-documentation">Writing Documentation</a></li>
-<li><a class="reference internal" href="#what-to-contribute">What to Contribute?</a></li>
 <li><a class="reference internal" href="#opening-a-pr">Opening a PR</a></li>
 </ul>
 </li>
