@@ -14,12 +14,12 @@ Using |project|
 
 |project| is generic framework to train and evaluate (deep learning) models and represents a thin layer of convenience on top of
 
-* `Pytorch <https://https://pytorch.org/>`_
-* `Pytorch-Lightning <https://pytorch-lightning.readthedocs.io/>`_
-* `Hydra <https://hydra.cc>`_
-* `datasets <https://huggingface.co/docs/datasets/>`_
-* `transformers <https://huggingface.co/transformers/>`_
-* `torchmetrics <https://torchmetrics.readthedocs.io/>`_
+* `Pytorch`
+* `Lightning`
+* `Hydra`
+* `datasets`
+* `transformers`
+* `TorchMetrics`
 
 In particular, |project| intends to abstract any boilerplate away in a highly modular fashion:
 

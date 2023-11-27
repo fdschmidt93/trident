@@ -30,7 +30,7 @@ class OptimizerMixin(LightningModule):
 
     @property
     def num_training_steps(self):
-        """Computes the number of training steps per device, accounting for gradient accumulation."""
+        """Infers the number of training steps per device, accounting for gradient accumulation."""
         if self.trainer.max_steps != -1:
             return self.trainer.max_steps
         if datamodule := getattr(self.trainer, "datamodule"):

@@ -1,3 +1,5 @@
+.. _walkthrough:
+
 #######################
 |project| in 20 minutes
 #######################
@@ -12,7 +14,7 @@ It is important to have basic familiarity with hydra_, which shines at bottom-up
 General
 -------
 
-- ``_target_: transformers.AutoModel.from_pretrained``: the ``__target__`` points to the Python function / method that initializes the object
+- ``_target_: transformers.AutoModel.from_pretrained``: the ``_target_`` points to the Python function / method that initializes the object
 - ``_recursive_: false`` ensures that objects are not instantiated eagerly, but only when instantiated explicitly. |project| takes care of instantiating your objects at the right time to bypass hydra_ limitations
 - ``_partial_: true`` is common to instantiate functions with pre-set arguments and keywords
 
@@ -36,7 +38,7 @@ Project Structure
 An exemplary structure for a user project is shown below:
 
 - `configs <https://github.com/fdschmidt93/trident/tree/main/examples/configs>`_ holds the entire hydra_ yaml configuration
--`src <https://github.com/fdschmidt93/trident/tree/main/examples/src>`_ comprises required code, typically for processing and evaluation, as referred to in the config
+- `src <https://github.com/fdschmidt93/trident/tree/main/examples/src>`_ comprises required code, typically for processing and evaluation, as referred to in the config
 
 .. code-block:: bash
 
@@ -44,44 +46,50 @@ An exemplary structure for a user project is shown below:
     your-project
     ├── configs
     │   ├── config.yaml # inherits all `default.yaml`
-    │   ├── experiment # typical entry point, denotes 2nd-level `config.yaml` for your experiment
+    │   ├── experiment # typical entry point, 2nd-level `config.yaml` for your experiment
     │   │   ├── default.yaml
     │   │   └── nli.yaml
     │   ├── module
-    │   │   ├── default.yaml
-    │   │   ├── evaluation
-    │   │   │   └── text_classification.yaml
-    │   │   ├── optimizer
+    │   │   ├── optimizer # torch.optim
     │   │   │   ├── adam.yaml
     │   │   │   └── adamw.yaml
-    │   │   ├── scheduler
+    │   │   ├── scheduler # learning-rate scheduler
     │   │   │   └── linear_warm_up.yaml
+    │   │   ├── default.yaml
     │   │   └── text_classification.yaml
     │   ├── datamodule
     │   │   ├── default.yaml
-    │   │   ├── text_classification.yaml
-    │   │   └── nli.yaml
-    │   ├── dataspec
+    │   │   └── mnli_train.yal
+    │   ├── dataspec # defines [dataset, preprocessing, dataloader, evaluation]
     │   │   ├── dataloader
     │   │   │   └── default.yaml
     │   │   ├── evaluation
     │   │   │   └── text_classification.yaml
+    │   │   │ # inherits dataloader/default.yaml
     │   │   ├── default.yaml
+    │   │   │ # task-specific dataspecs              
+    │   │   │ # inherits default.yaml and evaluation/text_classification.yaml
     │   │   ├── text_classification.yaml
+    │   │   │ # dataset-group specific dataspecs              
+    │   │   │ # inherits text_classification.yaml
     │   │   ├── nli.yaml
+    │   │   │ # dataset-specific dataspecs              
+    │   ├── dataspecs # defines groups of dataspec
+    │   │   ├── mnli_train.yaml
     │   │   ├── xnli_val_test.yaml
-    │   │   └── amnli_val_test.yaml
-    │   ├── hydra
+    │   │   ├── amnli_val_test.yaml
+    │   │   └── indicxnli_val_test.yaml
+    │   ├── hydra 
     │   │   └── default.yaml
     │   ├── logger
     │   │   ├── csv.yaml
     │   │   └── wandb.yaml
-    │   ├── callbacks
+    │   ├── callbacks # defines callbacks like lightning.pytorch.ModelCheckpoint
     │   │   └── default.yaml                 
-    │   └── trainer
+    │   └── trainer # defines lightning.pytorch.Trainer
     │       ├── debug.yaml
     │       └── default.yaml
-    └── src
+    └── src # typical code folder structure
         └── tasks
             └── text_classification
                 ├── evaluation.py
@@ -95,7 +103,7 @@ TridentModule
 
 :class:`~trident.core.module.TridentModule` extends the LightningModule_. The configuration defines all required components for a :class:`~trident.core.module.TridentModule`:
 
-1. ``model``: ``__target__`` to your model constructor for which ``TridentModule.model`` will be initialized
+1. ``model``: ``_target_`` to your model constructor for which ``TridentModule.model`` will be initialized
 2. ``optimizer``: the optimizer for all :class:`~trident.core.module.TridentModule` parameters
 3. ``scheduler``: the learning-rate scheduler for the ``optimizer``
 
@@ -136,195 +144,34 @@ A common pattern is that users create a ``configs/module/task.yaml`` that predef
 TridentDataspec
 ---------------
 
-A :class:`~trident.core.dataspec.TridentDataspec` class encapsulates the configuration for data handling in a machine learning workflow. It manages various aspects of data processing including dataset instantiation, preprocessing, dataloading, and evaluation.
+.. include:: dataspec_intro.rst
 
-**Configuration Keys**
+dataset
+^^^^^^^
 
-- ``dataset``: Specifies how the dataset should be instantiated.
-- ``dataloader``: Defines the instantiation of the ``DataLoader``.
-- ``preprocessing`` (optional): Details the methods or function calls for dataset preprocessing.
-- ``evaluation`` (optional): Outlines any post-processing steps and metrics for dataset evaluation.
-- ``misc`` (optional): Reserved for miscellaneous settings that do not fit under other keys.
-
-.. _preprocessing:
+.. include:: dataspec_dataset.rst
 
 preprocessing
 ^^^^^^^^^^^^^
 
-The ``preprocessing`` key in the configuration details the steps for preparing the dataset. It includes two special keys, ``method`` and ``apply``, each holding dictionaries for specific preprocessing actions.
-
-- ``method``: Contains dictionaries of class methods along with their keyword arguments. These are typically methods of the dataset class.
-- ``apply``: Comprises dictionaries of user-defined functions, along with their keyword arguments, to be applied to the dataset.
-
-The preprocessing fucntions take the ``Dataset`` as the first positional argument. The functions are called in order of the configuration. Note that ``"method"`` is a convenience keyword which can also be achieved by pointing to the classmethod in ``"_target_"`` of an ``"apply"`` function.
-
-**Example Configuration**
-
-.. code-block:: yaml
-
-    preprocessing:
-      method:
-        map: # dataset.map of huggingface `datasets.arrow_dataset.Dataset`
-          function:
-            _target_: src.tasks.text_classification.processing.preprocess_fn
-            _partial_: true
-            column_names:
-              text: premise
-              text_pair: hypothesis
-            tokenizer:
-              _partial_: true
-              _target_: transformers.tokenization_utils_base.PreTrainedTokenizerBase.__call__
-              self:
-                  _target_: transformers.AutoTokenizer.from_pretrained
-                  pretrained_model_name_or_path: ${module.model.pretrained_model_name_or_path}
-              padding: false
-              truncation: true
-              max_length: 128
-        # unify output format of MNLI and XNLI
-        set_format:
-          columns:
-            - "input_ids"
-            - "attention_mask"
-            - "label"
+.. include:: dataspec_preprocessing.rst
 
 dataloader
 ^^^^^^^^^^
 
-The DataLoader configuration (`configs/dataspec/dataloader/default.yaml`) is preset with reasonable defaults, accommodating typical use cases.
-
-**Example Configuration**
-
-.. code-block:: yaml
-
-    _target_: torch.utils.data.dataloader.DataLoader
-    collate_fn:
-      _target_: transformers.data.data_collator.DataCollatorWithPadding
-      tokenizer:
-        _target_: transformers.AutoTokenizer.from_pretrained
-        pretrained_model_name_or_path: ${module.model.pretrained_model_name_or_path}
-      max_length: ???
-    batch_size: 32
-    pin_memory: true
-    shuffle: false
-    num_workers: 4
-
+.. include:: dataspec_dataloader.rst
 
 .. _evaluation:
 
 evaluation
 ^^^^^^^^^^
 
-The logic of evaluation is defined in ``./configs/dataspec/evaluation/text_classification.yaml``. It is common to define evaluation per type of task.
-
-``evaluation`` configuration segments into the fields ``prepare``, ``step_outputs``, and ``metrics``.
-
-.. seealso:: :py:class:`trident.utils.types.EvaluationDict`
-
-
-prepare
-"""""""
-
-``prepare`` defines functions called on the ``batch``, the model ``outputs``, or the collected ``step_outputs``.
-
-The :class:`~trident.core.module.TridentModule` hands the below keywords to facilitate evaluation. Since the :class:`~trident.core.module.TridentModule` extends the LightningModule_, useful attributes like ``trainer`` and ``trainer.datamodule`` are available at runtime.
-
-**Example Configuration**
-
-.. code-block:: yaml
-
-    prepare:
-      # takes (trident_module: TridentModule, batch: dict, split: Split) -> dict
-      batch: null            
-      # takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split) -> dict
-      outputs:
-        _partial_: true
-        _target_: src.tasks.text_classification.evaluation.get_preds
-      # takes (trident_module: TridentModule, step_outputs: dict, split: Split) -> dict
-      step_outputs: null     
-
-where ``get_preds`` is defined as follows and merely adds  
-
-.. code-block:: python
-    
-    def get_preds(outputs: dict, *args, **kwargs) -> dict:
-        outputs["preds"] = outputs["logits"].argmax(dim=-1)
-        return outputs
-
-.. seealso:: :py:class:`trident.utils.enums.Split`, :py:class:`trident.utils.types.PrepareDict`
-
-step_outputs
-""""""""""""
-
-``step_outputs`` defines what keys are collected from a ``batch`` or ``outputs`` dictionary, per step, into the flattened outputs ``dict`` per evaluation dataloader. The flattened dictionary then holds the corresponding key-value pairs as input to the ``prepare_step_outputs`` function, which ultimately serves at input to metrics computed at the end of an evaluation loop.
-
-.. note:: |project| ensures that after each evaluation loop, lists of ``np.ndarray``\s ``torch.Tensor``\s are correctly stacked to single array with appropriate dimensions.
-
-**Example Configuration**
-
-.. code-block:: yaml
-
-    # Which keys/attributes are supposed to be collected from `outputs` and `batch`
-    step_outputs:
-      # can be a str
-      batch: labels
-      # or a list[str]
-      outputs:
-        - "preds"
-        - "logits"
-
-.. seealso:: :py:function:`trident.utils.flatten_dict`
-
-metrics
-"""""""
-
-``metrics`` denotes a dictionary for all evaluated metrics. For instance, a metric such as ``acc`` may contain:
-
-- ``metric``: how to instantiate the metric; typically a ``partial`` function; must return a ``Callable``.
-- ``compute_on``: Either ``eval_step`` or ``epoch_end``, with the latter being the default.
-- ``kwargs``: A custom syntax to fetch ``kwargs`` of ``metric`` from one of the following: ``[trident_module, outputs, batch, cfg]``.
-  - ``outputs`` refers to the model ``outputs`` when ``compute_on`` is set to ``eval_step`` and to ``step_outputs`` when ``compute_on`` is set to ``epoch_end``.
-
-In the NLI example:
-  - The keyword ``preds`` for ``torchmetrics.functional.accuracy`` is sourced from ``outputs["preds"]``.
-  - The keyword ``target`` for ``torchmetrics.functional.accuracy`` is sourced from ``outputs["labels"]``.
-
-**Example Configuration**
-
-.. code-block:: yaml
-
-    metrics:
-      # name of the metric used eg for logging
-      acc:
-        # instructions to instantiate metric, preferrably torchmetrics.Metric
-        metric:
-          _partial_: true
-          _target_: torchmetrics.functional.accuracy
-        # either "eval_step" or "epoch_end", defaults to "epoch_end"
-        compute_on: "epoch_end"
-        kwargs: 
-          preds: "outputs:preds"
-          target: "outputs:labels"
-
+.. include:: dataspec_evaluation.rst
 
 TridentDataModule
 -----------------
 
-The default configuration (``configs/datamodule/default.yaml``) for a :class:`~trident.core.datamodule.TridentDatamodule` defines how training and evaluation datasets are instantiated.
-Each split is a dictionary of :class:`~trident.core.dataspec.TridentDataspec`.
-
-.. code-block:: yaml
-
-    _target_: trident.TridentDataModule
-    _recursive_: false
-
-    misc:
-        # reserved key for general TridentDataModule configuration
-    train:
-        # DictConfig of TridentDataspec
-    val:
-        # DictConfig of TridentDataspec
-    test:
-        # DictConfig of TridentDataspec
+.. include:: datamodule_intro.rst
 
 Config Composition
 ^^^^^^^^^^^^^^^^^^
@@ -338,7 +185,7 @@ We will hierarchically
 1. Compose a general ``dataspec``
 2. Compose a tast-specific text classification ``dataspec``
 3. Compose a NLI ``dataspec``
-4. Compose a dictionary of NLI ``dataspec``s
+4. Compose a train, val, or test split via ``dataspecs``
 5. Compose a datamodule
 
 .. code-block:: bash
@@ -346,18 +193,17 @@ We will hierarchically
     configs
     ├── config.yaml
     ├── datamodule
-    │   ├── amnli_val_test.yaml
-    │   ├── default.yaml
-    │   ├── mnli_train.yaml
-    │   └── xnli_val_test.yaml
-    └── dataspec
-        ├── dataloader
-        │   └── default.yaml
-        ├── evaluation
-        │   └── text_classification.yaml
-        ├── default.yaml
-        ├── nli.yaml
-        ├── text_classification.yaml
+    │   └── default.yaml
+    ├── dataspec
+    │   ├── dataloader
+    │   │   └── default.yaml
+    │   ├── evaluation
+    │   │   └── text_classification.yaml
+    │   ├── default.yaml
+    │   ├── nli.yaml
+    │   └── text_classification.yaml
+    └── dataspecs
+        ├── mnli_train.yaml
         ├── xnli_val_test.yaml
         └── amnli_val_test.yaml
 
@@ -407,6 +253,7 @@ The ``configs/dataspec/nli.yaml`` simply extends the task-specific ``text_classi
     preprocessing:
       map:
         function:
+          # column_names denotes input to the tokenizer during preprocessing
           column_names:
             text: premise
             text_pair: hypothesis
@@ -414,16 +261,19 @@ The ``configs/dataspec/nli.yaml`` simply extends the task-specific ``text_classi
 .. seealso::
     :ref:`TridentDataspec.preprocessing <preprocessing>`, :ref:`TridentDataspec.preprocessing <preprocessing>`
 
-Dictionary of NLI
-"""""""""""""""""
+Dataspecs
+"""""""""
 
-The ``configs/dataspec/xnli_val_test.yaml`` levers ``hydra`` `package directives <https://hydra.cc/docs/advanced/overriding_packages/>`_ to put the ``nli`` configuration into the corresponding dataspec keys.
+We can now compose ``dataspecs`` which group :class:`~trident.core.dataspec.TridentDataspec`` for entire datasets.
+
+The ``configs/dataspecs/xnli_val_test.yaml`` levers ``hydra`` `package directives <https://hydra.cc/docs/advanced/overriding_packages/>`_ to put the ``nli`` configuration into the corresponding dataspec keys.
 
 .. code-block:: yaml
 
     defaults:
-      - nli@validation_xnli_en
-      - nli@validation_xnli_es
+      # package `nli` of configs/dataspec into @{...}
+      - /dataspec@validation_xnli_en: nli
+      - /dataspec@validation_xnli_es: nli
       # ... can extend this to the entire XNLI benchmark for val and test splits
     validation_xnli_en:
       dataset:
@@ -440,80 +290,47 @@ The ``configs/dataspec/xnli_val_test.yaml`` levers ``hydra`` `package directives
 NLI Datamodules
 """""""""""""""
 
-We can now use `package directives <https://hydra.cc/docs/advanced/overriding_packages/>`_ to include the configuration from the ``configs/dataspec/xnli_val_test.yaml`` file into the ``val`` and ``test`` keys of the :class:`~trident.core.datamodule.TridentDatamodule`.
-
-There are two variants to `package <https://hydra.cc/docs/advanced/overriding_packages/>`_ the dictionary of :class:`~trident.core.dataspec.TridentDataspec`s into a datamodule.
-
-.. warning:: When using packaging, make sure to provide a list of ``dataspec`` configurations to allow for the merging of multiple ``datamodule`` configurations in the ``experiment`` configuration.
-
 Datamodule Configurations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We can write a ``config/datamodule/mnli_train.yaml`` for training and a ``config/datamodule/xnli_val_test.yaml`` for validation and testing .yaml. 
+We can now use `package directives <https://hydra.cc/docs/advanced/overriding_packages/>`_ to include the configuration from the ``configs/dataspecs/xnli_val_test.yaml`` file into the ``val`` and ``test`` keys of the :class:`~trident.core.datamodule.TridentDatamodule`.
+
+.. warning:: When using packaging, make sure to provide a list of ``dataspecs`` configurations to allow for the merging of multiple ``datamodule`` configurations in the ``experiment`` configuration.
+
+**Imporant**:
+    - A single :class:`~trident.core.dataspec.TridentDataspec`` in ``train`` of the :class:`~trident.core.datamodule.TridentDatamodule` will return a  ``batch`` of ``dict[str, Any]`` at runtime
+    - Multiple :class:`~trident.core.dataspec.TridentDataspec`` in ``train`` of the :class:`~trident.core.datamodule.TridentDatamodule` will return a  ``batch`` of ``dict[str, dict[str, Any]]`` for multi-dataset training at runtime
 
 **Example Configuration**
 
-``config/datamodule/mnli_train.yaml``
+We now `package <https://hydra.cc/docs/advanced/overriding_packages/>`_ the ``config/dataspec/xnli_val_test.yaml`` into a list configuration in ``datamodule.val`` of our experiment. We can thereby easily in- and exclude various datasets for training, validation, or testing.
 
 .. code-block:: yaml
 
+    # variant A: training on a single dataset
     defaults:
-      # setups up
-      # _target_: trident.core.datamodule.TridentDataModule
-      # _recursive_: false
-      - default
-      # puts our nli dataspec in `train` key of the mnli_train.yaml config 
-      # must an absolute path indicated by preceding /
-      - /dataspec@train: nli
-
-``config/datamodule/xnli_val_test.yaml``
-
-.. code-block:: yaml
-
-    defaults:
-      # must an absolute path indicated by preceding /
-      # puts our nli dataspec in `val` and test keys of the xnli_val_test.yaml config 
-      # must be a list to allow merging of additional val and test datamodule configurations
-      - /dataspec@val: 
+      - /dataspecs@datamodule.train: mnli_train
+      - /dataspecs@datamodule.val:
         - xnli_val_test
-      - /dataspec@test: 
+        - amnli_val_test
+        - indicxnli_val_test
+      - /dataspecs@datamodule.test:
         - xnli_val_test
-
-The `package <https://hydra.cc/docs/advanced/overriding_packages/>`_ syntax can be broken down as follows:
-
-- ``/dataset``: Refers to the absolute path ``/dataset``
-- ``@val``: Packages the configuration into the ``val`` section of this YAML file
-- ``xnli_val_test``: Takes the ``xnli_val_test`` configuration and adds it to the list
-
-We can then include the ``datamodule`` configuration in the `defaults-list <https://hydra.cc/docs/advanced/defaults_list/>`_ of our experiment.
-
-.. code-block:: yaml
-
+        - amnli_val_test
+        - indicxnli_val_test
+    # variant B: training on multiple datasets
     defaults:
-      - datamodule:
+      - /dataspecs@datamodule.train: 
         - mnli_train
-        - xnli_val_test
-        - amnli_val_test
-        - amnli_val_test
-
-Experiment Repackaging
-~~~~~~~~~~~~~~~~~~~~~~
-
-Alternatively, we can right away `package <https://hydra.cc/docs/advanced/overriding_packages/>`_ the ``config/dataspec/xnli_val_test.yaml`` into ``datamodule.val`` of our experiment.
-
-.. code-block:: yaml
-
-    defaults:
-      - datamodule: mnli_train
-      - /dataspec@datamodule.val:
-        - xnli_val_test
-        - amnli_val_test
+        - xnli_train
+    # ...
 
 Experiment
 ----------
 
 The experiment configurations also segments into a general ``default.yaml`` and a task-specific ``nli.yaml``.
 
+The ``run`` key is, next to ``module``, ``datamodule``, and ``trainer`` a special key reserved for user configuration. The configuration of this key also gets saved in your ``logger`` (e.g., ``wandb``).
 
 .. code-block:: yaml
 
@@ -522,9 +339,10 @@ The experiment configurations also segments into a general ``default.yaml`` and 
       - override /callbacks: default
       - override /logger: wandb
     
-    experiment:
-        seed: 42
-        task: nli
+    # `run` namespace should hold your individual configuration
+    run:
+      seed: 42
+      task: ???
 
     trainer:
       max_epochs: 10
@@ -532,16 +350,50 @@ The experiment configurations also segments into a general ``default.yaml`` and 
       precision: "16-mixed"
       deterministic: true
       inference_mode: false
-
+    
+    # log vars infers first training dataset
+    # for logging batch size
+    _log_vars:
+      # needed because hydra cannot index list in interpolation
+      train_datasets: ${oc.dict.keys:datamodule.train}
+      train_dataset: ${_log_vars.train_datasets[0]}
+      train_batch_size: ${datamodule.train.${_log_vars.train_dataset}.dataloader.batch_size}
+      
     logger:
       wandb:
-        name: "model=${module.model.pretrained_model_name_or_path}_epochs=${trainer.max_epochs}_bs=${oc.select:datamodule.dataloaders.train.batch_size, ${datamodule.dataloaders.batch_size}}_lr=${module.optimizer.lr}_scheduler=${module.scheduler.num_warmup_steps}_seed=${experiment.seed}"
+        name: "model=${module.model.pretrained_model_name_or_path}_epochs=${trainer.max_epochs}_bs=${_log_vars.train_batch_size}_lr=${module.optimizer.lr}_scheduler=${module.scheduler.num_warmup_steps}_seed=${run.seed}"
         tags:
           - "${module.model.pretrained_model_name_or_path}"
-          - "bs=${oc.select:datamodule.dataloaders.train.batch_size, ${datamodule.dataloaders.batch_size}}"
+          - "bs=${_log_vars.train_batch_size}"
           - "lr=${module.optimizer.lr}"
           - "scheduler=${module.scheduler.num_warmup_steps}"
-        project: ${experiment.task}
+        project: ${run.task}
+
+
+.. code-block:: yaml
+
+
+    # @package _global_
+    # The above line is important! It sets the namespace of the config
+
+    defaults:
+      - default
+      # We can now combine `dataspecs` for training, validation, and testing
+      - /dataspecs@datamodule.train:
+        - mnli_train
+      - /dataspecs@datamodule.val:
+        - xnli_val_test
+        - indicxnli_val_test
+        - amnli_val_test
+      - override /module: text_classification
+
+    run:
+      task: nli
+
+    module:
+      model:
+        pretrained_model_name_or_path: "xlm-roberta-base"
+        num_labels: 3
 
 Commandline Interface
 =====================
@@ -556,3 +408,5 @@ hydra_ allows to simply set configuration items on the commandline. See more inf
     python -m trident.run experiment=nli module.optimizer=adam
     # no lr scheduler
     python -m trident.run experiment=nli module.scheduler=null
+
+.. warning:: The commandline interface only supports absolute paths. For instance, overriding defaults at runtime from the CLI is not possible.

@@ -1,8 +1,5 @@
 .. _contributing:
 
-.. |project| replace:: trident
-.. _project: https://www.github.com/fdschmidt93/trident/
-
 Contributing
 =============
 
