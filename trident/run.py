@@ -58,7 +58,8 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
 
     log_hyperparameters(cfg, module, trainer)
 
-    trainer.fit(model=module, datamodule=datamodule)
+    if cfg.trainer.get("limit_train_batches") != 0:
+        trainer.fit(model=module, datamodule=datamodule)
 
     score = None
     if optimized_metric := OmegaConf.select(cfg, "run.optimized_metric"):
