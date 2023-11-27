@@ -68,10 +68,9 @@ class MetricDict:
 
 
 @dataclass
-class EvaluationDict:
-    metrics: Dict[str, MetricDict]
-    prepare: Optional[PrepareDict] = None
-    step_outputs: Optional[StepOutputsDict] = None
+class PreprocessingDict:
+    method: Optional[Dict[str, Callable]] = None
+    apply: Optional[Dict[str, Callable]] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -90,9 +89,10 @@ class EvaluationDict:
 
 
 @dataclass
-class PreprocessingDict:
-    method: Optional[Dict[str, Callable]] = None
-    apply: Optional[Dict[str, Callable]] = None
+class EvaluationDict:
+    metrics: Dict[str, MetricDict]
+    prepare: Optional[PrepareDict] = None
+    step_outputs: Optional[StepOutputsDict] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
