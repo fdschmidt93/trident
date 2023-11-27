@@ -64,7 +64,10 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
     if optimized_metric := OmegaConf.select(cfg, "run.optimized_metric"):
         score = trainer.callback_metrics.get(optimized_metric)
 
-    if cfg.trainer.get("limit_test_batches", None) == 0:
+    if (
+        cfg.datamodule.get("test") is not None
+        and cfg.trainer.get("limit_test_batches", None) > 0
+    ):
         best_model_path = getattr(trainer.checkpoint_callback, "best_model_path", None)
         if isinstance(best_model_path, str):
             log.info(f"Best checkpoint path:\n{best_model_path}")
