@@ -253,7 +253,7 @@ to ``dict[str, dict[str, torch.Tensor]]``, embedding the original batch now by d
 
 **Important**: this is not applicable for evaluation, as ``dict[str, DataLoader]`` up- or downsample to the largest or smallest dataset in the dictionary. During evaluation, the ``DataLoader`` for multiple validation or test datasets consequently are of ``list[DataLoader]`` in order of declaration in the ``yaml`` configuration.
 
-How to subsample a dataset?
+How do I subsample a dataset?
 ---------------------------
 
 .. code:: yaml
@@ -272,3 +272,21 @@ How to subsample a dataset?
                  - 0
                  # must be set by user
                  - ${run.num_shots}
+
+How do I only run testing?
+--------------------------
+
+Bypassing training is implemented with the corresponding Lightning Trainer_ flag. You can write the following in your ``experiment.yaml`` 
+
+.. code-block:: yaml
+
+   trainer:
+    limit_train_batches: 0.0
+
+or pass
+
+.. code-block:: bash
+    
+    python -m trident.run ... trainer.limit_train_batches=0.o
+
+to the CLI.

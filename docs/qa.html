@@ -416,8 +416,8 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </div>
 <p><strong>Important</strong>: this is not applicable for evaluation, as <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">DataLoader]</span></code> up- or downsample to the largest or smallest dataset in the dictionary. During evaluation, the <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code> for multiple validation or test datasets consequently are of <code class="docutils literal notranslate"><span class="pre">list[DataLoader]</span></code> in order of declaration in the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> configuration.</p>
 </section>
-<section id="how-to-subsample-a-dataset">
-<h3>How to subsample a dataset?<a class="headerlink" href="#how-to-subsample-a-dataset" title="Link to this heading">#</a></h3>
+<section id="how-do-i-subsample-a-dataset">
+<h3>How do I subsample a dataset?<a class="headerlink" href="#how-do-i-subsample-a-dataset" title="Link to this heading">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># typically declared in your ./configs/datamodule/$YOUR_DATAMODULE.yaml</span>
 <span class="nt">train</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">my_dataset</span><span class="p">:</span>
@@ -434,6 +434,19 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${run.num_shots}</span>
 </pre></div>
 </div>
+</section>
+<section id="how-do-i-only-run-testing">
+<h3>How do I only run testing?<a class="headerlink" href="#how-do-i-only-run-testing" title="Link to this heading">#</a></h3>
+<p>Bypassing training is implemented with the corresponding Lightning <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a> flag. You can write the following in your <code class="docutils literal notranslate"><span class="pre">experiment.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trainer</span><span class="p">:</span>
+<span class="w"> </span><span class="nt">limit_train_batches</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
+</pre></div>
+</div>
+<p>or pass</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span>...<span class="w"> </span>trainer.limit_train_batches<span class="o">=</span><span class="m">0</span>.o
+</pre></div>
+</div>
+<p>to the CLI.</p>
 </section>
 </section>
 </section>
@@ -514,7 +527,8 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </li>
 <li><a class="reference internal" href="#datamodule">DataModule</a><ul>
 <li><a class="reference internal" href="#how-to-train-and-evaluate-on-multiple-datasets">How to train and evaluate on multiple datasets?</a></li>
-<li><a class="reference internal" href="#how-to-subsample-a-dataset">How to subsample a dataset?</a></li>
+<li><a class="reference internal" href="#how-do-i-subsample-a-dataset">How do I subsample a dataset?</a></li>
+<li><a class="reference internal" href="#how-do-i-only-run-testing">How do I only run testing?</a></li>
 </ul>
 </li>
 </ul>
