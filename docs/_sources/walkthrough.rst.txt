@@ -9,28 +9,7 @@ The walkthrough first introduces common concepts of hydra_ and then walks throug
 hydra primer
 ============
 
-It is important to have basic familiarity with hydra_, which shines at bottom-up hierarchical yaml configuration. A key feature of hydra_ for |project| is the `defaults-list <https://hydra.cc/docs/advanced/defaults_list/>`_ . Below is a brief primer of hydra_ for its use in |project|.
-
-General
--------
-
-- ``_target_: transformers.AutoModel.from_pretrained``: the ``_target_`` points to the Python function / method that initializes the object
-- ``_recursive_: false`` ensures that objects are not instantiated eagerly, but only when instantiated explicitly. |project| takes care of instantiating your objects at the right time to bypass hydra_ limitations
-- ``_partial_: true`` is common to instantiate functions with pre-set arguments and keywords
-
-Bottom-Up Hierarchical Configuration
-------------------------------------
-
-- By directory, ``default.yaml`` defines defaults or required attributes (``???``) for the corresponding component (e.g., ``module``, ``datamodule``)
-- Sub-directories *can* define the corresponding sub-configuration, like ``configs/datamodule/dataloaders.yaml`` is inherited in the ``defaults`` list of ``datamodule`` in ``configs/datamodule/default.yaml``.
-
-  .. code-block:: yaml
-    
-      # configs/datamodule/default.yaml
-      defaults:
-        # pull in configs/datamodule/dataloaders/default.yaml
-        - dataloaders: default
-        - datasets: null
+.. include:: hydra.rst
 
 Project Structure
 =================

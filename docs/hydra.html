@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Foreword - trident documentation</title>
+        <title>Context - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -200,44 +200,93 @@
           </label>
         </div>
         <article role="main">
-          <p>It is important to have basic familiarity with <a class="reference external" href="https://hydra.cc">hydra</a>, which shines at bottom-up hierarchical yaml configuration. A key feature of <a class="reference external" href="https://hydra.cc">hydra</a> for trident is the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a> . Below is a brief primer of <a class="reference external" href="https://hydra.cc">hydra</a> for its use in trident.</p>
-<section id="foreword">
-<h1>Foreword<a class="headerlink" href="#foreword" title="Link to this heading">#</a></h1>
-<p>In the context of trident, we will use <a class="reference external" href="https://hydra.cc">hydra</a> to declare our</p>
+          <p>It is important to have basic familiarity with <a class="reference external" href="https://hydra.cc">hydra</a>, which shines at bottom-up hierarchical yaml configuration.</p>
+<p>Two key features of <a class="reference external" href="https://hydra.cc">hydra</a> for trident are</p>
+<ol class="arabic simple">
+<li><p>The <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a> for hierarchical configuration composition.</p></li>
+<li><p><a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">Package directives</a> to cleanly combine configurations.</p></li>
+</ol>
+<p>Below is a brief primer of <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
+<section id="context">
+<h1>Context<a class="headerlink" href="#context" title="Link to this heading">#</a></h1>
+<p>For trident, we will use <a class="reference external" href="https://hydra.cc">hydra</a> to declare our</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a>: declares how training, validation, and testing is run</p></li>
 <li><p><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a>: declares the your “model”</p></li>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code>: declares your <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">val</span></code>, and <code class="docutils literal notranslate"><span class="pre">test</span></code> splits</p></li>
+<li><p>And other components like logging and checkpointing</p></li>
 </ul>
 </section>
-<section id="general">
-<h1>General<a class="headerlink" href="#general" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://hydra.cc">hydra</a> is a Python yaml framework to compose complex pipelines. The directory tree of your configuration in our simplified example looks like this.</p>
+<section id="hierarchical-configuration">
+<h1>Hierarchical Configuration<a class="headerlink" href="#hierarchical-configuration" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://hydra.cc">hydra</a> is a Python yaml framework to compose complex pipelines. The directory tree of your trident configuration in our simplified example may look like the below file tree.</p>
+<p>In what follows, we will focus on the hierarchy of the configuration below in the case of <code class="docutils literal notranslate"><span class="pre">dataspec</span></code>. A <code class="docutils literal notranslate"><span class="pre">dataspec</span></code> defines the dataset, the associated pipelines for preprocessing and evaluation, and the dataloader for the preprocessed dataset.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>configs
 ├──<span class="w"> </span>config.yaml
-├──<span class="w"> </span>datamodule
-│<span class="w">   </span>├──<span class="w"> </span>default.yaml
-│<span class="w">   </span>└──<span class="w"> </span>my_experiment.yaml
-├──<span class="w"> </span>datamodule
-│<span class="w">   </span>├──<span class="w"> </span>default.yaml
-│<span class="w">   </span>└──<span class="w"> </span>my_datamodule.yaml
+├──<span class="w"> </span>dataspec<span class="w"> </span><span class="c1"># defines dataset, preprocessing, evaluation, and dataloader</span>
+│<span class="w">   </span>├──<span class="w"> </span>dataloader
+│<span class="w">   </span>│<span class="w">   </span>├──<span class="w"> </span>default.yaml
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>train.yaml
+│<span class="w">   </span>├──<span class="w"> </span>evaluation
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>text_classification.yaml
+│<span class="w">   </span>├──<span class="w"> </span>preprocessing
+│<span class="w">   </span>│<span class="w">   </span>└──<span class="w"> </span>shots.yaml
+│<span class="w">   </span>├──<span class="w"> </span>default.yaml<span class="w">               </span><span class="c1"># general</span>
+│<span class="w">   </span>├──<span class="w"> </span>text_classification.yaml<span class="w">   </span><span class="c1"># task-specific: inherits general</span>
+│<span class="w">   </span>└──<span class="w"> </span>nli.yaml<span class="w">                   </span><span class="c1"># more dataset-specific: inherits task-specific</span>
+├──<span class="w"> </span>dataspecs<span class="w"> </span><span class="c1"># will group a dataspec for a particular benchmark</span>
 └──<span class="w"> </span>module
 <span class="w">    </span>├──<span class="w"> </span>default.yaml
 <span class="w">    </span>└──<span class="w"> </span>my_module.yaml
 </pre></div>
 </div>
-<section id="structure">
-<h2>Structure<a class="headerlink" href="#structure" title="Link to this heading">#</a></h2>
-<p>A certain set of principles are set into <a class="reference external" href="https://hydra.cc">hydra</a></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">config/dataspec/default.yaml</span></code> defines the defaults.</p>
+<ol class="arabic simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">null</span></code> default of <code class="docutils literal notranslate"><span class="pre">dataset</span></code> reservese the key for a future override</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">dataloader:</span> <span class="pre">default</span></code> means that the <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/dataloader.yaml</span></code> config will be sourced as the dataloader key for the default dataspec</p></li>
+<li><p>We define the default <code class="docutils literal notranslate"><span class="pre">_target_</span></code> of a dataset which typically uses the 🤗 <a class="reference external" href="https://huggingface.co/docs/datasets/">datasets</a> library</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># a null default reserves the key for future override</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="c1"># the default dataloader is source into the dataloader key of the dataspec</span>
+<span class="w">  </span><span class="c1"># i.e. ./configs/dataspec/dataloader.yaml will be sourced in the `dataloader` key of the config</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataloader</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+
+<span class="nt">dataset</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># most datasets use the Huggingface</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">datasets.load.load_dataset</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">configs/dataspec/text_classification.yaml</span></code> then extends the <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">evaluation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="c1"># .. more configuration</span>
+</pre></div>
+</div>
+<p>The above sources the the configuration of <code class="docutils literal notranslate"><span class="pre">config/dataspec/default.yaml</span></code> as well as the task-specific <code class="docutils literal notranslate"><span class="pre">./config/dataspec/evaluation/text_classification.yaml</span></code> into the <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> key of the <code class="docutils literal notranslate"><span class="pre">text_classification.yaml</span></code>.</p>
+<p>Lastly, <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/nli.yaml</span></code> defines even more specific configuration.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="c1"># ... nli-specific configuration</span>
+</pre></div>
+</div>
+<p><strong>Notes</strong>:</p>
 <ul class="simple">
+<li><p><a class="reference external" href="https://hydra.cc">hydra</a> follows an additive configuration paradigm: design your configuration to incrementally add what’s required! Unsetting or removing options often is <strong>very</strong> unwieldy</p></li>
 <li><p>The configuration relies on relative paths in the configuration folder structure</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">defaults</span></code>-list, the last one wins (dictionaries are merged sequentially)</p></li>
+<li><p>The own configuration typically comes last (can be controlled via <code class="docutils literal notranslate"><span class="pre">_self_</span></code>, see <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">offficial documentation</a>)</p></li>
 </ul>
-</section>
-<section id="special-keywords">
-<h2>Special Keywords<a class="headerlink" href="#special-keywords" title="Link to this heading">#</a></h2>
-<div class="table-wrapper colwidths-given docutils container" id="id3">
-<table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Title</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<section id="imporant-special-keywords-and-values">
+<h2>Imporant Special Keywords and Values<a class="headerlink" href="#imporant-special-keywords-and-values" title="Link to this heading">#</a></h2>
+<p>Beyond the keywords below, <code class="docutils literal notranslate"><span class="pre">???</span></code> denote values in <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> to indicate that the corresponding <strong>must be</strong> set in a inheriting config.</p>
+<div class="table-wrapper colwidths-given docutils container" id="id5">
+<table class="docutils align-default" id="id5">
+<caption><span class="caption-text">Title</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 10.0%" />
@@ -298,23 +347,29 @@
 </ul>
 </section>
 </section>
-<section id="defaults-list-bottom-up-hierarchical-configuration">
-<h1>defaults-list: Bottom-Up Hierarchical Configuration<a class="headerlink" href="#defaults-list-bottom-up-hierarchical-configuration" title="Link to this heading">#</a></h1>
-<ul>
-<li><p>By directory, <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> defines defaults or required attributes (<code class="docutils literal notranslate"><span class="pre">???</span></code>) for the corresponding component (e.g., <code class="docutils literal notranslate"><span class="pre">module</span></code>, <code class="docutils literal notranslate"><span class="pre">datamodule</span></code>)</p></li>
-<li><p>Sub-directories <em>can</em> define the corresponding sub-configuration, like <code class="docutils literal notranslate"><span class="pre">configs/datamodule/dataloaders.yaml</span></code> is inherited in the <code class="docutils literal notranslate"><span class="pre">defaults</span></code> list of <code class="docutils literal notranslate"><span class="pre">datamodule</span></code> in <code class="docutils literal notranslate"><span class="pre">configs/datamodule/default.yaml</span></code>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># configs/datamodule/default.yaml</span>
-<span class="nt">defaults</span><span class="p">:</span>
-<span class="w">  </span><span class="c1"># pull in configs/datamodule/dataloaders/default.yaml</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataloaders</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">datasets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-</pre></div>
-</div>
-</li>
-</ul>
-</section>
 <section id="packaging-abitrarily-inherit-configs">
 <h1>packaging: abitrarily inherit configs<a class="headerlink" href="#packaging-abitrarily-inherit-configs" title="Link to this heading">#</a></h1>
+<p>Paired with absolute paths, <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> allow to seamlessly reallocate configuration in the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a>.</p>
+<p>Imagine you now group a series of <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> for a particular benchmark dataset in <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dataspec/nli@validation_xnli_en</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dataspec/nli@test_xnli_en</span>
+<span class="w">  </span><span class="c1"># we can easily add more languages</span>
+
+<span class="nt">validation_xnli_en</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">validation</span>
+<span class="nt">test_xnli_en</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="w">    </span><span class="nt">split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+</pre></div>
+</div>
+<p>The above sources the <code class="docutils literal notranslate"><span class="pre">./config/dataspec/nli.yaml</span></code> into the <code class="docutils literal notranslate"><span class="pre">validation_xnli_en</span></code> and <code class="docutils literal notranslate"><span class="pre">test_xnli_en</span></code> keys of the <code class="docutils literal notranslate"><span class="pre">xnli_val_test.yaml</span></code> group of dataspecs. We can then refine individual configurations for the particular dataspec in the main configuration.</p>
+<p>Later on, we can seamlessly include or exclude groups of dataspecs (i.e., benchmarks) like the above.</p>
 </section>
 
         </article>
