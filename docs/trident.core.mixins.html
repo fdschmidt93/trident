@@ -209,11 +209,11 @@
 <span id="trident-core-mixins-evaluation-module"></span><h2>trident.core.mixins.evaluation module<a class="headerlink" href="#module-trident.core.mixins.evaluation" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.core.mixins.evaluation.</span></span><span class="sig-name descname"><span class="pre">EvalMixin</span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L44-L441"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.core.mixins.evaluation.</span></span><span class="sig-name descname"><span class="pre">EvalMixin</span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L44-L455"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LightningModule</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.eval_step">
-<span class="sig-name descname"><span class="pre">eval_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L284-L348"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.eval_step" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eval_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L298-L362"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.eval_step" title="Link to this definition">#</a></dt>
 <dd><p>Performs model forward &amp; user batch transformation in an eval step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -315,7 +315,7 @@ example for sequence classification, borrowed from configs/evaluation/classifica
 
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.on_eval_epoch_end">
-<span class="sig-name descname"><span class="pre">on_eval_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L398-L425"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_eval_epoch_end" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_eval_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L412-L439"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_eval_epoch_end" title="Link to this definition">#</a></dt>
 <dd><p>Compute and log metrics for all datasets at the epoch’s end.</p>
 <p>Note: the epoch only ends when all datasets are processed.</p>
 <p>This method determines if multiple datasets exist for the evaluation split and
@@ -332,17 +332,89 @@ appropriately logs the metrics for each.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.on_test_epoch_end">
-<span class="sig-name descname"><span class="pre">on_test_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L440-L441"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_test_epoch_end" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_test_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L454-L455"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_test_epoch_end" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.on_validation_epoch_end">
-<span class="sig-name descname"><span class="pre">on_validation_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L432-L433"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_validation_epoch_end" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">on_validation_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L446-L447"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.on_validation_epoch_end" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.prepare_metric_input">
+<span class="sig-name descname"><span class="pre">prepare_metric_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L141-L216"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.prepare_metric_input" title="Link to this definition">#</a></dt>
+<dd><p>Collects user-defined attributes of outputs &amp; batch to compute a metric.</p>
+<p>In the below example, the evaluation (i.e., the call of <code class="docutils literal notranslate"><span class="pre">accuracy</span></code>)
+extracts</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">preds</span></code> from <code class="docutils literal notranslate"><span class="pre">outputs</span></code> and passes it as <code class="docutils literal notranslate"><span class="pre">preds</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code> from <code class="docutils literal notranslate"><span class="pre">outputs</span></code> and passes it as <code class="docutils literal notranslate"><span class="pre">target</span></code></p></li>
+</ol>
+<p>to <code class="docutils literal notranslate"><span class="pre">accuracy</span></code> via dot notation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The variations in types (<code class="docutils literal notranslate"><span class="pre">dict</span></code> or classes with attributes) of the underlying object is handled at runtime.</p>
+</div>
+<dl class="simple">
+<dt>The following variables are available:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trident_module</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cfg</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">batch</span></code> is only relevant when the metric is called at each step</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code> either denotes the output of a step or the concatenated step outputs</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl>
+<dt>metrics:</dt><dd><dl>
+<dt>acc:</dt><dd><dl class="simple">
+<dt>metric:</dt><dd><p>_partial_: true
+_target_: torchmetrics.functional.accuracy
+task: “multiclass”
+num_classes: 3</p>
+</dd>
+</dl>
+<p>compute_on: “epoch_end”
+kwargs:</p>
+<blockquote>
+<div><p>preds: “outputs.preds”
+target: “outputs.labels”</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code>]</span>) – Configuration dictionary for metric computation.</p></li>
+<li><p><strong>outputs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code>]</span>) – Outputs data.</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Batch data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing required inputs for metric computation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the required key is not found in the provided data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.test_step">
-<span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L435-L438"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.test_step" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L449-L452"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.test_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
@@ -352,7 +424,7 @@ appropriately logs the metrics for each.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.validation_step">
-<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L427-L430"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.validation_step" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L441-L444"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.validation_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
@@ -485,6 +557,7 @@ appropriately logs the metrics for each.</p>
 <li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.on_eval_epoch_end"><code class="docutils literal notranslate"><span class="pre">EvalMixin.on_eval_epoch_end()</span></code></a></li>
 <li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.on_test_epoch_end"><code class="docutils literal notranslate"><span class="pre">EvalMixin.on_test_epoch_end()</span></code></a></li>
 <li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">EvalMixin.on_validation_epoch_end()</span></code></a></li>
+<li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.prepare_metric_input"><code class="docutils literal notranslate"><span class="pre">EvalMixin.prepare_metric_input()</span></code></a></li>
 <li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.test_step"><code class="docutils literal notranslate"><span class="pre">EvalMixin.test_step()</span></code></a></li>
 <li><a class="reference internal" href="#trident.core.mixins.evaluation.EvalMixin.validation_step"><code class="docutils literal notranslate"><span class="pre">EvalMixin.validation_step()</span></code></a></li>
 </ul>
