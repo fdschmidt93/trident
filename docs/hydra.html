@@ -347,10 +347,14 @@
 </ul>
 </section>
 </section>
-<section id="packaging-abitrarily-inherit-configs">
-<h1>packaging: abitrarily inherit configs<a class="headerlink" href="#packaging-abitrarily-inherit-configs" title="Link to this heading">#</a></h1>
+<section id="packaging-combine-various-configs">
+<h1>Packaging: combine various configs<a class="headerlink" href="#packaging-combine-various-configs" title="Link to this heading">#</a></h1>
 <p>Paired with absolute paths, <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> allow to seamlessly reallocate configuration in the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a>.</p>
 <p>Imagine you now group a series of <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> for a particular benchmark dataset in <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the below configuration, the leading <code class="docutils literal notranslate"><span class="pre">/</span></code> denotes an absolute config path!</p>
+</div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dataspec/nli@validation_xnli_en</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dataspec/nli@test_xnli_en</span>

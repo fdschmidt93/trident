@@ -148,12 +148,14 @@ hydra_ yaml configuration comprises various reserved keys:
 - ``_recursive_: false`` ensures that objects are not instantiated eagerly, but only when instantiated explicitly. |project| takes care of instantiating your objects at the right time to bypass hydra_ limitations
 - ``_partial_: true`` is common to instantiate functions with pre-set arguments and keywords
 
-packaging: abitrarily inherit configs
--------------------------------------
+Packaging: combine various configs
+----------------------------------
 
 Paired with absolute paths, `package directives <https://hydra.cc/docs/advanced/overriding_packages/>`_ allow to seamlessly reallocate configuration in the `defaults-list <https://hydra.cc/docs/advanced/defaults_list/>`_.
 
 Imagine you now group a series of ``dataspecs`` for a particular benchmark dataset in ``configs/dataspecs/xnli_val_test.yaml``.
+
+.. note:: In the below configuration, the leading ``/`` denotes an absolute config path!
 
 .. code-block:: yaml
 
