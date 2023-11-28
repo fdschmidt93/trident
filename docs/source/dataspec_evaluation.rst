@@ -85,6 +85,6 @@ In the NLI example:
         # either "eval_step" or "epoch_end", defaults to "epoch_end"
         compute_on: "epoch_end"
         kwargs: 
-          preds: "outputs:preds"
-          target: "outputs:labels"
+          preds: "outputs.preds"
+          target: "outputs.labels"
 

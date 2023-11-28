@@ -138,40 +138,54 @@ class EvalMixin(LightningModule):
             log_key = f"{prefix}/{metric_key}"
             self.log(name=log_key, value=input, **log_kwargs)
 
-    def _prepare_metric_input(
+    def prepare_metric_input(
         self,
         cfg: Union[dict, DictConfig],
         outputs: Union[dict, NamedTuple],
         batch: Optional[Union[dict, NamedTuple]] = None,
     ) -> dict:
-        """
+        r"""
         Collects user-defined attributes of outputs & batch to compute a metric.
+        
+        In the below example, the evaluation (i.e., the call of ``accuracy``)
+        extracts
 
-        The function extracts required variables from self, cfg, outputs and batch
-        prior to calling the metric.
+        1. ``preds`` from ``outputs`` and passes it as ``preds``
+        2. ``labels`` from ``outputs`` and passes it as ``target``
 
-        .. code-block:: yaml
+        to ``accuracy`` via dot notation. 
 
-        # metrics should be copied for each dataset by default unless _datasets_ is specified
-        metrics:
-          # name of the metric used e.g. for logging
-          acc:
-            # instructions to instantiate metric, preferably torchmetrics.Metric
-            metric:
-              _partial_: true
-              _target_: torchmetrics.functional.accuracy
-              task: "multiclass"
-              num_classes: 3
-            # either "eval_step" or "epoch_end"
-            compute_on: "epoch_end"
-            kwargs:
-              preds: "outputs:preds"
-              target: "outputs:labels"
+        .. note:: The variations in types (``dict`` or classes with attributes) of the underlying object is handled at runtime.
+
+        The following variables are available:
+            - ``trident_module``
+            - ``outputs``
+            - ``batch``
+            - ``cfg``
+
+        Notes:
+            - ``batch`` is only relevant when the metric is called at each step
+            - ``outputs`` either denotes the output of a step or the concatenated step outputs
+
+        Example:
+            .. code-block:: yaml
+
+            metrics:
+              acc:
+                metric:
+                  _partial_: true
+                  _target_: torchmetrics.functional.accuracy
+                  task: "multiclass"
+                  num_classes: 3
+                compute_on: "epoch_end"
+                kwargs:
+                  preds: "outputs.preds"
+                  target: "outputs.labels"
 
         Parameters:
-            cfg (Union[dict, DictConfig]): Configuration dictionary for metric computation.
-            outputs (Union[dict, NamedTuple]): Outputs data.
-            batch (Optional[Union[dict, NamedTuple]]): Batch data.
+            cfg: Configuration dictionary for metric computation.
+            outputs: Outputs data.
+            batch: Batch data.
 
         Returns:
             dict: Dictionary containing required inputs for metric computation.
@@ -187,7 +201,7 @@ class EvalMixin(LightningModule):
             "cfg": cfg,
         }
         for k, v in cfg.items():
-            source_name, key = v.split(":")
+            source_name, key = v.split(".", maxsplit=1)
             source_data = data_sources.get(source_name)
 
             if source_data is None:
@@ -325,7 +339,7 @@ class EvalMixin(LightningModule):
         if isinstance(metrics_cfg, Mapping):
             for v in metrics_cfg.values():
                 if getattr(v, "compute_on", False) == "eval_step":
-                    kwargs = self._prepare_metric_input(v["kwargs"], outputs, batch)
+                    kwargs = self.prepare_metric_input(v["kwargs"], outputs, batch)
                     v["metric"](**kwargs)
 
         # Handle step outputs collection
@@ -380,7 +394,7 @@ class EvalMixin(LightningModule):
             if getattr(metric_cfg, "compute_on", False) == "eval_step":
                 input_ = metric_cfg["metric"]
             elif getattr(metric_cfg, "compute_on", "epoch_end") == "epoch_end":
-                kwargs = self._prepare_metric_input(
+                kwargs = self.prepare_metric_input(
                     metric_cfg["kwargs"], prepared_outputs
                 )
                 input_ = metric_cfg["metric"](**kwargs)

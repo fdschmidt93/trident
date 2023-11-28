@@ -23,5 +23,5 @@ metrics:
       _target_: torch.nn.functional.mse_loss
     compute_on: "epoch_end"
     kwargs: 
-      input: "outputs:preds"
-      target: "outputs:labels"
+      input: "outputs.preds"
+      target: "outputs.labels"
