@@ -230,6 +230,87 @@
 </div>
 </section>
 </section>
+<section id="experiments">
+<h2>Experiments<a class="headerlink" href="#experiments" title="Link to this heading">#</a></h2>
+<section id="how-do-i-add-my-own-variables">
+<h3>How do I add my own variables?<a class="headerlink" href="#how-do-i-add-my-own-variables" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">experiment</span></code> configurations (e.g., <code class="docutils literal notranslate"><span class="pre">./configs/nli.yaml</span></code>) have the dedicated <code class="docutils literal notranslate"><span class="pre">run</span></code> key that is best suited to store your variables, as all variables in <code class="docutils literal notranslate"><span class="pre">run</span></code> are logged automatically on, for instance, <code class="docutils literal notranslate"><span class="pre">wandb</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.val</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="nt">run</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+<span class="w">  </span><span class="nt">my_train_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
+</pre></div>
+</div>
+</section>
+<section id="how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints">
+<h3>How do I save cleanly store artifacts of runs (e.g., checkpoints)?<a class="headerlink" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints" title="Link to this heading">#</a></h3>
+<p>You can modify the runtime directory of <a class="reference external" href="https://hydra.cc">hydra</a> from the commandline.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can only set <code class="docutils literal notranslate"><span class="pre">hydra.run.dir</span></code> on the commandline, such that hydra is aware before start-up of where to set the runtime directory to!</p>
+</div>
+<div class="table-wrapper colwidths-given docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Setting Runtime Directory</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Experiment Configuration</strong></p></th>
+<th class="head"><p><strong>Example Bash Script</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
+
+<span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.val</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indicxnli_val_test</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amnli_val_test</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
+
+<span class="nt">run</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+
+<span class="nt">module</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">model</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;xlm-roberta-base&quot;</span>
+<span class="w">    </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">#SBATCH --gres=gpu:1</span>
+<span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/.bashrc
+conda<span class="w"> </span>activate<span class="w"> </span>tx
+
+python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s1">&#39;hydra.run.dir=&quot;logs/${run.task}/${module.model.pretrained_model_name_or_path}/&#39;</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><a class="reference external" href="https://hydra.cc">hydra</a> variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.</p>
+</section>
+</section>
 <section id="module-and-models">
 <h2>Module and Models<a class="headerlink" href="#module-and-models" title="Link to this heading">#</a></h2>
 <section id="how-to-use-your-own-model">
@@ -510,6 +591,11 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <li><a class="reference internal" href="#configuration">Configuration</a><ul>
 <li><a class="reference internal" href="#how-do-i-set-a-default-for-variable-in-yaml">How do I set a default for variable in yaml?</a></li>
 <li><a class="reference internal" href="#how-do-i-best-set-a-custom-value-for-a-variable-in-yaml">How do I best set a custom value for a variable in yaml?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#experiments">Experiments</a><ul>
+<li><a class="reference internal" href="#how-do-i-add-my-own-variables">How do I add my own variables?</a></li>
+<li><a class="reference internal" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints">How do I save cleanly store artifacts of runs (e.g., checkpoints)?</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-and-models">Module and Models</a><ul>
