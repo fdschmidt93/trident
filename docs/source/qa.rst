@@ -2,47 +2,17 @@
 Frequently Asked Questions
 ##########################
 
-This document comprises a few tips and tricks to illustrate common concepts with ``trident``. Be sure to read the :ref:`walkthrough <walkthrough>`.
-
-Configuration
-=============
-
-How do I set a default for variable in yaml?
---------------------------------------------
-
-The yaml configuration of hydra_ bases on  OmegaConf_. OmegaConf_ has support for `built-in <https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers>`_ and `custom <https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9>`_ resolvers, which, among other things, let's you define a default for your variable that can otherwise not be resolved.
-
-.. code-block:: yaml
-
-    # absolute_path_to_node is a link to a node like e.g., `with_default` 
-    with_default: "${oc.select:absolute_path_to_node,default_value}"
-
-How do I best set a custom value for a variable in yaml?
---------------------------------------------------------
-
-The best practice to setting variables you want to change between runs in your experiments is to add them to the ``run`` key of your ``experiment`` configuration.
-
-**Important**: You must then link the corresponding configuration (like batch sizes in
-``dataloader``) for your user variables.
-
-.. code-block:: yaml
-
-    # defaults ...
-    run:
-      seed: 42
-      task: ???
-      # examples
-      train_batch_size: 32
-      val_test_batch_size: 128
-    # remaining configuration ...
+This document comprises a few tips and tricks to illustrate common concepts with ``trident``. Be sure to read the :ref:`walkthrough <walkthrough>` first.
 
 Experiments
-============
+===========
 
 How do I add my own variables?
 ------------------------------
 
 ``experiment`` configurations (e.g., ``./configs/nli.yaml``) have the dedicated ``run`` key that is best suited to store your variables, as all variables in ``run`` are logged automatically on, for instance, ``wandb``.
+
+.. note:: You must then link the corresponding configuration (like batch sizes in ``dataloader``) for your user variables.
 
 .. code-block:: yaml
 
@@ -58,57 +28,65 @@ How do I add my own variables?
 
     run:
       task: nli
+      # must be linked to your training dataloader!
       my_train_batch_size: 32
 
 How do I save cleanly store artifacts of runs (e.g., checkpoints)?
 ------------------------------------------------------------------
 
-You can modify the runtime directory of hydra_ from the commandline.
+The hydra_ runtime directory controls where output of your run (like checkpoints or logs) are stored. You can modify the runtime directory of hydra_ from the commandline.
 
 .. note:: You can only set ``hydra.run.dir`` on the commandline, such that hydra is aware before start-up of where to set the runtime directory to!
 
+Consider the following NLI ``experiment`` configuration.
 
-.. list-table:: Setting Runtime Directory
-   :widths: 50 50
-   :header-rows: 1
+.. code-block:: yaml
+    :caption: Example NLI Experiment Configuration
 
-   * - **Experiment Configuration**
-     - **Example Bash Script**
+    # @package _global_
+
+    # defaults:
+    #   - ...
+    run:
+      task: nli
+    module:
+      model:
+        pretrained_model_name_or_path: "xlm-roberta-base"
+
+We can then either directly on the commandline or wrapped in a bash script set the runtime directory for hydra_.
+
+.. code-block:: bash
+   :caption: Setting the runtime directory
+
+   #!/bin/bash
+   #SBATCH --gres=gpu:1
+   source $HOME/.bashrc
+   conda activate tx
+
+   python -m trident.run \
+    experiment=nli \
+    'hydra.run.dir="logs/${run.task}/${module.model.pretrained_model_name_or_path}/'
     
-   * - .. code-block:: yaml
+.. note:: hydra_ variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.
 
-         # @package _global_
+In practice, keep in mind that you have to link against the runtime directory in hydra_! For instance, a callback for storing checkpoints in |project| may look as follows.
 
-         defaults:
-           - default
-           - /dataspecs@datamodule.train:
-             - mnli_train
-           - /dataspecs@datamodule.val:
-             - xnli_val_test
-             - indicxnli_val_test
-             - amnli_val_test
-           - override /module: text_classification
+.. code-block:: yaml
+   :caption: ./configs/callbacks/model_ckpt.yaml
 
-         run:
-           task: nli
+   model_checkpoint_on_epoch:
+     _target_: lightning.pytorch.callbacks.ModelCheckpoint
+     monitor: null
+     every_n_epochs: 1
+     verbose: false
+     save_top_k: -1
+     filename: "epoch={epoch}"
+     save_last: false
+     dirpath: "${hydra:runtime.output_dir}/checkpoints/"
+     save_weights_only: true
+     auto_insert_metric_name: false
 
-         module:
-           model:
-             pretrained_model_name_or_path: "xlm-roberta-base"
-             num_labels: 3
-
-     - .. code-block:: bash
-     
-         #!/bin/bash
-         #SBATCH --gres=gpu:1
-         source $HOME/.bashrc
-         conda activate tx
-     
-         python -m trident.run \
-             experiment=nli \
-             'hydra.run.dir="logs/${run.task}/${module.model.pretrained_model_name_or_path}/'
-     
-hydra_ variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.
+Where ``dirpath`` is linked against the runtime directory of hydra_.
 
 Module and Models
 =================
@@ -364,3 +342,16 @@ or pass
     python -m trident.run ... trainer.limit_train_batches=0.0
 
 to the CLI.
+
+hydra
+=====
+
+How do I set a default for variable in yaml?
+--------------------------------------------
+
+The yaml configuration of hydra_ bases on  OmegaConf_. OmegaConf_ has support for `built-in <https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers>`_ and `custom <https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9>`_ resolvers, which, among other things, let's you define a default for your variable that can otherwise not be resolved.
+
+.. code-block:: yaml
+
+    # absolute_path_to_node is a link to a node like e.g., `with_default` 
+    with_default: "${oc.select:absolute_path_to_node,default_value}"
