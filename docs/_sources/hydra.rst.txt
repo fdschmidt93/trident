@@ -102,7 +102,7 @@ Beyond the keywords below, ``???`` denote values in ``default.yaml`` to indicate
    :header-rows: 1
 
    * - **Key**
-     - **Type*
+     - **Type**
      - **Description**
 
    * - ``_target_``
