@@ -202,39 +202,16 @@
         <article role="main">
           <section id="frequently-asked-questions">
 <h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">#</a></h1>
-<p>This document comprises a few tips and tricks to illustrate common concepts with <code class="docutils literal notranslate"><span class="pre">trident</span></code>. Be sure to read the <a class="reference internal" href="walkthrough.html#walkthrough"><span class="std std-ref">walkthrough</span></a>.</p>
-<section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<section id="how-do-i-set-a-default-for-variable-in-yaml">
-<h3>How do I set a default for variable in yaml?<a class="headerlink" href="#how-do-i-set-a-default-for-variable-in-yaml" title="Link to this heading">#</a></h3>
-<p>The yaml configuration of <a class="reference external" href="https://hydra.cc">hydra</a> bases on  <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a>. <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a> has support for <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers">built-in</a> and <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9">custom</a> resolvers, which, among other things, let’s you define a default for your variable that can otherwise not be resolved.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># absolute_path_to_node is a link to a node like e.g., `with_default`</span>
-<span class="nt">with_default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${oc.select:absolute_path_to_node,default_value}&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="how-do-i-best-set-a-custom-value-for-a-variable-in-yaml">
-<h3>How do I best set a custom value for a variable in yaml?<a class="headerlink" href="#how-do-i-best-set-a-custom-value-for-a-variable-in-yaml" title="Link to this heading">#</a></h3>
-<p>The best practice to setting variables you want to change between runs in your experiments is to add them to the <code class="docutils literal notranslate"><span class="pre">run</span></code> key of your <code class="docutils literal notranslate"><span class="pre">experiment</span></code> configuration.</p>
-<p><strong>Important</strong>: You must then link the corresponding configuration (like batch sizes in
-<code class="docutils literal notranslate"><span class="pre">dataloader</span></code>) for your user variables.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># defaults ...</span>
-<span class="nt">run</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
-<span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">???</span>
-<span class="w">  </span><span class="c1"># examples</span>
-<span class="w">  </span><span class="nt">train_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
-<span class="w">  </span><span class="nt">val_test_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">128</span>
-<span class="c1"># remaining configuration ...</span>
-</pre></div>
-</div>
-</section>
-</section>
+<p>This document comprises a few tips and tricks to illustrate common concepts with <code class="docutils literal notranslate"><span class="pre">trident</span></code>. Be sure to read the <a class="reference internal" href="walkthrough.html#walkthrough"><span class="std std-ref">walkthrough</span></a> first.</p>
 <section id="experiments">
 <h2>Experiments<a class="headerlink" href="#experiments" title="Link to this heading">#</a></h2>
 <section id="how-do-i-add-my-own-variables">
 <h3>How do I add my own variables?<a class="headerlink" href="#how-do-i-add-my-own-variables" title="Link to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">experiment</span></code> configurations (e.g., <code class="docutils literal notranslate"><span class="pre">./configs/nli.yaml</span></code>) have the dedicated <code class="docutils literal notranslate"><span class="pre">run</span></code> key that is best suited to store your variables, as all variables in <code class="docutils literal notranslate"><span class="pre">run</span></code> are logged automatically on, for instance, <code class="docutils literal notranslate"><span class="pre">wandb</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You must then link the corresponding configuration (like batch sizes in <code class="docutils literal notranslate"><span class="pre">dataloader</span></code>) for your user variables.</p>
+</div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
 
 <span class="nt">defaults</span><span class="p">:</span>
@@ -247,68 +224,69 @@
 
 <span class="nt">run</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
+<span class="w">  </span><span class="c1"># must be linked to your training dataloader!</span>
 <span class="w">  </span><span class="nt">my_train_batch_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32</span>
 </pre></div>
 </div>
 </section>
 <section id="how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints">
 <h3>How do I save cleanly store artifacts of runs (e.g., checkpoints)?<a class="headerlink" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints" title="Link to this heading">#</a></h3>
-<p>You can modify the runtime directory of <a class="reference external" href="https://hydra.cc">hydra</a> from the commandline.</p>
+<p>The <a class="reference external" href="https://hydra.cc">hydra</a> runtime directory controls where output of your run (like checkpoints or logs) are stored. You can modify the runtime directory of <a class="reference external" href="https://hydra.cc">hydra</a> from the commandline.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can only set <code class="docutils literal notranslate"><span class="pre">hydra.run.dir</span></code> on the commandline, such that hydra is aware before start-up of where to set the runtime directory to!</p>
 </div>
-<div class="table-wrapper colwidths-given docutils container" id="id1">
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Setting Runtime Directory</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
-<colgroup>
-<col style="width: 50.0%" />
-<col style="width: 50.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><strong>Experiment Configuration</strong></p></th>
-<th class="head"><p><strong>Example Bash Script</strong></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
+<p>Consider the following NLI <code class="docutils literal notranslate"><span class="pre">experiment</span></code> configuration.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Example NLI Experiment Configuration</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
 
-<span class="nt">defaults</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.train</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mnli_train</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspecs@datamodule.val</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xnli_val_test</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indicxnli_val_test</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">amnli_val_test</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">override /module</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
-
+<span class="c1"># defaults:</span>
+<span class="c1">#   - ...</span>
 <span class="nt">run</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">task</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nli</span>
-
 <span class="nt">module</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">model</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">pretrained_model_name_or_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;xlm-roberta-base&quot;</span>
-<span class="w">    </span><span class="nt">num_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
 </pre></div>
 </div>
-</td>
-<td><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+</div>
+<p>We can then either directly on the commandline or wrapped in a bash script set the runtime directory for <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Setting the runtime directory</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1">#SBATCH --gres=gpu:1</span>
 <span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/.bashrc
 conda<span class="w"> </span>activate<span class="w"> </span>tx
 
 python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;hydra.run.dir=&quot;logs/${run.task}/${module.model.pretrained_model_name_or_path}/&#39;</span>
+<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span><span class="s1">&#39;hydra.run.dir=&quot;logs/${run.task}/${module.model.pretrained_model_name_or_path}/&#39;</span>
 </pre></div>
 </div>
-</td>
-</tr>
-</tbody>
-</table>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.</p>
+</div>
+<p>In practice, keep in mind that you have to link against the runtime directory in <a class="reference external" href="https://hydra.cc">hydra</a>! For instance, a callback for storing checkpoints in trident may look as follows.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">./configs/callbacks/model_ckpt.yaml</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_checkpoint_on_epoch</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lightning.pytorch.callbacks.ModelCheckpoint</span>
+<span class="w">  </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">every_n_epochs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">verbose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">save_top_k</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="w">  </span><span class="nt">filename</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epoch={epoch}&quot;</span>
+<span class="w">  </span><span class="nt">save_last</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">dirpath</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${hydra:runtime.output_dir}/checkpoints/&quot;</span>
+<span class="w">  </span><span class="nt">save_weights_only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">auto_insert_metric_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">dirpath</span></code> is linked against the runtime directory of <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
 </section>
 </section>
 <section id="module-and-models">
@@ -530,6 +508,17 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <p>to the CLI.</p>
 </section>
 </section>
+<section id="id1">
+<h2>hydra<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="how-do-i-set-a-default-for-variable-in-yaml">
+<h3>How do I set a default for variable in yaml?<a class="headerlink" href="#how-do-i-set-a-default-for-variable-in-yaml" title="Link to this heading">#</a></h3>
+<p>The yaml configuration of <a class="reference external" href="https://hydra.cc">hydra</a> bases on  <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a>. <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a> has support for <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers">built-in</a> and <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9">custom</a> resolvers, which, among other things, let’s you define a default for your variable that can otherwise not be resolved.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># absolute_path_to_node is a link to a node like e.g., `with_default`</span>
+<span class="nt">with_default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${oc.select:absolute_path_to_node,default_value}&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
         </article>
@@ -588,11 +577,6 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Frequently Asked Questions</a><ul>
-<li><a class="reference internal" href="#configuration">Configuration</a><ul>
-<li><a class="reference internal" href="#how-do-i-set-a-default-for-variable-in-yaml">How do I set a default for variable in yaml?</a></li>
-<li><a class="reference internal" href="#how-do-i-best-set-a-custom-value-for-a-variable-in-yaml">How do I best set a custom value for a variable in yaml?</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#experiments">Experiments</a><ul>
 <li><a class="reference internal" href="#how-do-i-add-my-own-variables">How do I add my own variables?</a></li>
 <li><a class="reference internal" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints">How do I save cleanly store artifacts of runs (e.g., checkpoints)?</a></li>
@@ -615,6 +599,10 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <li><a class="reference internal" href="#how-to-train-and-evaluate-on-multiple-datasets">How to train and evaluate on multiple datasets?</a></li>
 <li><a class="reference internal" href="#how-do-i-subsample-a-dataset">How do I subsample a dataset?</a></li>
 <li><a class="reference internal" href="#how-do-i-only-run-testing">How do I only run testing?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id1">hydra</a><ul>
+<li><a class="reference internal" href="#how-do-i-set-a-default-for-variable-in-yaml">How do I set a default for variable in yaml?</a></li>
 </ul>
 </li>
 </ul>
