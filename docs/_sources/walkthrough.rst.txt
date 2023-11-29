@@ -4,7 +4,7 @@
 |project| in 20 minutes
 #######################
 
-The walkthrough first introduces common concepts of hydra_ and then walks through an exemplary text-classification pipeline for sequence-pair classification (NLI).
+The walkthrough first introduces common concepts of hydra_ and then walks through an exemplary text-classification pipeline for sequence-pair classification (NLI). The `example NLI project <https://github.com/fdschmidt93/trident/tree/main/examples>`_ is embedded in the repository.
 
 hydra primer
 ============
