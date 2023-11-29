@@ -36,6 +36,80 @@ The best practice to setting variables you want to change between runs in your e
       val_test_batch_size: 128
     # remaining configuration ...
 
+Experiments
+============
+
+How do I add my own variables?
+------------------------------
+
+``experiment`` configurations (e.g., ``./configs/nli.yaml``) have the dedicated ``run`` key that is best suited to store your variables, as all variables in ``run`` are logged automatically on, for instance, ``wandb``.
+
+.. code-block:: yaml
+
+    # @package _global_
+
+    defaults:
+      - default
+      - /dataspecs@datamodule.train:
+        - mnli_train
+      - /dataspecs@datamodule.val:
+        - xnli_val_test
+      - override /module: text_classification
+
+    run:
+      task: nli
+      my_train_batch_size: 32
+
+How do I save cleanly store artifacts of runs (e.g., checkpoints)?
+------------------------------------------------------------------
+
+You can modify the runtime directory of hydra_ from the commandline.
+
+.. note:: You can only set ``hydra.run.dir`` on the commandline, such that hydra is aware before start-up of where to set the runtime directory to!
+
+
+.. list-table:: Setting Runtime Directory
+   :widths: 50 50
+   :header-rows: 1
+
+   * - **Experiment Configuration**
+     - **Example Bash Script**
+    
+   * - .. code-block:: yaml
+
+         # @package _global_
+
+         defaults:
+           - default
+           - /dataspecs@datamodule.train:
+             - mnli_train
+           - /dataspecs@datamodule.val:
+             - xnli_val_test
+             - indicxnli_val_test
+             - amnli_val_test
+           - override /module: text_classification
+
+         run:
+           task: nli
+
+         module:
+           model:
+             pretrained_model_name_or_path: "xlm-roberta-base"
+             num_labels: 3
+
+     - .. code-block:: bash
+     
+         #!/bin/bash
+         #SBATCH --gres=gpu:1
+         source $HOME/.bashrc
+         conda activate tx
+     
+         python -m trident.run \
+             experiment=nli \
+             'hydra.run.dir="logs/${run.task}/${module.model.pretrained_model_name_or_path}/'
+     
+hydra_ variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.
+
 Module and Models
 =================
 
