@@ -238,28 +238,16 @@ Furthermore, you may need to override ``TridentModule.forward``, for instance, i
 How to load a checkpoint for a TridentModule?
 ---------------------------------------------
 
-There are two options levering functionality of Lightning.
+The ``run.ckpt_path`` in the experiment configuration can point to a LightningModule_ checkpoint of your :class:`~trident.core.module.TridentModule`. The ``run.ckpt_path`` is then passed to ``trainer.fit`` of the Lightning Trainer_.
 
-First, you can pass a to the top-level config which gets passed to
-`Trainer.fit <https://lightning.ai/docs/pytorch/stable/common/trainer.html#fit>`__
+.. code-block:: yaml
+   
+   #...
+   run:
+     seed: 42
+     ckpt_path: $PATH_TO_YOUR_CKPT
 
-.. code:: yaml
-
-   # ./configs/$YOUR_EXPERIMENT.yaml
-   ckpt_path: absolute_path_to_ckpt
-
-Second, you can use the built-in
-`LightningModule.load_from_checkpoint <https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.core.LightningModule.html#lightning.pytorch.core.LightningModule.load_from_checkpoint>`__.
-
-.. code:: yaml
-
-   # typically declared in your ./configs/$YOUR_EXPERIMENT.yaml
-   module:
-     _target_: TridentModule.load_from_checkpoint
-     checkpoint_path: (Union[str, Path, IO]) – Path to checkpoint. This can also be a URL, or file-like object
-     map_location: str # typically "cpu" or "cuda:0"
-     strict: true # like torch.load 
-     # other kwargs: any extra kwargs to init the model. Can also be used to override saved hyperparameter values.
+.. note:: Absolute paths to checkpoints are generally recommnended, though ``./logs/.../your_ckpt.pt`` **should work.
 
 DataModule
 ==========

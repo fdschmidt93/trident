@@ -237,8 +237,8 @@
 <p>You can only set <code class="docutils literal notranslate"><span class="pre">hydra.run.dir</span></code> on the commandline, such that hydra is aware before start-up of where to set the runtime directory to!</p>
 </div>
 <p>Consider the following NLI <code class="docutils literal notranslate"><span class="pre">experiment</span></code> configuration.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Example NLI Experiment Configuration</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Example NLI Experiment Configuration</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
 
 <span class="c1"># defaults:</span>
@@ -252,8 +252,8 @@
 </div>
 </div>
 <p>We can then either directly on the commandline or wrapped in a bash script set the runtime directory for <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Setting the runtime directory</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Setting the runtime directory</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1">#SBATCH --gres=gpu:1</span>
 <span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/.bashrc
@@ -270,8 +270,8 @@ python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="
 <p><a class="reference external" href="https://hydra.cc">hydra</a> variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.</p>
 </div>
 <p>In practice, keep in mind that you have to link against the runtime directory in <a class="reference external" href="https://hydra.cc">hydra</a>! For instance, a callback for storing checkpoints in trident may look as follows.</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">./configs/callbacks/model_ckpt.yaml</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">./configs/callbacks/model_ckpt.yaml</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_checkpoint_on_epoch</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lightning.pytorch.callbacks.ModelCheckpoint</span>
 <span class="w">  </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -419,23 +419,16 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </section>
 <section id="how-to-load-a-checkpoint-for-a-tridentmodule">
 <h3>How to load a checkpoint for a TridentModule?<a class="headerlink" href="#how-to-load-a-checkpoint-for-a-tridentmodule" title="Link to this heading">#</a></h3>
-<p>There are two options levering functionality of Lightning.</p>
-<p>First, you can pass a to the top-level config which gets passed to
-<a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html#fit">Trainer.fit</a></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># ./configs/$YOUR_EXPERIMENT.yaml</span>
-<span class="nt">ckpt_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">absolute_path_to_ckpt</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">run.ckpt_path</span></code> in the experiment configuration can point to a <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a> checkpoint of your <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a>. The <code class="docutils literal notranslate"><span class="pre">run.ckpt_path</span></code> is then passed to <code class="docutils literal notranslate"><span class="pre">trainer.fit</span></code> of the Lightning <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#...</span>
+<span class="nt">run</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+<span class="w">  </span><span class="nt">ckpt_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$PATH_TO_YOUR_CKPT</span>
 </pre></div>
 </div>
-<p>Second, you can use the built-in
-<a class="reference external" href="https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.core.LightningModule.html#lightning.pytorch.core.LightningModule.load_from_checkpoint">LightningModule.load_from_checkpoint</a>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># typically declared in your ./configs/$YOUR_EXPERIMENT.yaml</span>
-<span class="nt">module</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">TridentModule.load_from_checkpoint</span>
-<span class="w">  </span><span class="nt">checkpoint_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(Union[str, Path, IO]) – Path to checkpoint. This can also be a URL, or file-like object</span>
-<span class="w">  </span><span class="nt">map_location</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span><span class="w"> </span><span class="c1"># typically &quot;cpu&quot; or &quot;cuda:0&quot;</span>
-<span class="w">  </span><span class="nt">strict</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># like torch.load</span>
-<span class="w">  </span><span class="c1"># other kwargs: any extra kwargs to init the model. Can also be used to override saved hyperparameter values.</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Absolute paths to checkpoints are generally recommnended, though <code class="docutils literal notranslate"><span class="pre">./logs/.../your_ckpt.pt</span></code> <a href="#id1"><span class="problematic" id="id2">**</span></a>should work.</p>
 </div>
 </section>
 </section>
@@ -508,8 +501,8 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <p>to the CLI.</p>
 </section>
 </section>
-<section id="id1">
-<h2>hydra<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h2>hydra<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="how-do-i-set-a-default-for-variable-in-yaml">
 <h3>How do I set a default for variable in yaml?<a class="headerlink" href="#how-do-i-set-a-default-for-variable-in-yaml" title="Link to this heading">#</a></h3>
 <p>The yaml configuration of <a class="reference external" href="https://hydra.cc">hydra</a> bases on  <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a>. <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a> has support for <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers">built-in</a> and <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9">custom</a> resolvers, which, among other things, let’s you define a default for your variable that can otherwise not be resolved.</p>
@@ -601,7 +594,7 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <li><a class="reference internal" href="#how-do-i-only-run-testing">How do I only run testing?</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id1">hydra</a><ul>
+<li><a class="reference internal" href="#id3">hydra</a><ul>
 <li><a class="reference internal" href="#how-do-i-set-a-default-for-variable-in-yaml">How do I set a default for variable in yaml?</a></li>
 </ul>
 </li>
