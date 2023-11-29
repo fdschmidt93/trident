@@ -100,7 +100,7 @@ Imporant Special Keywords and Values
 
 Beyond the keywords below, ``???`` denote values in ``default.yaml`` to indicate that the corresponding **must be** set in a inheriting config.
 
-.. list-table:: Title
+.. list-table:: Special Hydra Syntax
    :widths: 25 10 65
    :header-rows: 1
 
