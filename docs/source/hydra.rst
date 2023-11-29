@@ -58,6 +58,9 @@ The ``config/dataspec/default.yaml`` defines the defaults.
       # the default dataloader is source into the dataloader key of the dataspec
       # i.e. ./configs/dataspec/dataloader.yaml will be sourced in the `dataloader` key of the config
       - dataloader: default 
+      # _self_ allows you to control the resolution order of the config itself
+      # _self_ is not required and appended to the end of the defaults list by default
+      - _self_
 
     dataset:
       # most datasets use the Huggingface 
@@ -120,6 +123,10 @@ Beyond the keywords below, ``???`` denote values in ``default.yaml`` to indicate
    * - ``_args_``
      - ``list[Any]``
      - Positional arguments for the ``__target__`` at ``hydra.utils.instantiate``
+
+   * - ``_self_``
+     - ``str``
+     - **Only for defaults-lists**. You can add `_self_` to control the resolution order of the config itself. By default, `_self_` is appended to the end.
 
 Object and Function Instantiation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
