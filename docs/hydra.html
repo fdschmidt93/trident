@@ -252,6 +252,9 @@
 <span class="w">  </span><span class="c1"># the default dataloader is source into the dataloader key of the dataspec</span>
 <span class="w">  </span><span class="c1"># i.e. ./configs/dataspec/dataloader.yaml will be sourced in the `dataloader` key of the config</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataloader</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+<span class="w">  </span><span class="c1"># _self_ allows you to control the resolution order of the config itself</span>
+<span class="w">  </span><span class="c1"># _self_ is not required and appended to the end of the defaults list by default</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">_self_</span>
 
 <span class="nt">dataset</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># most datasets use the Huggingface</span>
@@ -314,6 +317,10 @@
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_args_</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">list[Any]</span></code></p></td>
 <td><p>Positional arguments for the <code class="docutils literal notranslate"><span class="pre">__target__</span></code> at <code class="docutils literal notranslate"><span class="pre">hydra.utils.instantiate</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_self_</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p><strong>Only for defaults-lists</strong>. You can add <cite>_self_</cite> to control the resolution order of the config itself. By default, <cite>_self_</cite> is appended to the end.</p></td>
 </tr>
 </tbody>
 </table>
