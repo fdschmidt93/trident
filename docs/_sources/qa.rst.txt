@@ -65,7 +65,7 @@ We can then either directly on the commandline or wrapped in a bash script set t
 
    python -m trident.run \
     experiment=nli \
-    'hydra.run.dir="logs/${run.task}/${module.model.pretrained_model_name_or_path}/'
+    'hydra.run.dir="logs/${run.task}/${module.model.pretrained_model_name_or_path}/"'
     
 .. note:: hydra_ variables are best enclosed in single quotation marks. The configuration the becomes accessible with resolution in strings embedded in double quotation marks.
 
