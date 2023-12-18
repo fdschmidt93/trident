@@ -16,13 +16,13 @@ The :class:`~trident.core.module.TridentModule` hands the below keywords to faci
 .. code-block:: yaml
 
     prepare:
-      # takes (trident_module: TridentModule, batch: dict, split: Split) -> dict
+      # takes (trident_module: TridentModule, batch: dict, split: Split, dataset_name: str) -> dict
       batch: null            
-      # takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split) -> dict
+      # takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split, dataset_name: str) -> dict
       outputs:
         _partial_: true
         _target_: src.tasks.text_classification.evaluation.get_preds
-      # takes (trident_module: TridentModule, step_outputs: dict, split: Split) -> dict
+      # takes (trident_module: TridentModule, step_outputs: dict, split: Split, dataset_name: str) -> dict
       step_outputs: null     
 
 where ``get_preds`` is defined as follows and merely adds  
