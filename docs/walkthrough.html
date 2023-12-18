@@ -586,13 +586,13 @@ The actual model and number of labels will be defined in either the experiment c
 <p>The <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> hands the below keywords to facilitate evaluation. Since the <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the LightningModule, useful attributes like <code class="docutils literal notranslate"><span class="pre">trainer</span></code> and <code class="docutils literal notranslate"><span class="pre">trainer.datamodule</span></code> are available at runtime.</p>
 <p><strong>Example Configuration</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">prepare</span><span class="p">:</span>
-<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, batch: dict, split: Split, dataset_name: str) -&gt; dict</span>
 <span class="w">  </span><span class="nt">batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, outputs: dict, batch: dict, split: Split, dataset_name: str) -&gt; dict</span>
 <span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">    </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">src.tasks.text_classification.evaluation.get_preds</span>
-<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, step_outputs: dict, split: Split) -&gt; dict</span>
+<span class="w">  </span><span class="c1"># takes (trident_module: TridentModule, step_outputs: dict, split: Split, dataset_name: str) -&gt; dict</span>
 <span class="w">  </span><span class="nt">step_outputs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </pre></div>
 </div>
