@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Optional, Any, Sequence
+from typing import Optional, Any, Sequence, Union
 import hydra
 from omegaconf.dictconfig import DictConfig
 from torch.utils.data.dataloader import DataLoader
@@ -123,7 +123,9 @@ class TridentDataspec:
         Returns:
             Dataset: The modified dataset with unused columns removed.
         """
-        column_names: None | list[str] = getattr(self.dataset, "column_names", None)
+        column_names: Union[None, list[str]] = getattr(
+            self.dataset, "column_names", None
+        )
         if column_names is not None:
             signature_columns = (
                 signature_columns if signature_columns is not None else []

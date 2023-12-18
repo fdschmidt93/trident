@@ -29,16 +29,16 @@ class StepOutputsDict:
     batch: Union[None, str, List[str]] = None
     outputs: Union[None, str, List[str]] = None
 
-    def __getitem__(self, item) -> Optional[str | list[str]]:
+    def __getitem__(self, item) -> Union[None, str, list[str]]:
         return getattr(self, item)
 
-    def get(self, item, default=None) -> Optional[str | list[str]]:
+    def get(self, item, default=None) -> Union[None, str, list[str]]:
         return getattr(self, item, default)
 
     def keys(self) -> KeysView[str]:
         return asdict(self).keys()
 
-    def values(self) -> ValuesView[str | list[str]]:
+    def values(self) -> ValuesView[Union[str, list[str]]]:
         return asdict(self).values()
 
     def items(self):

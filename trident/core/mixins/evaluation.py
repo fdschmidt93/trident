@@ -146,14 +146,14 @@ class EvalMixin(LightningModule):
     ) -> dict:
         r"""
         Collects user-defined attributes of outputs & batch to compute a metric.
-        
+
         In the below example, the evaluation (i.e., the call of ``accuracy``)
         extracts
 
         1. ``preds`` from ``outputs`` and passes it as ``preds``
         2. ``labels`` from ``outputs`` and passes it as ``target``
 
-        to ``accuracy`` via dot notation. 
+        to ``accuracy`` via dot notation.
 
         .. note:: The variations in types (``dict`` or classes with attributes) of the underlying object is handled at runtime.
 
@@ -219,7 +219,7 @@ class EvalMixin(LightningModule):
     def _collect_step_output(
         outputs: dict,
         batch: dict,
-        split_dico: None | StepOutputsDict = None,
+        split_dico: Union[None, StepOutputsDict] = None,
     ) -> dict:
         """
         Collect user-defined attributes from outputs and batch at the end of `eval_step` into a dictionary.
@@ -283,11 +283,11 @@ class EvalMixin(LightningModule):
         self, split: Split, dataloader_idx: int
     ) -> Tuple[str, TridentDataspec]:
         # Handle multiple datasets.
-        datamodule: None | TridentDataModule = getattr(self.trainer, "datamodule")
+        datamodule: Union[None, TridentDataModule] = getattr(self.trainer, "datamodule")
         assert isinstance(
             datamodule, TridentDataModule
         ), "self.trainer.datamodule not a TridentDataModule! Unsupported operation."
-        dataspecs: None | DictList[TridentDataspec] = datamodule.get(split)
+        dataspecs: Union[None, DictList[TridentDataspec]] = datamodule.get(split)
         assert (
             dataspecs is not None
         ), f"dataspecs for {split} must be incorrectly set up!"
@@ -426,7 +426,7 @@ class EvalMixin(LightningModule):
         assert isinstance(
             datamodule, TridentDataModule
         ), "datamodule must be `TridentDataModule`!"
-        dataspecs: None | DictList[TridentDataspec] = datamodule.get(split)
+        dataspecs: Union[None, DictList[TridentDataspec]] = datamodule.get(split)
         if dataspecs is not None:
             # idx aligns with dataloader_idx (i.e., sequential order of eval datasets) of lightning
             for idx, (dataspec_name, dataspec) in enumerate(dataspecs.items()):

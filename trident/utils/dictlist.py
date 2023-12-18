@@ -38,7 +38,7 @@ class DictList(Generic[T]):
         __repr__() -> str: Get the official string representation of the object.
     """
 
-    def __init__(self, data: None | dict[str, T] = None) -> None:
+    def __init__(self, data: Union[None, dict[str, T]] = None) -> None:
         """Initialize the dictList with an optional dictionary."""
         if data is None:
             data = {}
