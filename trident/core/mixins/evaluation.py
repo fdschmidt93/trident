@@ -107,7 +107,7 @@ class EvalMixin(LightningModule):
         self,
         split: Split,
         metric_key: Union[str, DictKeyType],
-        input: Union[int, float, dict, torch.Tensor],
+        input: Union[None, int, float, dict, torch.Tensor],
         log_kwargs: Optional[dict[str, Any]] = None,
         dataset_name: Optional[str] = None,
     ):
@@ -125,6 +125,10 @@ class EvalMixin(LightningModule):
         - This method assumes the existence of `self.evaluation.metrics`.
         - If `input` is a dictionary, each key-value pair is logged separately with the appropriate prefix.
         """
+        # this allows users to not log any metrics
+        if input is None:
+            return
+
         # Determine if there's a transformation function for the metric
         log_kwargs = log_kwargs or {}
         log_kwargs["prog_bar"] = True
