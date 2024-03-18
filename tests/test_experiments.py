@@ -39,14 +39,6 @@ def test_multi_train_dataloader(caplog) -> None:
         out = run(cfg)
         with caplog.at_level(logging.WARNING):
             out = run(cfg)
-            assert (
-                "Attempting to remove unused columns for unsupported dataset first_half!"
-                in caplog.text
-            )
-            assert (
-                "Attempting to remove unused columns for unsupported dataset second_half!"
-                in caplog.text
-            )
         is_ = torch.Tensor(out)
         should = torch.zeros(1)[0]
         assert torch.allclose(should, is_), f"{is_.item()} is not {should}"

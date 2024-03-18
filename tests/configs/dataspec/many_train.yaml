@@ -3,8 +3,6 @@ defaults:
   - default@second_half
 
 first_half:
-  misc:
-    remove_unused_columns: true
   dataset:
     X:
       _target_: tests.helpers.data.get_val_data

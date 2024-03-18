@@ -140,30 +140,6 @@ class TridentDataModule(LightningDataModule):
                 }
                 self._dataspecs[split] = DictList(data)
 
-    @cached_property
-    def _signature_columns(self) -> Optional[list[str]]:
-        import inspect
-
-        trainer = self.trainer
-        if module := getattr(trainer, "model"):
-            assert hasattr(
-                module, "model"
-            ), f"{type(module)} does not have a `model` attribute!"
-            # Inspect model forward signature to keep only the arguments it accepts.
-            signature = inspect.signature(module.model.forward)
-            _signature_columns = list(signature.parameters.keys())
-            # Labels may be named label or label_ids, the default data collator handles that.
-            _signature_columns += [
-                "label",
-                "label_ids",
-                "labels",
-                "input_ids",
-                "attention_mask",
-                "start_positions",
-                "end_positions",
-            ]
-            return _signature_columns
-
     def __len__(self) -> int:
         """Returns the number of instances in :obj:`dataset_train`."""
         dataspecs_train = self._dataspecs[Split.TRAIN]
@@ -207,8 +183,7 @@ class TridentDataModule(LightningDataModule):
             raise ValueError(f"Dataspec for {split.value} missing!")
 
         dataloaders: dict[str, DataLoader] = {
-            name: dataspec.get_dataloader(signature_columns=self._signature_columns)
-            for name, dataspec in dataspecs.items()
+            name: dataspec.get_dataloader() for name, dataspec in dataspecs.items()
         }
 
         # TODO mode setting

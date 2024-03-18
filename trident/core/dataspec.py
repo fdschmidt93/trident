@@ -89,7 +89,7 @@ class TridentDataspec:
         return dataset
 
     def get_dataloader(
-        self, signature_columns: Optional[Sequence[str]] = None
+        self,
     ) -> DataLoader:
         """
         Creates a DataLoader for the dataset.
@@ -102,13 +102,6 @@ class TridentDataspec:
             DataLoader: The DataLoader configured as per the specified settings.
         """
         dataset: DatasetProtocol = self.dataset
-        if signature_columns is not None:
-            if (misc_cfg := self.cfg.get("misc")) and misc_cfg.get(
-                "remove_unused_columns"
-            ):
-                dataset: DatasetProtocol = self._remove_unused_columns(
-                    signature_columns
-                )
         return hydra.utils.call(self.cfg.dataloader, dataset=dataset)
 
     def _remove_unused_columns(
