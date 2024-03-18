@@ -41,6 +41,13 @@ def run(cfg: DictConfig) -> Optional[torch.Tensor]:
         Optional[float]: Metric score for hyperparameter optimization.
     """
 
+    # warning
+    if cfg.trainer.get("use_distributed_sampler"):
+        log.warning(
+            "`trainer.use_distributed_sampler=True` is not supported by trident due to multi-GPU validation. Set to false and wrap your training dataset in a distributed sampler. See FAQ at: https://fdschmidt93.github.io/trident/docs/qa.html"
+        )
+        return
+
     seed_everything(OmegaConf.select(cfg, "run.seed"), workers=True)
 
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")

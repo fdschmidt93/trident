@@ -135,12 +135,15 @@ class EvalMixin(LightningModule):
 
         prefix = dataset_name + "/" + split.value if dataset_name else split.value
 
-        if isinstance(input, dict):
-            log_kwargs["dictionary"] = {f"{prefix}/{k}": v for k, v in input.items()}
-            self.log_dict(**log_kwargs)
-        else:
-            log_key = f"{prefix}/{metric_key}"
-            self.log(name=log_key, value=input, **log_kwargs)
+        if self.trainer.global_rank == 0:
+            if isinstance(input, dict):
+                log_kwargs["dictionary"] = {
+                    f"{prefix}/{k}": v for k, v in input.items()
+                }
+                self.log_dict(**log_kwargs, rank_zero_only=True)
+            else:
+                log_key = f"{prefix}/{metric_key}"
+                self.log(name=log_key, value=input, **log_kwargs, rank_zero_only=True)
 
     def prepare_metric_input(
         self,
