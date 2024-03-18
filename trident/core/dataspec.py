@@ -78,9 +78,9 @@ class TridentDataspec:
                 # _method_ is for convenience
                 # construct partial wrapper, instantiate with cfg, and apply to ret
                 if kwd == "method":
-                    key_cfg[
-                        "_target_"
-                    ] = f"{dataset.__class__.__module__}.{dataset.__class__.__name__}.{key}"
+                    key_cfg["_target_"] = (
+                        f"{dataset.__class__.__module__}.{dataset.__class__.__name__}.{key}"
+                    )
                 # methods and functions should take dataset as first positional argument
                 val = hydra.utils.instantiate(key_cfg, dataset)
                 # `fn` might mutate ret in-place
