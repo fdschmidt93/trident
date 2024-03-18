@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>trident.core package - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -258,12 +258,12 @@ split is not found, it returns a default value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
-<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – The default value to return if the split is not found.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The default value to return if the split is not found.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList" title="trident.utils.dictlist.DictList"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictList</span></code></a>[<a class="reference internal" href="#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DictList</span></code> of <code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code> for the given split or None.</p>
@@ -276,7 +276,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">predict_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L233-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.predict_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,7 +286,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L127-L141"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.setup" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -296,7 +296,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">test_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L230-L231"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.test_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -306,14 +306,14 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L224-L225"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.train_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="trident.core.datamodule.TridentDataModule.trainer">
-<span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.trainer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">trident</span></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.trainer" title="Link to this definition">#</a></dt>
 <dd><p>The base class for all datamodules.</p>
 <p>The <a class="reference internal" href="#trident.core.datamodule.TridentDataModule" title="trident.core.datamodule.TridentDataModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a> facilitates writing a <code class="xref py py-obj docutils literal notranslate"><span class="pre">LightningDataModule</span></code> with little to no boilerplate via Hydra configuration. It splits into</p>
 <ul class="simple">
@@ -385,7 +385,7 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.datamodule.TridentDataModule.val_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -397,7 +397,7 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <span id="trident-core-dataspec-module"></span><h2>trident.core.dataspec module<a class="headerlink" href="#module-trident.core.dataspec" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="trident.core.dataspec.TridentDataspec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.core.dataspec.</span></span><span class="sig-name descname"><span class="pre">TridentDataspec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'None'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/dataspec.py#L17-L146"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.dataspec.TridentDataspec" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">trident.core.dataspec.</span></span><span class="sig-name descname"><span class="pre">TridentDataspec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'None'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/dataspec.py#L17-L139"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.dataspec.TridentDataspec" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class to handle data specification in trident.</p>
 <p>This class is designed to instantiate the dataset,
@@ -430,12 +430,12 @@ instantiation, preprocessing, dataloader setup, and evaluation metrics.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="trident.core.dataspec.TridentDataspec.get_dataloader">
-<span class="sig-name descname"><span class="pre">get_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signature_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/dataspec.py#L91-L112"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.dataspec.TridentDataspec.get_dataloader" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/dataspec.py#L91-L105"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.dataspec.TridentDataspec.get_dataloader" title="Link to this definition">#</a></dt>
 <dd><p>Creates a DataLoader for the dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>signature_columns</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Columns to be used in the dataloader. Defaults to None.</p></li>
+<li><p><strong>signature_columns</strong> – Columns to be used in the dataloader. Defaults to None.</p></li>
 <li><p><strong>passed</strong> (<em>If</em>) – </p></li>
 <li><p><strong>misc.</strong> (<em>removes unused columns if configured in</em>) – </p></li>
 </ul>
@@ -460,8 +460,8 @@ instantiation, preprocessing, dataloader setup, and evaluation metrics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></span>) – The dataset to be preprocessed.</p></li>
-<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PreprocessingDict</span></code>]</span>) – A dictionary of preprocessing configurations.</p></li>
+<li><p><strong>dataset</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The dataset to be preprocessed.</p></li>
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – A dictionary of preprocessing configurations.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -486,7 +486,7 @@ instantiation, preprocessing, dataloader setup, and evaluation metrics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
 <ul>
 <li><p>Takes the batch unpacked</p></li>
 <li><p>Returns a container with “loss” and other required attrs</p></li>
@@ -496,13 +496,13 @@ instantiation, preprocessing, dataloader setup, and evaluation metrics.</p>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.forward()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.training_step()</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/tiny_bert.yaml">tiny bert example</a></p>
 </div>
 </p></li>
-<li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Configuration for the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">core.trident.TridentModule</span></code>.</p>
+<li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Configuration for the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">core.trident.TridentModule</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/optimizer/adamw.yaml">AdamW config</a></p>
 </div>
 </p></li>
-<li><p><strong>scheduler</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code>]</span>) – <p>Configuration for the scheduler of the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code>.</p>
+<li><p><strong>scheduler</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Configuration for the scheduler of the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/scheduler/linear_warm_up.yaml">Linear Warm-Up config</a></p>
@@ -523,7 +523,7 @@ instantiation, preprocessing, dataloader setup, and evaluation metrics.</p>
 <dd><p>Plain forward pass of your model for which the batch is unpacked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – input to your model</p>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – input to your model</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>container with attributes required for evaluation</p>
@@ -546,8 +546,8 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
-<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – variable used internally by pytorch-lightning</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
+<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – variable used internally by pytorch-lightning</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -577,12 +577,12 @@ split is not found, it returns a default value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
-<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – The default value to return if the split is not found.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The default value to return if the split is not found.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList" title="trident.utils.dictlist.DictList"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictList</span></code></a>[<a class="reference internal" href="#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DictList</span></code> of <code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code> for the given split or None.</p>
@@ -595,7 +595,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">predict_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L233-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.predict_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -605,7 +605,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L127-L141"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.setup" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -615,7 +615,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">test_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L230-L231"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.test_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -625,14 +625,14 @@ split is not found, it returns a default value.</p>
 <span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L224-L225"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.train_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="trident.core.TridentDataModule.trainer">
-<span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.trainer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">trainer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">trident</span></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.trainer" title="Link to this definition">#</a></dt>
 <dd><p>The base class for all datamodules.</p>
 <p>The <a class="reference internal" href="#trident.core.TridentDataModule" title="trident.core.TridentDataModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TridentDataModule</span></code></a> facilitates writing a <code class="xref py py-obj docutils literal notranslate"><span class="pre">LightningDataModule</span></code> with little to no boilerplate via Hydra configuration. It splits into</p>
 <ul class="simple">
@@ -704,7 +704,7 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.TridentDataModule.val_dataloader" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -719,7 +719,7 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Needs to instantiate a <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> that</p>
 <ul>
 <li><p>Takes the batch unpacked</p></li>
 <li><p>Returns a container with “loss” and other required attrs</p></li>
@@ -729,13 +729,13 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.forward()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.modules.base.TridentModule.training_step()</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/module/tiny_bert.yaml">tiny bert example</a></p>
 </div>
 </p></li>
-<li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code></span>) – <p>Configuration for the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">core.trident.TridentModule</span></code>.</p>
+<li><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Configuration for the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">core.trident.TridentModule</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/optimizer/adamw.yaml">AdamW config</a></p>
 </div>
 </p></li>
-<li><p><strong>scheduler</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code>]</span>) – <p>Configuration for the scheduler of the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code>.</p>
+<li><p><strong>scheduler</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – <p>Configuration for the scheduler of the optimizer of your <code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.base.TridentModule</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">src.modules.mixin.optimizer.OptimizerMixin</span></code>, <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs/scheduler/linear_warm_up.yaml">Linear Warm-Up config</a></p>
@@ -756,7 +756,7 @@ dataloader (<code class="xref py py-obj docutils literal notranslate"><span clas
 <dd><p>Plain forward pass of your model for which the batch is unpacked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – input to your model</p>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – input to your model</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>container with attributes required for evaluation</p>
@@ -779,8 +779,8 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
-<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – variable used internally by pytorch-lightning</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
+<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – variable used internally by pytorch-lightning</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

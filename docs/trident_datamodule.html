@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TridentDataspec" href="trident_dataspec.html" /><link rel="prev" title="TridentModule" href="trident_module.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>TridentDataModule - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -236,7 +236,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L127-L141"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -253,12 +253,12 @@ split is not found, it returns a default value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
-<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – The default value to return if the split is not found.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The default value to return if the split is not found.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList" title="trident.utils.dictlist.DictList"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictList</span></code></a>[<a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>]]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DictList</span></code> of <code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code> for the given split or None.</p>
@@ -274,7 +274,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L224-L225"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,7 +287,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L227-L228"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -300,7 +300,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">test_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L230-L231"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,7 +313,7 @@ split is not found, it returns a default value.</p>
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">predict_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L233-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>

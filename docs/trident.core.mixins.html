@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
         <title>trident.core.mixins package - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
@@ -218,13 +218,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The evaluation split.</p></li>
-<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – The batch of the evaluation (i.e. ‘val’ or ‘test’) step.</p></li>
-<li><p><strong>dataloader_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – The index of the current evaluation dataloader, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> if single dataloader.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The evaluation split.</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The batch of the evaluation (i.e. ‘val’ or ‘test’) step.</p></li>
+<li><p><strong>dataloader_idx</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The index of the current evaluation dataloader, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code> if single dataloader.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -239,12 +239,12 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.hparams">
-<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeDict</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.hparams" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">trident</span></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.hparams" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="trident.core.mixins.evaluation.EvalMixin.log">
-<span class="sig-name descname"><span class="pre">log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.log" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">log</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">trident</span></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.log" title="Link to this definition">#</a></dt>
 <dd><p>Mixin for base model to define evaluation loop largely via hydra.</p>
 <p>See also <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a>.</p>
 <p>The evaluation mixin enables writing evaluation via yaml files, here is an
@@ -300,11 +300,11 @@ example for sequence classification, borrowed from configs/evaluation/classifica
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The evaluation split.</p></li>
-<li><p><strong>metric_key</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DictKeyType</span></code>]</span>) – Key identifying the metric.</p></li>
-<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – Metric value or dictionary of metric values.</p></li>
-<li><p><strong>log_kwargs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – Additional keyword arguments for logging.</p></li>
-<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Name of the dataset if available.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The evaluation split.</p></li>
+<li><p><strong>metric_key</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Key identifying the metric.</p></li>
+<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Metric value or dictionary of metric values.</p></li>
+<li><p><strong>log_kwargs</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Additional keyword arguments for logging.</p></li>
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Name of the dataset if available.</p></li>
 </ul>
 </dd>
 </dl>
@@ -322,10 +322,10 @@ example for sequence classification, borrowed from configs/evaluation/classifica
 appropriately logs the metrics for each.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – Evaluation split, i.e., “val” or “test”.</p>
+<dd class="field-odd"><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Evaluation split, i.e., “val” or “test”.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -395,9 +395,9 @@ target: “outputs.labels”</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfig</span></code>]</span>) – Configuration dictionary for metric computation.</p></li>
-<li><p><strong>outputs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code>]</span>) – Outputs data.</p></li>
-<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</span>) – Batch data.</p></li>
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Configuration dictionary for metric computation.</p></li>
+<li><p><strong>outputs</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Outputs data.</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Batch data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -417,7 +417,7 @@ target: “outputs.labels”</p>
 <span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L449-L452"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.test_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -427,7 +427,7 @@ target: “outputs.labels”</p>
 <span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L441-L444"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.evaluation.EvalMixin.validation_step" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -479,7 +479,7 @@ target: “outputs.labels”</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></span>) – pytorch optimizer</p>
+<dd class="field-odd"><p><strong>optimizer</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – pytorch optimizer</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>scheduler in pytorch-lightning format</p>
@@ -492,7 +492,7 @@ target: “outputs.labels”</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="trident.core.mixins.optimizer.OptimizerMixin.hparams">
-<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeDict</span></code></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/optimizer.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.optimizer.OptimizerMixin.hparams" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">hparams</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">trident</span></em><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/optimizer.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#trident.core.mixins.optimizer.OptimizerMixin.hparams" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
