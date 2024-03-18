@@ -217,7 +217,7 @@ Text Classification
 
 
 .. seealso::
-    :ref:`TridentDataspec.preprocessing <preprocessing>`, :ref:`TridentDataspec.preprocessing <preprocessing>`
+    :ref:`TridentDataspec.preprocessing <preprocessing>`
 
 NLI
 """
