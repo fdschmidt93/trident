@@ -142,7 +142,9 @@ class EvalMixin(LightningModule):
         self,
         cfg: Union[dict, DictConfig],
         outputs: Union[dict, NamedTuple],
+        split: Split,
         batch: Optional[Union[dict, NamedTuple]] = None,
+        dataset_name: Optional[str] = None,
     ) -> dict:
         r"""
         Collects user-defined attributes of outputs & batch to compute a metric.
@@ -162,8 +164,10 @@ class EvalMixin(LightningModule):
             - ``outputs``
             - ``batch``
             - ``cfg``
+            - ``dataset_name``
 
         Notes:
+            - ``trident_module`` yields access to the Trainer_, which in turn also holds :class:`~trident.core.datamodule.TridentDatamodule`
             - ``batch`` is only relevant when the metric is called at each step
             - ``outputs`` either denotes the output of a step or the concatenated step outputs
 
@@ -199,19 +203,28 @@ class EvalMixin(LightningModule):
             "outputs": outputs,
             "batch": batch,
             "cfg": cfg,
+            "dataset_name": dataset_name,
+            "split": split,
         }
         for k, v in cfg.items():
-            source_name, key = v.split(".", maxsplit=1)
+            split_string = v.split(".", maxsplit=1)
+            source_name = split_string[0]
+            key = split_string[1] if len(split_string) == 2 else None
             source_data = data_sources.get(source_name)
 
             if source_data is None:
                 raise ValueError(f"{source_name} not a recognized data source.")
 
-            val = deepgetitem(source_data, key)
-            if val is None:
-                raise ValueError(f"{key} not found in {source_name} ({source_data}).")
+            if key:  # key not empty or not None
+                val = deepgetitem(source_data, key)
+                if val is None:
+                    raise ValueError(
+                        f"{key} not found in {source_name} ({source_data})."
+                    )
 
-            ret[k] = val
+                ret[k] = val
+            else:
+                ret[k] = source_data
 
         return ret
 
@@ -339,7 +352,13 @@ class EvalMixin(LightningModule):
         if isinstance(metrics_cfg, Mapping):
             for v in metrics_cfg.values():
                 if getattr(v, "compute_on", False) == "eval_step":
-                    kwargs = self.prepare_metric_input(v["kwargs"], outputs, batch)
+                    kwargs = self.prepare_metric_input(
+                        cfg=v["kwargs"],
+                        outputs=outputs,
+                        batch=batch,
+                        dataset_name=dataspec_name,
+                        split=split,
+                    )
                     v["metric"](**kwargs)
 
         # Handle step outputs collection
@@ -395,7 +414,10 @@ class EvalMixin(LightningModule):
                 input_ = metric_cfg["metric"]
             elif getattr(metric_cfg, "compute_on", "epoch_end") == "epoch_end":
                 kwargs = self.prepare_metric_input(
-                    metric_cfg["kwargs"], prepared_outputs
+                    cfg=metric_cfg["kwargs"],
+                    outputs=prepared_outputs,
+                    split=split,
+                    dataset_name=dataset_name,
                 )
                 input_ = metric_cfg["metric"](**kwargs)
             else:
