@@ -88,3 +88,39 @@ In the NLI example:
           preds: "outputs.preds"
           target: "outputs.labels"
 
+.. note:: It is also possible to use ``metrics`` for other actions than logging evaluation. The metric function should then return ``None``.
+
+In the below case, we construct a "metric" that logs predictions instead. A metric is not logged to ``wandb`` if the function returns ``None``.
+
+.. code-block:: python
+
+   def store_predictions(
+       trident_module: TridentModule,
+       preds: torch.Tensor,
+       dataset_name: str,
+       directory: str,
+       *args,
+       **kwargs,
+   ):
+       trainer = trident_module.trainer
+       epoch = trainer.current_epoch
+       p = pd.DataFrame(preds.cpu())
+       p.columns = ["prediction"]
+       path = Path(directory).joinpath(f"dataset={dataset_name}_epoch={epoch}.csv")
+       p.to_csv(str(path), index_label="ids")
+
+And the corresponding ``metric`` configuration
+
+.. code-block:: yaml
+
+   metrics:
+     store_predictions:
+       metric:
+         _partial_: true
+         _target_: $PATH_TO_FUNCTION.store_predictions
+         directory: ${hydra:runtime.output_dir}
+       compute_on: "epoch_end"
+       kwargs: 
+         trident_module: "trident_module"
+         preds: "outputs.preds"
+         dataset_name: "dataset_name"

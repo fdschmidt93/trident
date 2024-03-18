@@ -372,6 +372,41 @@
 <span class="w">      </span><span class="nt">target</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs.labels&quot;</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is also possible to use <code class="docutils literal notranslate"><span class="pre">metrics</span></code> for other actions than logging evaluation. The metric function should then return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
+<p>In the below case, we construct a “metric” that logs predictions instead. A metric is not logged to <code class="docutils literal notranslate"><span class="pre">wandb</span></code> if the function returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">store_predictions</span><span class="p">(</span>
+    <span class="n">trident_module</span><span class="p">:</span> <span class="n">TridentModule</span><span class="p">,</span>
+    <span class="n">preds</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">trainer</span> <span class="o">=</span> <span class="n">trident_module</span><span class="o">.</span><span class="n">trainer</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">current_epoch</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;prediction&quot;</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dataset=</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">_epoch=</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">index_label</span><span class="o">=</span><span class="s2">&quot;ids&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And the corresponding <code class="docutils literal notranslate"><span class="pre">metric</span></code> configuration</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">store_predictions</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">metric</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">_partial_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$PATH_TO_FUNCTION.store_predictions</span>
+<span class="w">      </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${hydra:runtime.output_dir}</span>
+<span class="w">    </span><span class="nt">compute_on</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epoch_end&quot;</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">trident_module</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;trident_module&quot;</span>
+<span class="w">      </span><span class="nt">preds</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;outputs.preds&quot;</span>
+<span class="w">      </span><span class="nt">dataset_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dataset_name&quot;</span>
+</pre></div>
+</div>
 </section>
 </section>
 </section>
