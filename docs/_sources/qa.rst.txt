@@ -249,6 +249,45 @@ The ``run.ckpt_path`` in the experiment configuration can point to a LightningMo
 
 .. note:: Absolute paths to checkpoints are generally recommnended, though ``./logs/.../your_ckpt.pt`` **should work.
 
+Multi-GPU training
+------------------
+
+Multi-GPU training with |project| incurs some stepping stones that should be carefully handled. We will first discuss validation, as multi-GPU training is generally simpler.
+
+**Validation:**
+
+Lightning_ recommends to disable `trainer.use_distributed_sampler <https://lightning.ai/docs/pytorch/stable/common/trainer.html#use-distributed-sampler>`_ for research (see note in `LightningModule.validation_loop <https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#validation-loop>`_). Consequently |project| disables the flag by default.
+
+Nevertheless, setting the flag may be recommended for training dataloaders. The example in `trainer.use_distributed_sampler <https://lightning.ai/docs/pytorch/stable/common/trainer.html#use-distributed-sampler>`_ demonstrates how:
+
+.. code-block:: python
+
+   # in your LightningModule or LightningDataModule
+    def train_dataloader(self):
+        dataset = ...
+        # default used by the Trainer
+        sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
+        dataloader = DataLoader(dataset, batch_size=32, sampler=sampler)
+        return dataloader
+
+Consequently, in |project|, it is best to use the ``preprocessing`` key in :ref:`TridentDataspec.preprocessing <preprocessing>` as follows:
+
+.. note:: The below is not required for iterable-style datasets, as e.g., datasets_ automatically takes care of splitting the dataloaders over shards. Consequently, the Trainer_ `"does not for iterable-style datasets do this automatically"<https://lightning.ai/docs/pytorch/stable/common/trainer.html#init>`_.
+
+.. code-block:: yaml
+
+   preprocessing:
+       # ... other preprocessing here
+       # THIS MUST BE AT BOTTOM OF YOUR PREPROCESSING 
+       apply:
+         wrap_sampler:
+           _target_: torch.utils.data.DistributedSampler
+           shuffle: True
+
+**Training:**
+
+In brief, use ``trainer.strategy="ddp"`` or, better yet, `DeepSpeed <https://lightning.ai/docs/pytorch/stable/advanced/model_parallel/deepspeed.html#deepspeed-zero-stage-2>`_.
+
 DataModule
 ==========
 
