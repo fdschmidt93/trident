@@ -1,4 +1,3 @@
-from functools import cached_property
 from typing import Any, Optional, Sized, Union, cast
 
 from lightning import LightningDataModule, Trainer
