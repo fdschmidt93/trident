@@ -44,7 +44,10 @@ def flatten_dict(inputs: list[dict]) -> dict[str, Any]:
         for k, v in input_.items():
             if k not in ret:
                 ret[k] = []
-            ret[k].append(v)
+            if not isinstance(v, list):
+                ret[k].append(v)
+            else:
+                ret[k].extend(v)
     for k, v in ret.items():
         if isinstance(v[0], torch.Tensor):
             dim = v[0].dim()
