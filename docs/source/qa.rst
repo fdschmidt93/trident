@@ -252,9 +252,10 @@ The ``run.ckpt_path`` in the experiment configuration can point to a LightningMo
 Multi-GPU training
 ------------------
 
-Multi-GPU training with |project| incurs some stepping stones that should be carefully handled. We will first discuss validation, as multi-GPU training is generally simpler.
+Multi-GPU training with |project| incurs some stepping stones that should be carefully handled. We will first discuss validation, it is comparatively straightforward to training.
 
-**Validation:**
+Validation
+^^^^^^^^^^
 
 Lightning_ recommends to disable `trainer.use_distributed_sampler <https://lightning.ai/docs/pytorch/stable/common/trainer.html#use-distributed-sampler>`_ for research (see note in `LightningModule.validation_loop <https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#validation-loop>`_). Consequently |project| disables the flag by default.
 
@@ -270,9 +271,14 @@ Nevertheless, setting the flag may be recommended for training dataloaders. The 
         dataloader = DataLoader(dataset, batch_size=32, sampler=sampler)
         return dataloader
 
-Consequently, in |project|, it is best to use the ``preprocessing`` key in :ref:`TridentDataspec.preprocessing <preprocessing>` as follows:
+Training
+^^^^^^^^
 
-.. note:: The below is not required for iterable-style datasets, as e.g., datasets_ automatically takes care of splitting the dataloaders over shards. Consequently, the Trainer_ `"does not for iterable-style datasets do this automatically"<https://lightning.ai/docs/pytorch/stable/common/trainer.html#init>`_.
+You should use ``trainer.strategy="ddp"`` or, better yet, `DeepSpeed <https://lightning.ai/docs/pytorch/stable/advanced/model_parallel/deepspeed.html#deepspeed-zero-stage-2>`_.
+
+Since we set ``trainer.use_distributed_sampler`` to ``False``, we need to ensure that each process per GPU runs on a different subset of the data.
+
+For conventional a ``Dataset`` (i.e., not a `IterableDataset``), you can use the ``preprocessing`` key in :ref:`TridentDataspec.preprocessing <preprocessing>` as follows:
 
 .. code-block:: yaml
 
@@ -284,9 +290,24 @@ Consequently, in |project|, it is best to use the ``preprocessing`` key in :ref:
            _target_: torch.utils.data.DistributedSampler
            shuffle: True
 
-**Training:**
+For ``IterableDataset``, you need to ensure that datasets_ appropriately splits the data over the processes. Typically, an ``IterableDataset`` comprises many files (i.e., shards), which can be evenly split over the GPUs as follows.
 
-In brief, use ``trainer.strategy="ddp"`` or, better yet, `DeepSpeed <https://lightning.ai/docs/pytorch/stable/advanced/model_parallel/deepspeed.html#deepspeed-zero-stage-2>`_.
+.. code-block:: yaml
+
+    preprocessing:
+      apply:
+        split_dataset_by_node:
+          _target_: datasets.distributed.split_dataset_by_node
+          rank:
+            _target_: builtins.int
+            _args_:
+              - _target_: os.environ.get
+                key: NODE_RANK
+          world_size:
+            _target_: builtins.int
+            _args_:
+              - _target_: os.environ.get
+                key: WORLD_SIZE
 
 DataModule
 ==========
