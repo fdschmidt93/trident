@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>Context - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,7 +201,7 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <p>It is important to have basic familiarity with <a class="reference external" href="https://hydra.cc">hydra</a>, which shines at bottom-up hierarchical yaml configuration.</p>
 <p>Two key features of <a class="reference external" href="https://hydra.cc">hydra</a> for trident are</p>
 <ol class="arabic simple">
@@ -208,7 +210,7 @@
 </ol>
 <p>Below is a brief primer of <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
 <section id="context">
-<h1>Context<a class="headerlink" href="#context" title="Link to this heading">#</a></h1>
+<h1>Context<a class="headerlink" href="#context" title="Link to this heading">¶</a></h1>
 <p>For trident, we will use <a class="reference external" href="https://hydra.cc">hydra</a> to declare our</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a>: declares how training, validation, and testing is run</p></li>
@@ -218,7 +220,7 @@
 </ul>
 </section>
 <section id="hierarchical-configuration">
-<h1>Hierarchical Configuration<a class="headerlink" href="#hierarchical-configuration" title="Link to this heading">#</a></h1>
+<h1>Hierarchical Configuration<a class="headerlink" href="#hierarchical-configuration" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> is a Python yaml framework to compose complex pipelines. The directory tree of your trident configuration in our simplified example may look like the below file tree.</p>
 <p>In what follows, we will focus on the hierarchy of the configuration below in the case of <code class="docutils literal notranslate"><span class="pre">dataspec</span></code>. A <code class="docutils literal notranslate"><span class="pre">dataspec</span></code> defines the dataset, the associated pipelines for preprocessing and evaluation, and the dataloader for the preprocessed dataset.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>configs
@@ -285,11 +287,11 @@
 <li><p>The own configuration typically comes last (can be controlled via <code class="docutils literal notranslate"><span class="pre">_self_</span></code>, see <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">offficial documentation</a>)</p></li>
 </ul>
 <section id="imporant-special-keywords-and-values">
-<h2>Imporant Special Keywords and Values<a class="headerlink" href="#imporant-special-keywords-and-values" title="Link to this heading">#</a></h2>
+<h2>Imporant Special Keywords and Values<a class="headerlink" href="#imporant-special-keywords-and-values" title="Link to this heading">¶</a></h2>
 <p>Beyond the keywords below, <code class="docutils literal notranslate"><span class="pre">???</span></code> denote values in <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> to indicate that the corresponding <strong>must be</strong> set in a inheriting config.</p>
 <div class="table-wrapper colwidths-given docutils container" id="id3">
 <table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Special Hydra Syntax</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Special Hydra Syntax</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 10.0%" />
@@ -327,7 +329,7 @@
 </div>
 </section>
 <section id="object-and-function-instantiation">
-<h2>Object and Function Instantiation<a class="headerlink" href="#object-and-function-instantiation" title="Link to this heading">#</a></h2>
+<h2>Object and Function Instantiation<a class="headerlink" href="#object-and-function-instantiation" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> allow you to define Python objects and functions declaratively in yaml. The below example instantiates an <code class="docutils literal notranslate"><span class="pre">AutoModelForSequenceClassification</span></code> with <code class="docutils literal notranslate"><span class="pre">roberta-base</span></code>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">sequence_classification_model</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># path to the object we want to instantiate</span>
@@ -355,7 +357,7 @@
 </section>
 </section>
 <section id="packaging-combine-various-configs">
-<h1>Packaging: combine various configs<a class="headerlink" href="#packaging-combine-various-configs" title="Link to this heading">#</a></h1>
+<h1>Packaging: combine various configs<a class="headerlink" href="#packaging-combine-various-configs" title="Link to this heading">¶</a></h1>
 <p>Paired with absolute paths, <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> allow to seamlessly reallocate configuration in the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a>.</p>
 <p>Imagine you now group a series of <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> for a particular benchmark dataset in <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code>.</p>
 <div class="admonition note">
@@ -415,8 +417,8 @@
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

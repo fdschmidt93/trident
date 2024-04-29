@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="trident in 20 minutes" href="walkthrough.html" /><link rel="prev" title="Indices and tables" href="index.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>Using trident - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,9 +201,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="using-project">
-<h1>Using trident<a class="headerlink" href="#using-project" title="Link to this heading">#</a></h1>
+<h1>Using trident<a class="headerlink" href="#using-project" title="Link to this heading">¶</a></h1>
 <p>trident is a deep learning framework designed to train and evaluate models efficiently. It serves as a convenience layer atop several robust libraries:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/">Lightning</a></p></li>
@@ -216,9 +218,9 @@
 </ul>
 <p>Familiarity with <a class="reference external" href="https://hydra.cc">hydra</a> is essential, as it forms the core framework for configuring and composing experiments in trident.</p>
 <section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
 <section id="installation">
-<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h3>
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h3>
 <p>All necessary packages for a base installation of trident can be installed with <a class="reference external" href="https://github.com/conda-forge/miniforge">conda</a> (or <cite>mamba</cite>)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yaml
 conda<span class="w"> </span>activate<span class="w"> </span>trident
@@ -226,7 +228,7 @@ conda<span class="w"> </span>activate<span class="w"> </span>trident
 </div>
 </section>
 <section id="usage">
-<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h3>
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h3>
 <p>Typical usage of trident follows the below schema:</p>
 <ol class="arabic simple">
 <li><p>Clone the repo</p></li>
@@ -236,18 +238,18 @@ conda<span class="w"> </span>activate<span class="w"> </span>trident
 <p>You can find existing pipelines at <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/">experiments configs</a>. A full experiment (incl. <cite>module</cite>) is defined in the <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/configs/experiment/mnli_tinybert.yaml">MNLI-TinyBert config</a>.</p>
 </section>
 <section id="contributing">
-<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">#</a></h3>
+<h3>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h3>
 <p>Please see <a class="reference internal" href="contributing.html#contributing"><span class="std std-ref">Contributing</span></a>!</p>
 </section>
 <section id="credits">
-<h3>Credits<a class="headerlink" href="#credits" title="Link to this heading">#</a></h3>
+<h3>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>This project is was largely inspired by and is based on <a class="reference external" href="https://github.com/ashleve/lightning-hydra-template">https://github.com/ashleve/lightning-hydra-template</a></p></li>
 <li><p>A related project is: <a class="reference external" href="https://github.com/PyTorchLightning/lightning-transformers">https://github.com/PyTorchLightning/lightning-transformers</a></p></li>
 </ul>
 </section>
 <section id="author">
-<h3>Author<a class="headerlink" href="#author" title="Link to this heading">#</a></h3>
+<h3>Author<a class="headerlink" href="#author" title="Link to this heading">¶</a></h3>
 <div class="line-block">
 <div class="line">Name: Fabian David Schmidt</div>
 <div class="line">Mail: <a class="reference external" href="mailto:fabian&#46;schmidt&#37;&#52;&#48;uni-wuerzburg&#46;de">fabian<span>&#46;</span>schmidt<span>&#64;</span>uni-wuerzburg<span>&#46;</span>de</a></div>
@@ -333,8 +335,8 @@ conda<span class="w"> </span>activate<span class="w"> </span>trident
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

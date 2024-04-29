@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Frequently Asked Questions" href="qa.html" /><link rel="prev" title="Using trident" href="readme.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>trident in 20 minutes - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,12 +201,12 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="project-in-20-minutes">
-<span id="walkthrough"></span><h1>trident in 20 minutes<a class="headerlink" href="#project-in-20-minutes" title="Link to this heading">#</a></h1>
+<span id="walkthrough"></span><h1>trident in 20 minutes<a class="headerlink" href="#project-in-20-minutes" title="Link to this heading">¶</a></h1>
 <p>The walkthrough first introduces common concepts of <a class="reference external" href="https://hydra.cc">hydra</a> and then walks through an exemplary text-classification pipeline for sequence-pair classification (NLI). The <a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples">example NLI project</a> is embedded in the repository.</p>
 <section id="hydra-primer">
-<h2>hydra primer<a class="headerlink" href="#hydra-primer" title="Link to this heading">#</a></h2>
+<h2>hydra primer<a class="headerlink" href="#hydra-primer" title="Link to this heading">¶</a></h2>
 <p>It is important to have basic familiarity with <a class="reference external" href="https://hydra.cc">hydra</a>, which shines at bottom-up hierarchical yaml configuration.</p>
 <p>Two key features of <a class="reference external" href="https://hydra.cc">hydra</a> for trident are</p>
 <ol class="arabic simple">
@@ -213,7 +215,7 @@
 </ol>
 <p>Below is a brief primer of <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
 <section id="context">
-<h3>Context<a class="headerlink" href="#context" title="Link to this heading">#</a></h3>
+<h3>Context<a class="headerlink" href="#context" title="Link to this heading">¶</a></h3>
 <p>For trident, we will use <a class="reference external" href="https://hydra.cc">hydra</a> to declare our</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a>: declares how training, validation, and testing is run</p></li>
@@ -223,7 +225,7 @@
 </ul>
 </section>
 <section id="hierarchical-configuration">
-<h3>Hierarchical Configuration<a class="headerlink" href="#hierarchical-configuration" title="Link to this heading">#</a></h3>
+<h3>Hierarchical Configuration<a class="headerlink" href="#hierarchical-configuration" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> is a Python yaml framework to compose complex pipelines. The directory tree of your trident configuration in our simplified example may look like the below file tree.</p>
 <p>In what follows, we will focus on the hierarchy of the configuration below in the case of <code class="docutils literal notranslate"><span class="pre">dataspec</span></code>. A <code class="docutils literal notranslate"><span class="pre">dataspec</span></code> defines the dataset, the associated pipelines for preprocessing and evaluation, and the dataloader for the preprocessed dataset.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>configs
@@ -290,11 +292,11 @@
 <li><p>The own configuration typically comes last (can be controlled via <code class="docutils literal notranslate"><span class="pre">_self_</span></code>, see <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">offficial documentation</a>)</p></li>
 </ul>
 <section id="imporant-special-keywords-and-values">
-<h4>Imporant Special Keywords and Values<a class="headerlink" href="#imporant-special-keywords-and-values" title="Link to this heading">#</a></h4>
+<h4>Imporant Special Keywords and Values<a class="headerlink" href="#imporant-special-keywords-and-values" title="Link to this heading">¶</a></h4>
 <p>Beyond the keywords below, <code class="docutils literal notranslate"><span class="pre">???</span></code> denote values in <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> to indicate that the corresponding <strong>must be</strong> set in a inheriting config.</p>
 <div class="table-wrapper colwidths-given docutils container" id="id6">
 <table class="docutils align-default" id="id6">
-<caption><span class="caption-text">Special Hydra Syntax</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<caption><span class="caption-text">Special Hydra Syntax</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 10.0%" />
@@ -332,7 +334,7 @@
 </div>
 </section>
 <section id="object-and-function-instantiation">
-<h4>Object and Function Instantiation<a class="headerlink" href="#object-and-function-instantiation" title="Link to this heading">#</a></h4>
+<h4>Object and Function Instantiation<a class="headerlink" href="#object-and-function-instantiation" title="Link to this heading">¶</a></h4>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> allow you to define Python objects and functions declaratively in yaml. The below example instantiates an <code class="docutils literal notranslate"><span class="pre">AutoModelForSequenceClassification</span></code> with <code class="docutils literal notranslate"><span class="pre">roberta-base</span></code>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">sequence_classification_model</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># path to the object we want to instantiate</span>
@@ -360,7 +362,7 @@
 </section>
 </section>
 <section id="packaging-combine-various-configs">
-<h3>Packaging: combine various configs<a class="headerlink" href="#packaging-combine-various-configs" title="Link to this heading">#</a></h3>
+<h3>Packaging: combine various configs<a class="headerlink" href="#packaging-combine-various-configs" title="Link to this heading">¶</a></h3>
 <p>Paired with absolute paths, <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> allow to seamlessly reallocate configuration in the <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">defaults-list</a>.</p>
 <p>Imagine you now group a series of <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> for a particular benchmark dataset in <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code>.</p>
 <div class="admonition note">
@@ -389,7 +391,7 @@
 </section>
 </section>
 <section id="project-structure">
-<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading">#</a></h2>
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading">¶</a></h2>
 <p>An exemplary structure for a user project is shown below:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/examples/configs">configs</a> holds the entire <a class="reference external" href="https://hydra.cc">hydra</a> yaml configuration</p></li>
@@ -451,9 +453,9 @@ your-project
 </div>
 </section>
 <section id="components">
-<h2>Components<a class="headerlink" href="#components" title="Link to this heading">#</a></h2>
+<h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
 <section id="tridentmodule">
-<h3>TridentModule<a class="headerlink" href="#tridentmodule" title="Link to this heading">#</a></h3>
+<h3>TridentModule<a class="headerlink" href="#tridentmodule" title="Link to this heading">¶</a></h3>
 <p><a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a>. The configuration defines all required components for a <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a>:</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">model</span></code>: <code class="docutils literal notranslate"><span class="pre">_target_</span></code> to your model constructor for which <code class="docutils literal notranslate"><span class="pre">TridentModule.model</span></code> will be initialized</p></li>
@@ -492,7 +494,7 @@ The actual model and number of labels will be defined in either the experiment c
 </ul>
 </section>
 <section id="tridentdataspec">
-<h3>TridentDataspec<a class="headerlink" href="#tridentdataspec" title="Link to this heading">#</a></h3>
+<h3>TridentDataspec<a class="headerlink" href="#tridentdataspec" title="Link to this heading">¶</a></h3>
 <p>A <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a> class encapsulates the configuration for data handling in a machine learning workflow. It manages various aspects of data processing including dataset instantiation, preprocessing, dataloading, and evaluation.</p>
 <p><strong>Configuration Keys</strong></p>
 <ul class="simple">
@@ -503,7 +505,7 @@ The actual model and number of labels will be defined in either the experiment c
 <li><p><code class="docutils literal notranslate"><span class="pre">misc</span></code> (optional): Reserved for miscellaneous settings that do not fit under other keys.</p></li>
 </ul>
 <section id="dataset">
-<h4>dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h4>
+<h4>dataset<a class="headerlink" href="#dataset" title="Link to this heading">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">dataset</span></code> instantiates a <a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset">Dataset</a> that is compatible with a PyTorch <a class="reference external" href="https://pytorch.org/docs/stable/data.html#dataloader">DataLoader</a>. Any preprocessing should be defined in the corresponding <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> configuration of the <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">mnli_train</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="c1"># required, config on how to instantiate dataset</span>
@@ -515,7 +517,7 @@ The actual model and number of labels will be defined in either the experiment c
 </div>
 </section>
 <section id="preprocessing">
-<h4>preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading">#</a></h4>
+<h4>preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> key in the configuration details the steps for preparing the dataset. It includes two special keys, <code class="docutils literal notranslate"><span class="pre">method</span></code> and <code class="docutils literal notranslate"><span class="pre">apply</span></code>, each holding dictionaries for specific preprocessing actions.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">method</span></code>: Contains dictionaries of class methods along with their keyword arguments. These are typically methods of the dataset class.</p></li>
@@ -555,7 +557,7 @@ The actual model and number of labels will be defined in either the experiment c
 </div>
 </section>
 <section id="dataloader">
-<h4>dataloader<a class="headerlink" href="#dataloader" title="Link to this heading">#</a></h4>
+<h4>dataloader<a class="headerlink" href="#dataloader" title="Link to this heading">¶</a></h4>
 <p>The DataLoader configuration (<cite>configs/dataspec/dataloader/default.yaml</cite>) is preset with reasonable defaults, accommodating typical use cases.</p>
 <p><strong>Example Configuration</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">torch.utils.data.dataloader.DataLoader</span>
@@ -573,7 +575,7 @@ The actual model and number of labels will be defined in either the experiment c
 </div>
 </section>
 <section id="evaluation">
-<span id="id3"></span><h4>evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h4>
+<span id="id3"></span><h4>evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">¶</a></h4>
 <p>The logic of evaluation is defined in <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/evaluation/text_classification.yaml</span></code>. It is common to define evaluation per type of task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> configuration segments into the fields <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">metrics</span></code>.</p>
 <div class="admonition seealso">
@@ -581,7 +583,7 @@ The actual model and number of labels will be defined in either the experiment c
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.EvaluationDict</span></code></p>
 </div>
 <section id="prepare">
-<h5>prepare<a class="headerlink" href="#prepare" title="Link to this heading">#</a></h5>
+<h5>prepare<a class="headerlink" href="#prepare" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">prepare</span></code> defines functions called on the <code class="docutils literal notranslate"><span class="pre">batch</span></code>, the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code>, or the collected <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>.</p>
 <p>The <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> hands the below keywords to facilitate evaluation. Since the <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the LightningModule, useful attributes like <code class="docutils literal notranslate"><span class="pre">trainer</span></code> and <code class="docutils literal notranslate"><span class="pre">trainer.datamodule</span></code> are available at runtime.</p>
 <p><strong>Example Configuration</strong></p>
@@ -608,7 +610,7 @@ The actual model and number of labels will be defined in either the experiment c
 </div>
 </section>
 <section id="step-outputs">
-<h5>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">#</a></h5>
+<h5>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> defines what keys are collected from a <code class="docutils literal notranslate"><span class="pre">batch</span></code> or <code class="docutils literal notranslate"><span class="pre">outputs</span></code> dictionary, per step, into the flattened outputs <code class="docutils literal notranslate"><span class="pre">dict</span></code> per evaluation dataloader. The flattened dictionary then holds the corresponding key-value pairs as input to the <code class="docutils literal notranslate"><span class="pre">prepare_step_outputs</span></code> function, which ultimately serves at input to metrics computed at the end of an evaluation loop.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -631,7 +633,7 @@ The actual model and number of labels will be defined in either the experiment c
 </div>
 </section>
 <section id="metrics">
-<h5>metrics<a class="headerlink" href="#metrics" title="Link to this heading">#</a></h5>
+<h5>metrics<a class="headerlink" href="#metrics" title="Link to this heading">¶</a></h5>
 <p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> denotes a dictionary for all evaluated metrics. For instance, a metric such as <code class="docutils literal notranslate"><span class="pre">acc</span></code> may contain:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code>: how to instantiate the metric; typically a <code class="docutils literal notranslate"><span class="pre">partial</span></code> function; must return a <code class="docutils literal notranslate"><span class="pre">Callable</span></code>.</p></li>
@@ -700,7 +702,7 @@ The actual model and number of labels will be defined in either the experiment c
 </section>
 </section>
 <section id="tridentdatamodule">
-<h3>TridentDataModule<a class="headerlink" href="#tridentdatamodule" title="Link to this heading">#</a></h3>
+<h3>TridentDataModule<a class="headerlink" href="#tridentdatamodule" title="Link to this heading">¶</a></h3>
 <p>The default configuration (<code class="docutils literal notranslate"><span class="pre">configs/datamodule/default.yaml</span></code>) for a <code class="xref py py-class docutils literal notranslate"><span class="pre">tridentdatamodule</span></code> defines how training and evaluation datasets are instantiated.
 Each split is a dictionary of <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trident.TridentDataModule</span>
@@ -717,7 +719,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </pre></div>
 </div>
 <section id="config-composition">
-<h4>Config Composition<a class="headerlink" href="#config-composition" title="Link to this heading">#</a></h4>
+<h4>Config Composition<a class="headerlink" href="#config-composition" title="Link to this heading">¶</a></h4>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Hierarchical config composition heavily relies on <a class="reference external" href="https://hydra.cc/docs/advanced/defaults_list/">default lists</a> .</p>
@@ -750,7 +752,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </pre></div>
 </div>
 <section id="default">
-<h5>Default<a class="headerlink" href="#default" title="Link to this heading">#</a></h5>
+<h5>Default<a class="headerlink" href="#default" title="Link to this heading">¶</a></h5>
 <p>The general <code class="docutils literal notranslate"><span class="pre">dataspec</span></code> simply defines the default (<code class="docutils literal notranslate"><span class="pre">./configs/dataspec/default.yaml</span></code>) configuration.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">dataset</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -764,7 +766,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </div>
 </section>
 <section id="text-classification">
-<h5>Text Classification<a class="headerlink" href="#text-classification" title="Link to this heading">#</a></h5>
+<h5>Text Classification<a class="headerlink" href="#text-classification" title="Link to this heading">¶</a></h5>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">evaluation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span><span class="w"> </span><span class="c1"># see TridentDataspec evaluation</span>
@@ -780,7 +782,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </div>
 </section>
 <section id="nli">
-<h5>NLI<a class="headerlink" href="#nli" title="Link to this heading">#</a></h5>
+<h5>NLI<a class="headerlink" href="#nli" title="Link to this heading">¶</a></h5>
 <p>The <code class="docutils literal notranslate"><span class="pre">configs/dataspec/nli.yaml</span></code> simply extends the task-specific <code class="docutils literal notranslate"><span class="pre">text_classification.yaml</span></code> by specifying columns for the tokenizer in preprocessing.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text_classification</span>
@@ -800,7 +802,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </div>
 </section>
 <section id="dataspecs">
-<h5>Dataspecs<a class="headerlink" href="#dataspecs" title="Link to this heading">#</a></h5>
+<h5>Dataspecs<a class="headerlink" href="#dataspecs" title="Link to this heading">¶</a></h5>
 <p>We can now compose <code class="docutils literal notranslate"><span class="pre">dataspecs</span></code> which group <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec`</span></code> for entire datasets.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code> levers <code class="docutils literal notranslate"><span class="pre">hydra</span></code> <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> to put the <code class="docutils literal notranslate"><span class="pre">nli</span></code> configuration into the corresponding dataspec keys.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
@@ -823,9 +825,9 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </div>
 </section>
 <section id="nli-datamodules">
-<h5>NLI Datamodules<a class="headerlink" href="#nli-datamodules" title="Link to this heading">#</a></h5>
+<h5>NLI Datamodules<a class="headerlink" href="#nli-datamodules" title="Link to this heading">¶</a></h5>
 <section id="datamodule-configurations">
-<h6>Datamodule Configurations<a class="headerlink" href="#datamodule-configurations" title="Link to this heading">#</a></h6>
+<h6>Datamodule Configurations<a class="headerlink" href="#datamodule-configurations" title="Link to this heading">¶</a></h6>
 <p>We can now use <a class="reference external" href="https://hydra.cc/docs/advanced/overriding_packages/">package directives</a> to include the configuration from the <code class="docutils literal notranslate"><span class="pre">configs/dataspecs/xnli_val_test.yaml</span></code> file into the <code class="docutils literal notranslate"><span class="pre">val</span></code> and <code class="docutils literal notranslate"><span class="pre">test</span></code> keys of the <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDatamodule</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -864,7 +866,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </section>
 </section>
 <section id="experiment">
-<h3>Experiment<a class="headerlink" href="#experiment" title="Link to this heading">#</a></h3>
+<h3>Experiment<a class="headerlink" href="#experiment" title="Link to this heading">¶</a></h3>
 <p>The experiment configurations also segments into a general <code class="docutils literal notranslate"><span class="pre">default.yaml</span></code> and a task-specific <code class="docutils literal notranslate"><span class="pre">nli.yaml</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">run</span></code> key is, next to <code class="docutils literal notranslate"><span class="pre">module</span></code>, <code class="docutils literal notranslate"><span class="pre">datamodule</span></code>, and <code class="docutils literal notranslate"><span class="pre">trainer</span></code> a special key reserved for user configuration. The configuration of this key also gets saved in your <code class="docutils literal notranslate"><span class="pre">logger</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">wandb</span></code>).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
@@ -929,7 +931,7 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </section>
 </section>
 <section id="commandline-interface">
-<h2>Commandline Interface<a class="headerlink" href="#commandline-interface" title="Link to this heading">#</a></h2>
+<h2>Commandline Interface<a class="headerlink" href="#commandline-interface" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://hydra.cc">hydra</a> allows to simply set configuration items on the commandline. See more information</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># change the learning rate</span>
 python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>nli<span class="w"> </span>module.optimizer.lr<span class="o">=</span><span class="m">0</span>.0001
@@ -1057,8 +1059,8 @@ python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

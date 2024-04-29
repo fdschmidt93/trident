@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Contributing" href="contributing.html" /><link rel="prev" title="trident in 20 minutes" href="walkthrough.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>Frequently Asked Questions - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,14 +201,14 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="frequently-asked-questions">
-<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">#</a></h1>
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">¶</a></h1>
 <p>This document comprises a few tips and tricks to illustrate common concepts with <code class="docutils literal notranslate"><span class="pre">trident</span></code>. Be sure to read the <a class="reference internal" href="walkthrough.html#walkthrough"><span class="std std-ref">walkthrough</span></a> first.</p>
 <section id="experiments">
-<h2>Experiments<a class="headerlink" href="#experiments" title="Link to this heading">#</a></h2>
+<h2>Experiments<a class="headerlink" href="#experiments" title="Link to this heading">¶</a></h2>
 <section id="how-do-i-add-my-own-variables">
-<h3>How do I add my own variables?<a class="headerlink" href="#how-do-i-add-my-own-variables" title="Link to this heading">#</a></h3>
+<h3>How do I add my own variables?<a class="headerlink" href="#how-do-i-add-my-own-variables" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">experiment</span></code> configurations (e.g., <code class="docutils literal notranslate"><span class="pre">./configs/nli.yaml</span></code>) have the dedicated <code class="docutils literal notranslate"><span class="pre">run</span></code> key that is best suited to store your variables, as all variables in <code class="docutils literal notranslate"><span class="pre">run</span></code> are logged automatically on, for instance, <code class="docutils literal notranslate"><span class="pre">wandb</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -230,7 +232,7 @@
 </div>
 </section>
 <section id="how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints">
-<h3>How do I save cleanly store artifacts of runs (e.g., checkpoints)?<a class="headerlink" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints" title="Link to this heading">#</a></h3>
+<h3>How do I save cleanly store artifacts of runs (e.g., checkpoints)?<a class="headerlink" href="#how-do-i-save-cleanly-store-artifacts-of-runs-e-g-checkpoints" title="Link to this heading">¶</a></h3>
 <p>The <a class="reference external" href="https://hydra.cc">hydra</a> runtime directory controls where output of your run (like checkpoints or logs) are stored. You can modify the runtime directory of <a class="reference external" href="https://hydra.cc">hydra</a> from the commandline.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -238,7 +240,7 @@
 </div>
 <p>Consider the following NLI <code class="docutils literal notranslate"><span class="pre">experiment</span></code> configuration.</p>
 <div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Example NLI Experiment Configuration</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Example NLI Experiment Configuration</span><a class="headerlink" href="#id5" title="Link to this code">¶</a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># @package _global_</span>
 
 <span class="c1"># defaults:</span>
@@ -253,7 +255,7 @@
 </div>
 <p>We can then either directly on the commandline or wrapped in a bash script set the runtime directory for <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
 <div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Setting the runtime directory</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Setting the runtime directory</span><a class="headerlink" href="#id6" title="Link to this code">¶</a></div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 <span class="c1">#SBATCH --gres=gpu:1</span>
 <span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/.bashrc
@@ -271,7 +273,7 @@ python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="
 </div>
 <p>In practice, keep in mind that you have to link against the runtime directory in <a class="reference external" href="https://hydra.cc">hydra</a>! For instance, a callback for storing checkpoints in trident may look as follows.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">./configs/callbacks/model_ckpt.yaml</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">./configs/callbacks/model_ckpt.yaml</span><a class="headerlink" href="#id7" title="Link to this code">¶</a></div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model_checkpoint_on_epoch</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lightning.pytorch.callbacks.ModelCheckpoint</span>
 <span class="w">  </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -290,12 +292,12 @@ python<span class="w"> </span>-m<span class="w"> </span>trident.run<span class="
 </section>
 </section>
 <section id="module-and-models">
-<h2>Module and Models<a class="headerlink" href="#module-and-models" title="Link to this heading">#</a></h2>
+<h2>Module and Models<a class="headerlink" href="#module-and-models" title="Link to this heading">¶</a></h2>
 <section id="how-to-use-your-own-model">
-<h3>How to use your own model?<a class="headerlink" href="#how-to-use-your-own-model" title="Link to this heading">#</a></h3>
+<h3>How to use your own model?<a class="headerlink" href="#how-to-use-your-own-model" title="Link to this heading">¶</a></h3>
 <p>Using your own model typically follows on of two patterns.</p>
 <section id="the-existing-model-already-defines-a-training-step">
-<h4>The existing model already defines a training step.<a class="headerlink" href="#the-existing-model-already-defines-a-training-step" title="Link to this heading">#</a></h4>
+<h4>The existing model already defines a training step.<a class="headerlink" href="#the-existing-model-already-defines-a-training-step" title="Link to this heading">¶</a></h4>
 <p>HuggingFace models merge the Pytorch Lighting <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.core.LightningModule.html#lightning.pytorch.core.LightningModule.forward">forward</a>
 and <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.core.LightningModule.html#lightning.pytorch.core.LightningModule.training_step">training_step</a>
 function into a single <code class="docutils literal notranslate"><span class="pre">forward</span></code> function that also accepts <code class="docutils literal notranslate"><span class="pre">labels</span></code>
@@ -346,7 +348,7 @@ batch through to <code class="docutils literal notranslate"><span class="pre">se
 </div>
 </section>
 <section id="the-existing-model-does-not-define-a-training-step-but-a-forward-step">
-<h4>The existing model does not define a training step but a forward step.<a class="headerlink" href="#the-existing-model-does-not-define-a-training-step-but-a-forward-step" title="Link to this heading">#</a></h4>
+<h4>The existing model does not define a training step but a forward step.<a class="headerlink" href="#the-existing-model-does-not-define-a-training-step-but-a-forward-step" title="Link to this heading">¶</a></h4>
 <p>In this scenario, the user implements a <code class="docutils literal notranslate"><span class="pre">trident.TridentModule</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">TridentModule</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -391,7 +393,7 @@ batch through to <code class="docutils literal notranslate"><span class="pre">se
 </div>
 </section>
 <section id="the-architecture-does-not-exist-yet">
-<h4>The architecture does not exist yet.<a class="headerlink" href="#the-architecture-does-not-exist-yet" title="Link to this heading">#</a></h4>
+<h4>The architecture does not exist yet.<a class="headerlink" href="#the-architecture-does-not-exist-yet" title="Link to this heading">¶</a></h4>
 <p>Two variants are most common:</p>
 <ol class="arabic simple">
 <li><p>Write a <code class="docutils literal notranslate"><span class="pre">lightning.pytorch.LightningModule</span></code> for the barebones
@@ -403,7 +405,7 @@ logic (<code class="docutils literal notranslate"><span class="pre">training_ste
 </ol>
 <p>The idiomatic approach is (1) as it reflects a more common research-oriented workflow.</p>
 <section id="how-to-opt-out-of-default-model-instantiation">
-<h5>How to opt out of default model instantiation?<a class="headerlink" href="#how-to-opt-out-of-default-model-instantiation" title="Link to this heading">#</a></h5>
+<h5>How to opt out of default model instantiation?<a class="headerlink" href="#how-to-opt-out-of-default-model-instantiation" title="Link to this heading">¶</a></h5>
 <p>You can opt out of automatic model instantiation by passing
 <code class="docutils literal notranslate"><span class="pre">initialize_model=False</span></code> to the <code class="docutils literal notranslate"><span class="pre">super.__init__()</span></code> method.</p>
 <p>Beware that you the have to instantiate the <code class="docutils literal notranslate"><span class="pre">self.model</span></code> yourself!
@@ -418,7 +420,7 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </section>
 </section>
 <section id="how-to-load-a-checkpoint-for-a-tridentmodule">
-<h3>How to load a checkpoint for a TridentModule?<a class="headerlink" href="#how-to-load-a-checkpoint-for-a-tridentmodule" title="Link to this heading">#</a></h3>
+<h3>How to load a checkpoint for a TridentModule?<a class="headerlink" href="#how-to-load-a-checkpoint-for-a-tridentmodule" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">run.ckpt_path</span></code> in the experiment configuration can point to a <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a> checkpoint of your <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a>. The <code class="docutils literal notranslate"><span class="pre">run.ckpt_path</span></code> is then passed to <code class="docutils literal notranslate"><span class="pre">trainer.fit</span></code> of the Lightning <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#...</span>
 <span class="nt">run</span><span class="p">:</span>
@@ -432,10 +434,10 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </div>
 </section>
 <section id="multi-gpu-training">
-<h3>Multi-GPU training<a class="headerlink" href="#multi-gpu-training" title="Link to this heading">#</a></h3>
+<h3>Multi-GPU training<a class="headerlink" href="#multi-gpu-training" title="Link to this heading">¶</a></h3>
 <p>Multi-GPU training with trident incurs some stepping stones that should be carefully handled. We will first discuss validation, it is comparatively straightforward to training.</p>
 <section id="validation">
-<h4>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h4>
+<h4>Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h4>
 <p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/">Lightning</a> recommends to disable <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html#use-distributed-sampler">trainer.use_distributed_sampler</a> for research (see note in <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#validation-loop">LightningModule.validation_loop</a>). Consequently trident disables the flag by default.</p>
 <p>Nevertheless, setting the flag may be recommended for training dataloaders. The example in <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html#use-distributed-sampler">trainer.use_distributed_sampler</a> demonstrates how:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in your LightningModule or LightningDataModule</span>
@@ -449,7 +451,7 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </div>
 </section>
 <section id="training">
-<h4>Training<a class="headerlink" href="#training" title="Link to this heading">#</a></h4>
+<h4>Training<a class="headerlink" href="#training" title="Link to this heading">¶</a></h4>
 <p>You should use <code class="docutils literal notranslate"><span class="pre">trainer.strategy=&quot;ddp&quot;</span></code> or, better yet, <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/advanced/model_parallel/deepspeed.html#deepspeed-zero-stage-2">DeepSpeed</a>.</p>
 <p>Since we set <code class="docutils literal notranslate"><span class="pre">trainer.use_distributed_sampler</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>, we need to ensure that each process per GPU runs on a different subset of the data.</p>
 <p>For conventional a <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> (i.e., not a <cite>IterableDataset`</cite>), you can use the <code class="docutils literal notranslate"><span class="pre">preprocessing</span></code> key in <a class="reference internal" href="trident_dataspec.html#preprocessing"><span class="std std-ref">TridentDataspec.preprocessing</span></a> as follows:</p>
@@ -483,9 +485,9 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </section>
 </section>
 <section id="datamodule">
-<h2>DataModule<a class="headerlink" href="#datamodule" title="Link to this heading">#</a></h2>
+<h2>DataModule<a class="headerlink" href="#datamodule" title="Link to this heading">¶</a></h2>
 <section id="how-to-train-and-evaluate-on-multiple-datasets">
-<h3>How to train and evaluate on multiple datasets?<a class="headerlink" href="#how-to-train-and-evaluate-on-multiple-datasets" title="Link to this heading">#</a></h3>
+<h3>How to train and evaluate on multiple datasets?<a class="headerlink" href="#how-to-train-and-evaluate-on-multiple-datasets" title="Link to this heading">¶</a></h3>
 <p>The below example illustrates training and evaluating NLI jointly on English and a <code class="docutils literal notranslate"><span class="pre">${lang}</span></code> of <a class="reference external" href="https://huggingface.co/datasets/americas_nli">AmericasNLI</a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">defaults</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">/dataspec@datamodule.train</span><span class="p">:</span>
@@ -519,7 +521,7 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 <p><strong>Important</strong>: this is not applicable for evaluation, as <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">DataLoader]</span></code> up- or downsample to the largest or smallest dataset in the dictionary. During evaluation, the <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code> for multiple validation or test datasets consequently are of <code class="docutils literal notranslate"><span class="pre">list[DataLoader]</span></code> in order of declaration in the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> configuration.</p>
 </section>
 <section id="how-do-i-subsample-a-dataset">
-<h3>How do I subsample a dataset?<a class="headerlink" href="#how-do-i-subsample-a-dataset" title="Link to this heading">#</a></h3>
+<h3>How do I subsample a dataset?<a class="headerlink" href="#how-do-i-subsample-a-dataset" title="Link to this heading">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># typically declared in your ./configs/datamodule/$YOUR_DATAMODULE.yaml</span>
 <span class="nt">train</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">my_dataset</span><span class="p">:</span>
@@ -538,7 +540,7 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </div>
 </section>
 <section id="how-do-i-only-run-testing">
-<h3>How do I only run testing?<a class="headerlink" href="#how-do-i-only-run-testing" title="Link to this heading">#</a></h3>
+<h3>How do I only run testing?<a class="headerlink" href="#how-do-i-only-run-testing" title="Link to this heading">¶</a></h3>
 <p>Bypassing training is implemented with the corresponding Lightning <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a> flag. You can write the following in your <code class="docutils literal notranslate"><span class="pre">experiment.yaml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">trainer</span><span class="p">:</span>
 <span class="w"> </span><span class="nt">limit_train_batches</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
@@ -552,9 +554,9 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
 </section>
 </section>
 <section id="id4">
-<h2>hydra<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>hydra<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <section id="how-do-i-set-a-default-for-variable-in-yaml">
-<h3>How do I set a default for variable in yaml?<a class="headerlink" href="#how-do-i-set-a-default-for-variable-in-yaml" title="Link to this heading">#</a></h3>
+<h3>How do I set a default for variable in yaml?<a class="headerlink" href="#how-do-i-set-a-default-for-variable-in-yaml" title="Link to this heading">¶</a></h3>
 <p>The yaml configuration of <a class="reference external" href="https://hydra.cc">hydra</a> bases on  <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a>. <a class="reference external" href="https://omegaconf.readthedocs.io/">OmegaConf</a> has support for <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#built-in-resolvers">built-in</a> and <a class="reference external" href="https://omegaconf.readthedocs.io/en/2.3_branch/custom_resolvers.html#id9">custom</a> resolvers, which, among other things, let’s you define a default for your variable that can otherwise not be resolved.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># absolute_path_to_node is a link to a node like e.g., `with_default`</span>
 <span class="nt">with_default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;${oc.select:absolute_path_to_node,default_value}&quot;</span>
@@ -665,8 +667,8 @@ Furthermore, you may need to override <code class="docutils literal notranslate"
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>prepare - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,7 +201,7 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <p>The logic of evaluation is defined in <code class="docutils literal notranslate"><span class="pre">./configs/dataspec/evaluation/text_classification.yaml</span></code>. It is common to define evaluation per type of task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">evaluation</span></code> configuration segments into the fields <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>, and <code class="docutils literal notranslate"><span class="pre">metrics</span></code>.</p>
 <div class="admonition seealso">
@@ -207,7 +209,7 @@
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">trident.utils.types.EvaluationDict</span></code></p>
 </div>
 <section id="prepare">
-<h1>prepare<a class="headerlink" href="#prepare" title="Link to this heading">#</a></h1>
+<h1>prepare<a class="headerlink" href="#prepare" title="Link to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">prepare</span></code> defines functions called on the <code class="docutils literal notranslate"><span class="pre">batch</span></code>, the model <code class="docutils literal notranslate"><span class="pre">outputs</span></code>, or the collected <code class="docutils literal notranslate"><span class="pre">step_outputs</span></code>.</p>
 <p>The <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> hands the below keywords to facilitate evaluation. Since the <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> extends the LightningModule, useful attributes like <code class="docutils literal notranslate"><span class="pre">trainer</span></code> and <code class="docutils literal notranslate"><span class="pre">trainer.datamodule</span></code> are available at runtime.</p>
 <p><strong>Example Configuration</strong></p>
@@ -234,7 +236,7 @@
 </div>
 </section>
 <section id="step-outputs">
-<h1>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">#</a></h1>
+<h1>step_outputs<a class="headerlink" href="#step-outputs" title="Link to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">step_outputs</span></code> defines what keys are collected from a <code class="docutils literal notranslate"><span class="pre">batch</span></code> or <code class="docutils literal notranslate"><span class="pre">outputs</span></code> dictionary, per step, into the flattened outputs <code class="docutils literal notranslate"><span class="pre">dict</span></code> per evaluation dataloader. The flattened dictionary then holds the corresponding key-value pairs as input to the <code class="docutils literal notranslate"><span class="pre">prepare_step_outputs</span></code> function, which ultimately serves at input to metrics computed at the end of an evaluation loop.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -257,7 +259,7 @@
 </div>
 </section>
 <section id="metrics">
-<h1>metrics<a class="headerlink" href="#metrics" title="Link to this heading">#</a></h1>
+<h1>metrics<a class="headerlink" href="#metrics" title="Link to this heading">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> denotes a dictionary for all evaluated metrics. For instance, a metric such as <code class="docutils literal notranslate"><span class="pre">acc</span></code> may contain:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">metric</span></code>: how to instantiate the metric; typically a <code class="docutils literal notranslate"><span class="pre">partial</span></code> function; must return a <code class="docutils literal notranslate"><span class="pre">Callable</span></code>.</p></li>
@@ -356,8 +358,8 @@
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

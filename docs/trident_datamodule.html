@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TridentDataspec" href="trident_dataspec.html" /><link rel="prev" title="TridentModule" href="trident_module.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>TridentDataModule - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,9 +201,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="tridentdatamodule">
-<h1>TridentDataModule<a class="headerlink" href="#tridentdatamodule" title="Link to this heading">#</a></h1>
+<h1>TridentDataModule<a class="headerlink" href="#tridentdatamodule" title="Link to this heading">¶</a></h1>
 <p>The default configuration (<code class="docutils literal notranslate"><span class="pre">configs/datamodule/default.yaml</span></code>) for a <code class="xref py py-class docutils literal notranslate"><span class="pre">tridentdatamodule</span></code> defines how training and evaluation datasets are instantiated.
 Each split is a dictionary of <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">_target_</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">trident.TridentDataModule</span>
@@ -218,9 +220,9 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </pre></div>
 </div>
 <section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <section id="methods">
-<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">#</a></h3>
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h3>
 <p>The below methods are user-facing <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataModule</span></code> methods. Since <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataModule</span></code> sub-classes the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/data/datamodule.html">LightningDataModule</a>, all methods, attributes, and hooks of the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/data/datamodule.html">LightningDataModule</a> are also available.</p>
 <p><strong>Important</strong>: You should <strong>not</strong> override the following methods:</p>
 <ul class="simple">
@@ -230,20 +232,20 @@ Each split is a dictionary of <a class="reference internal" href="trident.core.h
 </ul>
 <p>since the <code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataModule</span></code> automatically returns the dataloaders for the <a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a> enclosed in the configuration of the corresponding split.</p>
 <section id="setup">
-<h4>setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h4>
+<h4>setup<a class="headerlink" href="#setup" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L126-L140"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="get">
-<h4>get<a class="headerlink" href="#get" title="Link to this heading">#</a></h4>
+<h4>get<a class="headerlink" href="#get" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L108-L124"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -253,12 +255,12 @@ split is not found, it returns a default value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
-<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The default value to return if the split is not found.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The <code class="docutils literal notranslate"><span class="pre">Split</span></code> used to retrieve the dataspec.</p></li>
+<li><p><strong>default</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span>) – The default value to return if the split is not found.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="trident.utils.html#trident.utils.dictlist.DictList" title="trident.utils.dictlist.DictList"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictList</span></code></a>[<a class="reference internal" href="trident.core.html#trident.core.dataspec.TridentDataspec" title="trident.core.dataspec.TridentDataspec"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentDataspec</span></code></a>]]</span></p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The <code class="docutils literal notranslate"><span class="pre">DictList</span></code> of <code class="docutils literal notranslate"><span class="pre">TridentDataspec</span></code> for the given split or None.</p>
@@ -268,52 +270,52 @@ split is not found, it returns a default value.</p>
 
 </section>
 <section id="train-dataloader">
-<h4>train_dataloader<a class="headerlink" href="#train-dataloader" title="Link to this heading">#</a></h4>
+<h4>train_dataloader<a class="headerlink" href="#train-dataloader" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L198-L199"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="val-dataloader">
-<h4>val_dataloader<a class="headerlink" href="#val-dataloader" title="Link to this heading">#</a></h4>
+<h4>val_dataloader<a class="headerlink" href="#val-dataloader" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">val_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L201-L202"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="test-dataloader">
-<h4>test_dataloader<a class="headerlink" href="#test-dataloader" title="Link to this heading">#</a></h4>
+<h4>test_dataloader<a class="headerlink" href="#test-dataloader" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">test_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L204-L205"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
 <section id="predict-dataloader">
-<h4>predict_dataloader<a class="headerlink" href="#predict-dataloader" title="Link to this heading">#</a></h4>
+<h4>predict_dataloader<a class="headerlink" href="#predict-dataloader" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentDataModule.</span></span><span class="sig-name descname"><span class="pre">predict_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/datamodule.py#L207-L208"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type">trident</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">CombinedLoader</span></code>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -403,8 +405,8 @@ split is not found, it returns a default value.</p>
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>

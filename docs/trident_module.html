@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="TridentDataModule" href="trident_datamodule.html" /><link rel="prev" title="Contributing" href="contributing.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.04.27 -->
         <title>TridentModule - trident documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -112,6 +112,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -199,11 +201,11 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="tridentmodule">
-<h1>TridentModule<a class="headerlink" href="#tridentmodule" title="Link to this heading">#</a></h1>
+<h1>TridentModule<a class="headerlink" href="#tridentmodule" title="Link to this heading">¶</a></h1>
 <section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
 <p>A <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> represents a wrapper around <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a> to facilitate configuring training, validating, and testing from <a class="reference external" href="https://hydra.cc">hydra</a>.</p>
 <p>A <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> is commonly defined hierarchically:</p>
 <ol class="arabic simple">
@@ -239,9 +241,9 @@
 </div>
 </section>
 <section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h2>
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <section id="methods">
-<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">#</a></h3>
+<h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h3>
 <p>The below methods are user-facing <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> methods. Since <a class="reference internal" href="trident.core.html#trident.core.module.TridentModule" title="trident.core.module.TridentModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">TridentModule</span></code></a> sub-classes the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a>, all methods, attributes, and hooks of the <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html">LightningModule</a> are also available.</p>
 <p><strong>Important</strong>: You should <strong>not</strong> override the following methods:</p>
 <ul class="simple">
@@ -256,14 +258,14 @@
 </ul>
 <p>but should make sure to also call the <code class="docutils literal notranslate"><span class="pre">super()</span></code> method!</p>
 <section id="forward">
-<h4>forward<a class="headerlink" href="#forward" title="Link to this heading">#</a></h4>
+<h4>forward<a class="headerlink" href="#forward" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentModule.</span></span><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/module.py#L55-L64"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Plain forward pass of your model for which the batch is unpacked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – input to your model</p>
+<dd class="field-odd"><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – input to your model</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>container with attributes required for evaluation</p>
@@ -276,7 +278,7 @@
 
 </section>
 <section id="training-step">
-<h4>training_step<a class="headerlink" href="#training-step" title="Link to this heading">#</a></h4>
+<h4>training_step<a class="headerlink" href="#training-step" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">TridentModule.</span></span><span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/module.py#L66-L82"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -289,8 +291,8 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
-<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – variable used internally by pytorch-lightning</p></li>
+<li><p><strong>batch</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – typically comprising input_ids, attention_mask, and position_ids</p></li>
+<li><p><strong>batch_idx</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – variable used internally by pytorch-lightning</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -304,7 +306,7 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 
 </section>
 <section id="log-metric">
-<h4>log_metric<a class="headerlink" href="#log-metric" title="Link to this heading">#</a></h4>
+<h4>log_metric<a class="headerlink" href="#log-metric" title="Link to this heading">¶</a></h4>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">EvalMixin.</span></span><span class="sig-name descname"><span class="pre">log_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/evaluation.py#L106-L146"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -312,11 +314,11 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – The evaluation split.</p></li>
-<li><p><strong>metric_key</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Key identifying the metric.</p></li>
-<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Metric value or dictionary of metric values.</p></li>
-<li><p><strong>log_kwargs</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Additional keyword arguments for logging.</p></li>
-<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type">trident</span>) – Name of the dataset if available.</p></li>
+<li><p><strong>split</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="trident.utils.html#trident.utils.enums.Split" title="trident.utils.enums.Split"><code class="xref py py-class docutils literal notranslate"><span class="pre">Split</span></code></a></span>) – The evaluation split.</p></li>
+<li><p><strong>metric_key</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">DictKeyType</span></code>]</span>) – Key identifying the metric.</p></li>
+<li><p><strong>input</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>]</span>) – Metric value or dictionary of metric values.</p></li>
+<li><p><strong>log_kwargs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</span>) – Additional keyword arguments for logging.</p></li>
+<li><p><strong>dataset_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Name of the dataset if available.</p></li>
 </ul>
 </dd>
 </dl>
@@ -327,7 +329,7 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
 
 </section>
 <section id="num-training-steps">
-<h4>num_training_steps<a class="headerlink" href="#num-training-steps" title="Link to this heading">#</a></h4>
+<h4>num_training_steps<a class="headerlink" href="#num-training-steps" title="Link to this heading">¶</a></h4>
 <dl class="py property">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">OptimizerMixin.</span></span><span class="sig-name descname"><span class="pre">num_training_steps</span></span><a class="reference external" href="https://github.com/fdschmidt93/trident/tree/main/trident/core/mixins/optimizer.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -418,8 +420,8 @@ See: Pytorch-Lightning’s <a class="reference external" href="https://pytorch-l
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>
