@@ -22,17 +22,17 @@ def stack_or_pad_2d(tensors: list[torch.Tensor], pad_id: int = -100) -> torch.Te
 
 
 def concatenate_3d(tensors: list[torch.Tensor], pad_id: int = -100) -> torch.Tensor:
-    # (N sequences, L individual sequence length, C num classes -- typically)
-    N, L, C = zip(*[tuple(x.shape) for x in tensors])
+    # (N sequences, L individual sequence length, C num classes or D dimension -- typically)
+    N, L, D = zip(*[tuple(x.shape) for x in tensors])
     out = torch.full_like(
-        torch.Tensor(sum(N), max(L), max(C)),
+        torch.Tensor(sum(N), max(L), max(D)),
         fill_value=pad_id,
         device=tensors[0].device,
     )
     start = 0
     for t in tensors:
-        num, len_, _ = t.shape
-        out[start : start + num, :len_, :] = t
+        num, len_, d = t.shape
+        out[start : start + num, :len_, :d] = t
         start += num
     return out
 
@@ -44,6 +44,8 @@ def flatten_dict(inputs: list[dict]) -> dict[str, Any]:
         for k, v in input_.items():
             if k not in ret:
                 ret[k] = []
+            # batch: tuple[torch.Tensor, ...]
+            # step_outputs: list[tuple[torch.Tensor]]
             if not isinstance(v, list):
                 ret[k].append(v)
             else:
@@ -57,6 +59,8 @@ def flatten_dict(inputs: list[dict]) -> dict[str, Any]:
             # concatenate vectors
             elif dim == 1:
                 ret[k] = torch.cat(v, dim=0)
+            elif dim == 0:
+                ret[k] = torch.stack(v)
             # pad varying dimension and concatenate
             elif dim == 3:
                 ret[k] = concatenate_3d(v)
@@ -66,6 +70,21 @@ def flatten_dict(inputs: list[dict]) -> dict[str, Any]:
                 )
         elif isinstance(v[0], np.ndarray):
             ret[k] = np.vstack(v)
+        elif isinstance(v[0], tuple) and isinstance(v[0][0], torch.Tensor):
+            # [(l1, l2, l3), (l1, l2, l3), ]
+            listified = []
+            for inner_tuples in v:
+                for i, tensor in enumerate(inner_tuples):
+                    try:
+                        sub_list = listified[i]
+                    except IndexError:
+                        listified.append([])
+                        sub_list = listified[i]
+                    sub_list.append(tensor)
+            list_ = []
+            for tensor_list in listified:
+                list_.append(concatenate_3d(tensor_list))
+            ret[k] = list_
         else:
             pass
     return ret
