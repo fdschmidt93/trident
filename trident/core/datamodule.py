@@ -154,9 +154,15 @@ class TridentDataModule(LightningDataModule):
                 else:
                     return len(dataset)
             else:
-                return max(
-                    [len(cast(Sized, d.dataset)) for _, d in dataspecs_train.items()]
-                )
+                try:
+                    return max(
+                        [
+                            len(cast(Sized, d.dataset))
+                            for _, d in dataspecs_train.items()
+                        ]
+                    )
+                except TypeError:
+                    return self.trainer.global_step
         else:
             raise ValueError("Unexpected type for dataset_train")
 

@@ -77,10 +77,10 @@ class OptimizerMixin(LightningModule):
             scheduler_cfg.num_warmup_steps, float
         ):
             scheduler_cfg.num_warmup_steps *= self.num_training_steps
-        scheduler_cfg.num_training_steps = self.num_training_steps
-        log.info(
-            f"Warm up for {scheduler_cfg.num_warmup_steps} of {self.num_training_steps}"
-        )
+            scheduler_cfg.num_training_steps = self.num_training_steps
+            log.info(
+                f"Warm up for {scheduler_cfg.num_warmup_steps} of {self.num_training_steps}"
+            )
         scheduler = hydra.utils.instantiate(
             scheduler_cfg,
             optimizer,

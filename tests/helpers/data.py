@@ -55,7 +55,7 @@ class IdentityDataset(Dataset):
 
 
 def collate_fn(
-    examples: list[tuple[torch.Tensor, torch.Tensor]]
+    examples: list[tuple[torch.Tensor, torch.Tensor]],
 ) -> dict[str, torch.Tensor]:
     """
     Collate function for DataLoader.

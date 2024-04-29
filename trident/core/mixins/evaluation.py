@@ -232,7 +232,6 @@ class EvalMixin(LightningModule):
                 ret[k] = val
             else:
                 ret[k] = source_data
-
         return ret
 
     @staticmethod
