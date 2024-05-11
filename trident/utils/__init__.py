@@ -1,4 +1,5 @@
 from functools import reduce  # Python 3
+import re
 
 
 def deepgetitem(obj, item, default=None):
@@ -28,3 +29,12 @@ def deepgetitem(obj, item, default=None):
             return default
 
     return reduce(getitem, item.split("."), obj)
+
+
+def get_dict_by_glob_pattern(dictionary: dict, pattern: str):
+    # Convert the glob pattern to a regular expression
+    # Replace '*' with '.*' to match any characters (non-greedy)
+    regex = re.compile(re.escape(pattern).replace("\\*", ".*?"))
+
+    # Search for matching keys and create a new dictionary with them
+    return {key: value for key, value in dictionary.items() if regex.match(key)}

@@ -19,7 +19,7 @@ import torch
 
 from trident.core.datamodule import TridentDataModule
 from trident.core.dataspec import TridentDataspec
-from trident.utils import deepgetitem
+from trident.utils import deepgetitem, get_dict_by_glob_pattern
 from trident.utils.dictlist import DictList
 from trident.utils.enums import Split
 from trident.utils.logging import get_logger
@@ -290,11 +290,19 @@ class EvalMixin(LightningModule):
                 # fix typing
                 attribute_keys = cast(list[str], attribute_keys)
                 for attr_key in attribute_keys:
-                    attr_value = source_data.get(attr_key)
-                    if attr_value is not None:
-                        ret[attr_key] = attr_value
+                    if "*" in attr_key:
+                        pattern_dict = get_dict_by_glob_pattern(source_data, attr_key)
+                        if not pattern_dict:
+                            log.warn(f"{attr_key} pattern not in {source_key}")
+                        else:
+                            for k, v in pattern_dict.items():
+                                ret[k] = v
                     else:
-                        log.warn(f"{attr_key} not in {source_key}")
+                        attr_value = source_data.get(attr_key)
+                        if attr_value is not None:
+                            ret[attr_key] = attr_value
+                        else:
+                            log.warn(f"{attr_key} not in {source_key}")
         return ret
 
     @lru_cache
