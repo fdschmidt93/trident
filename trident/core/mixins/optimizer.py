@@ -73,8 +73,9 @@ class OptimizerMixin(LightningModule):
         Returns:
             dict[str, Union[str, int, LambdaLR]: scheduler in pytorch-lightning format
         """
+
         if hasattr(scheduler_cfg, "num_warmup_steps") and isinstance(
-            scheduler_cfg.num_warmup_steps, float
+            scheduler_cfg.num_warmup_steps, (int, float)
         ):
             scheduler_cfg.num_warmup_steps *= self.num_training_steps
             scheduler_cfg.num_training_steps = self.num_training_steps
