@@ -195,9 +195,11 @@ class TridentDataModule(LightningDataModule):
         if split == Split.TRAIN:
             if len(dataloaders) == 1:
                 return next(iter(dataloaders.values()))
-            return CombinedLoader(
-                dataloaders,
-                mode="max_size_cycle",
+            return iter(
+                CombinedLoader(
+                    dataloaders,
+                    mode="max_size_cycle",
+                )
             )
         return CombinedLoader(dataloaders, mode="sequential")
 
