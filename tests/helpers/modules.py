@@ -21,6 +21,11 @@ def get_module() -> nn.Linear:
 class ToyModule(TridentModule):
     """A toy module for testing, inheriting from TridentModule."""
 
+    def __init__(self, monitor_lr_rate: bool = False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.monitor_lr_rate = monitor_lr_rate
+        self.epoch = 0
+
     def batch_forward(self, batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
         """Forward pass for a single batch."""
         ret = {}
@@ -56,3 +61,10 @@ class ToyModule(TridentModule):
             # Compute the average loss from all datasets
             loss = torch.stack([v["loss"] for v in rets.values()]).mean()
             return {"loss": loss}
+
+    def on_train_epoch_end(self) -> None:
+        self.epoch += 1
+        if self.monitor_lr_rate:
+            schedulers = self.lr_schedulers()
+            lr = schedulers.get_lr()[0]
+            assert lr == 10 - self.epoch

@@ -27,6 +27,7 @@ dependencies = [
     "hydra-core >= 1.3.0",
     "hydra-colorlog >= 1.2.0",
     "pytest",
+    "transformers",
     "rich",
 ]
 dynamic = ["version"]

@@ -75,3 +75,52 @@ def test_off_by_two_test_single_train_many_val_test_single_eval_config() -> None
         is_ = torch.Tensor(run(cfg))
         should = torch.Tensor([4])
         assert torch.allclose(should, is_), f"{is_.item()} is not {should}"
+
+
+def test_lr_scheduler_single_gpu_without_accumulation() -> None:
+    with initialize(
+        version_base=None,
+        config_path=CONFIG_PATH,
+    ):
+        # config is relative to a module
+        cfg = compose(
+            config_name="config",
+            overrides=["experiment=test_lr_scheduler_single_gpu_without_accumulation"],
+        )
+        run(cfg)
+
+
+def test_lr_scheduler_single_gpu_with_accumulation_2() -> None:
+    with initialize(
+        version_base=None,
+        config_path=CONFIG_PATH,
+    ):
+        # config is relative to a module
+        cfg = compose(
+            config_name="config",
+            overrides=[
+                "experiment=test_lr_scheduler_single_gpu_without_accumulation",
+                "trainer.accumulate_grad_batches=2",
+                # implies 10 batches per epoch
+                "datamodule.train.single_train.dataloader.batch_size=1",
+            ],
+        )
+        run(cfg)
+
+
+def test_lr_scheduler_single_gpu_with_accumulation_5() -> None:
+    with initialize(
+        version_base=None,
+        config_path=CONFIG_PATH,
+    ):
+        # config is relative to a module
+        cfg = compose(
+            config_name="config",
+            overrides=[
+                "experiment=test_lr_scheduler_single_gpu_without_accumulation",
+                "trainer.accumulate_grad_batches=5",
+                # implies 10 batches per epoch
+                "datamodule.train.single_train.dataloader.batch_size=1",
+            ],
+        )
+        run(cfg)
