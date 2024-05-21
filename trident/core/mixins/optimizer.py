@@ -44,10 +44,11 @@ class OptimizerMixin(LightningModule):
         assert isinstance(
             self.trainer.max_epochs, int
         ), f"{self.trainer.max_epochs=} is not an int!"
+        accumulate_grad_batches = getattr(self.trainer, "accumulate_grad_batches", 1)
         return (
             num_training_batches
             * self.trainer.max_epochs
-            // max(1, self.trainer.num_devices)
+            // (max(1, self.trainer.num_devices) * accumulate_grad_batches)
         )
 
     def configure_scheduler(
