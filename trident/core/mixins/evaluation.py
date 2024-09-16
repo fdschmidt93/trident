@@ -409,7 +409,10 @@ class EvalMixin(LightningModule):
             metrics_cfg: Metric configurations for the dataset.
             dataset_name: Name of the dataset.
         """
-        prepared_outputs = flatten_dict(step_outputs)
+        if deepgetitem(evaluation_cfg, "prepare.flatten_outputs", True):
+            prepared_outputs = flatten_dict(step_outputs)
+        else:
+            prepared_outputs = step_outputs
         if callable(
             (
                 prepare_step_outputs := deepgetitem(
